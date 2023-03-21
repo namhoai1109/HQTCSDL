@@ -1,0 +1,84 @@
+Hệ thống đặt và giao thức ăn trực tuyến:
+
+- 5 phân hệ: đối tác, khách hàng, tài xế, nhân viên, quản trị
+
+Đối tác:
+- email
+- tên quán/nhà hàng
+- người đại diện
+- thành phố
+- quận
+- số lượng chi nhánh
+- số lượng đơn hàng mỗi ngày
+- loại ẩm thực
+- địa chỉ kinh doanh
+- sđt
+
+Hợp đồng
+- Mã thuế của ng đối tác
+- người đại diện
+- số chi nhánh đăng ký
+- địa chỉ các chi nhánh
+- số tài khoản
+- ngân hàng
+- chi nhánh
+- phí kích hoạt (1tr VND)
+- phí hoa hồng = 10% doanh số bán
+- thời gian hiệu lực
+- tiếp tục sử dụng?
+
+Cửa hàng:
+- tên quán (chỉ có thể cập nhất trong 30 ngày)
+- thời gian hoạt động
+- tình trạng cửa hàng (bình thường, tạm nghỉ, đang bận)
+
+Thực đơn:
+- đối tác
+- tên món
+- miêu tả
+- giá
+- tình trạng (có bán, hết hàng, tạm ngưng)
+- tùy chọn
+
+Đơn đặt hàng:
+- mã đơn
+- trạng thái đơn (chờ nhận, đang chuẩn bị, đã nhận)
+- đã giao?
+- khu vực giao
+
+Số liệu
+- ...
+
+Khách hàng:
+- thông tin cá nhân (tên, sđt, địa chỉ, email)
+
+Đặt hàng (của khách hàng)
+- Đối tác
+- Món ăn của đối tác
+- ...
+
+
+Tài xế:
+- Thông tin
+- Khu vực hoạt động
+- ...
+
+Nhân viên:
+- Hợp đồng
+- ...
+
+Quản trị:
+
+
+Tài khoản:
+- ...
+
+
+
+
+
+
+
+
+
+
