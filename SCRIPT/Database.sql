@@ -268,26 +268,12 @@ INSERT INTO DONHANG OUTPUT inserted.MADON values (01,01,01,'Xac nhan', 'Dang chu
 INSERT INTO DONHANG OUTPUT inserted.MADON values (02,02,02,'Xac nhan', 'Dang chuan bi', GETDATE(),null, 50000, 25000)	
 INSERT INTO DONHANG OUTPUT inserted.MADON values (03,03,03,'Xac nhan', 'Dang chuan bi', GETDATE(),null, 50000, 25000)	
 
-INSERT INTO CHITIETDONHANG values (1,01,1,50000)
-INSERT INTO CHITIETDONHANG values (2,04,1,50000)
-INSERT INTO CHITIETDONHANG values (3,07,1,50000)
-
 INSERT INTO DANHGIA values (01,01,'Ngon',1)
 INSERT INTO DANHGIA values (02,01,'Ngon',1)
 INSERT INTO DANHGIA values (03,01,'Ngon',1)
 --Tạo thêm danhgia
 
-INSERT INTO TUYCHONMON OUTPUT inserted.ID values (01,'Them mi',50000)
-INSERT INTO TUYCHONMON OUTPUT inserted.ID values (01,'Them trung',50000)
-INSERT INTO TUYCHONMON OUTPUT inserted.ID values (01,'Them rau',50000)
-INSERT INTO TUYCHONMON OUTPUT inserted.ID values (01,'Khong',0)
-INSERT INTO TUYCHONMON OUTPUT inserted.ID values (02,'Them mi',50000)
-INSERT INTO TUYCHONMON OUTPUT inserted.ID values (02,'Them trung',50000)
-INSERT INTO TUYCHONMON OUTPUT inserted.ID values (02,'Them rau',50000)
-INSERT INTO TUYCHONMON OUTPUT inserted.ID values (02,'Khong',0)
-
 --sửa lại unique ở id món,tùy chọn
-
 INSERT INTO CHITIETDONHANG values (1,01,2,100000)
 INSERT INTO CHITIETDONHANG values (1,02,3,100000)
 INSERT INTO CHITIETDONHANG values (1,04,2,100000)
@@ -295,7 +281,7 @@ INSERT INTO CHITIETDONHANG values (2,02,2,100000)
 INSERT INTO CHITIETDONHANG values (2,05,2,100000)
 
 -- Used for drop the database
-use master 
-go
-alter database HQTCSDL2 set single_user with rollback immediate
-drop database HQTCSDL2
+--use master 
+--go
+--alter database HQTCSDL2 set single_user with rollback immediate
+--drop database HQTCSDL2
