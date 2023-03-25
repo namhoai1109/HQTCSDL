@@ -1,0 +1,12 @@
+Folder script chia 4 thư mục ứng với 4 thành viên
+Vào folder của mình và tạo 4 thư mục ứng với 4 loại lỗi concurrency:
+- DirtyRead
+- Phantom
+- LostUpdate
+- UnrepeatableRead
+
+Mỗi folder concurrency tạo 4 file:
+- Tran1_Loi
+- Tran2_Loi
+- Tran1_Fix
+- Tran2_Fix
