@@ -1,0 +1,8 @@
+﻿use HQTCSDL2
+go
+-- Câu 10 : Phantom
+SET TRANSACTION ISOLATION LEVEL SERIALIZABLE  --> sử dụng thêm isolation level SERIALIZABLE
+BEGIN TRANSACTION
+	-- Cập nhật đơn hàng mới
+	UPDATE DONHANG SET TRANGTHAI = 'Xac nhan' WHERE MADON = 11
+COMMIT
