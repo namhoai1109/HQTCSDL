@@ -1,8 +1,6 @@
-<<<<<<< Updated upstream
-=======
-create database HQTCSDL
+create database HQTCSDL2
 go
-use HQTCSDL
+use HQTCSDL2
 go
 
 create table THANHPHO
@@ -79,6 +77,7 @@ create table KHACHHANG
 	ID INT IDENTITY(1,1) not null,
 	ID_TAI_KHOAN INT,
 	HOTEN nvarchar(50) not null,
+	DIACHI nvarchar(50) not null,
 	SDT varchar(25) not null,
 	EMAIL varchar(50) unique,
 	PRIMARY KEY(ID)
@@ -125,6 +124,7 @@ create table MON
 	ID_DOI_TAC INT,
 	TEN_MON nvarchar(25),
 	MIEU_TA nvarchar(200),
+	SOLUONG int,
 	TINH_TRANG_MON nvarchar(25),
 	RATING float,
 	PRIMARY KEY(ID)
@@ -231,21 +231,21 @@ INSERT INTO DOITAC OUTPUT inserted.ID values (07, 01,'abc@gmail.com', '981729308
 INSERT INTO DOITAC OUTPUT inserted.ID values (08, 02,'xyz@gmail.com', '4627110829189840', N'Nguyễn Hồ Trung Hiếu', '0777058016', 20, N'GO CAFE','active', 'Nuoc')
 INSERT INTO DOITAC OUTPUT inserted.ID values (09, 03,'def@gmail.com', '40198568920129130', N'Thiều Vĩnh Trung', '013458910291', 25, N'3 MIEN','active', 'Thuc An')
 
-INSERT INTO KHACHHANG OUTPUT inserted.ID values (04,N'Tran Thi A', '09810238912','hello@gmail.com')
-INSERT INTO KHACHHANG OUTPUT inserted.ID values (05,N'Tran Thi B', '09898798798','hello1@gmail.com')
-INSERT INTO KHACHHANG OUTPUT inserted.ID values (06,N'Tran Thi C', '09879872231','hello2@gmail.com')
+INSERT INTO KHACHHANG OUTPUT inserted.ID values (04,N'Tran Thi A', N'400 Điện Biên Phủ, HCM','09810238912','hello@gmail.com')
+INSERT INTO KHACHHANG OUTPUT inserted.ID values (05,N'Tran Thi B', N'250 Trần Hưng đạo','09898798798','hello1@gmail.com')
+INSERT INTO KHACHHANG OUTPUT inserted.ID values (06,N'Tran Thi C', N'1000 Trường Chinh','09879872231','hello2@gmail.com')
 
 INSERT INTO CHINHANH OUTPUT inserted.ID values (01, 04, 1,'227 Nguyen Van Cu')
 INSERT INTO CHINHANH OUTPUT inserted.ID values (01, 01, 2,'210 Tran Hung Dao')
 INSERT INTO CHINHANH OUTPUT inserted.ID values (02, 02, 1,'550 Truong Son')
 INSERT INTO CHINHANH OUTPUT inserted.ID values (03, 01, 1,'100 Nam Ky Khoi Nghia')
 
-INSERT INTO MON OUTPUT inserted.ID values (01,N'Mì Soba',N'Mì lạnh','Con hang',null)
-INSERT INTO MON OUTPUT inserted.ID values (01,N'Mì gói',N'Mì hảo hảo','Con hang',null)
-INSERT INTO MON OUTPUT inserted.ID values (02,N'Mì ramen',N'Mì nước','Con hang',null)
-INSERT INTO MON OUTPUT inserted.ID values (02,N'Mì udon',N'Mì nước','Con hang',null)
-INSERT INTO MON OUTPUT inserted.ID values (03,N'Yakisoba',N'Mì xào','Con hang',null)
-INSERT INTO MON OUTPUT inserted.ID values (03,N'Katsudon',N'Thịt chiên','Con hang',null)
+INSERT INTO MON OUTPUT inserted.ID values (01,N'Mì Soba',N'Mì lạnh', 20,'Con hang',null)
+INSERT INTO MON OUTPUT inserted.ID values (01,N'Mì gói',N'Mì hảo hảo',20,'Con hang',null)
+INSERT INTO MON OUTPUT inserted.ID values (02,N'Mì ramen',N'Mì nước',20,'Con hang',null)
+INSERT INTO MON OUTPUT inserted.ID values (02,N'Mì udon',N'Mì nước',20,'Con hang',null)
+INSERT INTO MON OUTPUT inserted.ID values (03,N'Yakisoba',N'Mì xào',20,'Con hang',null)
+INSERT INTO MON OUTPUT inserted.ID values (03,N'Katsudon',N'Thịt chiên',20,'Con hang',null)
 
 INSERT INTO TUYCHONMON OUTPUT inserted.ID values (01,'Mặc định',50000)
 INSERT INTO TUYCHONMON OUTPUT inserted.ID values (01,'Thêm trứng',15000)
@@ -280,8 +280,7 @@ INSERT INTO DANHGIA values (02,01,'Ngon',1)
 INSERT INTO DANHGIA values (03,01,'Ngon',1)
 
 -- Used for drop the database
---use master 
---go
---alter database HQTCSDL set single_user with rollback immediate
---drop database HQTCSDL
->>>>>>> Stashed changes
+use master 
+go
+alter database HQTCSDL2 set single_user with rollback immediate
+drop database HQTCSDL2
