@@ -1,3 +1,4 @@
+
 create database HQTCSDL2
 go
 use HQTCSDL2
@@ -6,18 +7,17 @@ go
 create table THANHPHO
 (
 	ID INT IDENTITY(1,1) not null,
-	TEN NVARCHAR(25) not null,
+	TEN NVARCHAR(25),
 	PRIMARY KEY(ID)
 )
 
 create table QUAN
 (
 	ID INT IDENTITY(1,1) not null,
-	TEN NVARCHAR(25) not null,
+	TEN NVARCHAR(25),
 	ID_THANH_PHO INT,
 	PRIMARY KEY(ID)
 )
-
 create table DONHANG
 (	
 	MADON INT IDENTITY(1,1) not null,
@@ -32,28 +32,26 @@ create table DONHANG
 	TIENSHIP float,
 	PRIMARY KEY(MADON)
 )
-
 create table TAIXE
 (
 	ID INT IDENTITY(1,1) not null,
 	ID_TAI_KHOAN INT,
-	ID_KVHD INT,
-	HOTEN nvarchar(50) not null,
-	CMND varchar(25) not null unique,
-	SDT varchar(25) not null unique,
-	BIEN_SO_XE varchar(25) not null unique,
-	EMAIL varchar(50) unique,
-	TK_NGAN_HANG varchar(25) not null unique,
+	ID_HOAT_DONG INT,
+	HOTEN nvarchar(25),
+	CMND varchar(25),
+	SDT varchar(25),
+	BIEN_SO_XE varchar(25),
+	EMAIL varchar(25),
+	TK_NGAN_HANG varchar(25),
 	PRIMARY KEY(ID)
 )
-
 create table HOPDONG
 (
 	ID INT IDENTITY(1,1) not null,
-	MA_SO_THUE varchar(25) not null,
-	TEN_NGUOI_DAI_DIEN nvarchar(50) not null,
-	MA_TRUY_CAP varchar(25) not null,
-	TK_NGAN_HANG varchar(25) not null unique,
+	MA_SO_THUE varchar(25),
+	NGUOI_DAI_DIEN nvarchar(25),
+	MA_TRUY_CAP varchar(25),
+	TK_NGAN_HANG varchar(25),
 	TG_TAO datetime,
 	DA_XAC_NHAN bit,
 	DA_HET_HAN bit,
@@ -61,17 +59,15 @@ create table HOPDONG
 	TG_HET_HIEU_LUC datetime,
 	PRIMARY KEY(ID)
 )
-
 create table TAIKHOAN
 (
 	ID INT IDENTITY(1,1) not null,
-	USERNAME varchar(25) not null unique,
-	MAT_KHAU varchar(25) not null,
-	VAI_TRO nvarchar(25),
-	TRANG_THAI varchar(25) default 'active',
+	USERNAME varchar(25),
+	MAT_KHAU varchar(25),
+	VAI_TRO varchar(25),
+	TRANG_THAI varchar(25),
 	PRIMARY KEY(ID)
 )
-
 create table KHACHHANG
 (
 	ID INT IDENTITY(1,1) not null,
@@ -89,7 +85,7 @@ create table CHINHANH
 	ID_DOI_TAC INT,
 	ID_QUAN_HUYEN INT,
 	STT int,
-	DIACHI nvarchar(25),
+	DIACHI varchar(25) UNIQUE,
 	PRIMARY KEY(ID)
 )
 
@@ -98,25 +94,25 @@ create table DOITAC
 	ID INT IDENTITY(1,1) not null,
 	ID_TAI_KHOAN INT,
 	ID_HOP_DONG INT,
-	EMAIL varchar(50),
-	TAIKHOAN_NGAN_HANG varchar(25) not null unique,
-	TEN_NG_DAI_DIEN nvarchar(50) not null,
-	SDT varchar(25) not null,
+	EMAIL varchar(25),
+	TAIKHOAN_NGAN_HANG varchar(25),
+	NG_DAI_DIEN varchar(25),
+	STD varchar(25),
 	SO_LG_DON_HANG int,
-	TEN_CUA_HANG nvarchar(50) not null,
-	TINHTRANG nvarchar(25),
-	LOAI_AM_THUC nvarchar(25),
+	TEN_CUA_HANG nvarchar(25),
+	TINHTRANG varchar(25),
+	LOAI_AM_THUC varchar(25),
 	PRIMARY KEY(ID)
 )
-
 create table DANHGIA
 (
 	ID_KHACH_HANG INT,
 	ID_MON INT,
-	MIEU_TA nvarchar(200),
-	THICH_KOTHICH bit not null,
+	MIEU_TA varchar(25),
+	THICH_KOTHICH bit,
 	PRIMARY KEY(ID_KHACH_HANG, ID_MON)
 )
+
 
 create table MON
 (
@@ -129,16 +125,15 @@ create table MON
 	RATING float,
 	PRIMARY KEY(ID)
 )
-
 create table TUYCHONMON
 (
 	ID INT IDENTITY(1,1) not null,
 	ID_MON INT,
-	TUY_CHON nvarchar(25),
+	TUY_CHON varchar(25),
 	GIA float
 	PRIMARY KEY(ID)
 )
-
+--ID cuar mỗi tùy chọn phải unique, nhiều tùy chọn cùng 1 món
 create table CHITIETDONHANG
 (
 	MADON INT,
@@ -147,15 +142,18 @@ create table CHITIETDONHANG
 	GIA_TIEN float,
 	PRIMARY KEY(MADON, ID_TUY_CHON)
 )
+--set thêm id món để mapping 2 field 
 
---set dateformat dmy
+
+set dateformat dmy
 
 alter table QUAN add
-	constraint FK_QUAN_THANHPHO foreign key (ID_THANH_PHO) references THANHPHO (ID)
+	constraint FK_QUAN_THANHPHO foreign key (ID_THANH_PHO)references THANHPHO (ID)
 
 alter table TAIXE add
-	constraint FK_TAIXE_QUAN foreign key (ID_KVHD) references QUAN(ID),
+	constraint FK_TAIXE_QUAN foreign key (ID_HOAT_DONG) references QUAN(ID),
 	constraint FK_TAIXE_TAIKHOAN foreign key(ID_TAI_KHOAN) references TAIKHOAN(ID)
+
 
 alter table CHINHANH add
 	constraint FK_CHINHANH_QUAN foreign key (ID_QUAN_HUYEN) references QUAN(ID),
@@ -193,17 +191,17 @@ INSERT INTO THANHPHO(TEN) OUTPUT inserted.ID values(N'Nha Trang')
 INSERT INTO THANHPHO(TEN) OUTPUT inserted.ID values(N'Đà Nẵng')
 
 INSERT INTO QUAN(ID_THANH_PHO,TEN) OUTPUT inserted.ID values(01,N'Quận 1')
+INSERT INTO QUAN(ID_THANH_PHO,TEN) OUTPUT inserted.ID values(01,N'Quận 2')
 INSERT INTO QUAN(ID_THANH_PHO,TEN) OUTPUT inserted.ID values(01,N'Quận 3')
 INSERT INTO QUAN(ID_THANH_PHO,TEN) OUTPUT inserted.ID values(01,N'Quận 4')
-INSERT INTO QUAN(ID_THANH_PHO,TEN) OUTPUT inserted.ID values(01,N'Quận 5')
 INSERT INTO QUAN(ID_THANH_PHO,TEN) OUTPUT inserted.ID values(02,N'Quận Hoàn Kiếm')
 INSERT INTO QUAN(ID_THANH_PHO,TEN) OUTPUT inserted.ID values(02,N'Quận Đống Đa')
 INSERT INTO QUAN(ID_THANH_PHO,TEN) OUTPUT inserted.ID values(02,N'Quận Thanh Xuân')
 INSERT INTO QUAN(ID_THANH_PHO,TEN) OUTPUT inserted.ID values(02,N'Quận Hà Đông')
-INSERT INTO QUAN(ID_THANH_PHO,TEN) OUTPUT inserted.ID values(03,N'Phước Long')
-INSERT INTO QUAN(ID_THANH_PHO,TEN) OUTPUT inserted.ID values(03,N'Phước Hải')
-INSERT INTO QUAN(ID_THANH_PHO,TEN) OUTPUT inserted.ID values(03,N'Lộc Thọ')
+INSERT INTO QUAN(ID_THANH_PHO,TEN) OUTPUT inserted.ID values(03,N'Vĩnh Hòa')
+INSERT INTO QUAN(ID_THANH_PHO,TEN) OUTPUT inserted.ID values(03,N'Vĩnh Phước')
 INSERT INTO QUAN(ID_THANH_PHO,TEN) OUTPUT inserted.ID values(03,N'Vĩnh Hải')
+INSERT INTO QUAN(ID_THANH_PHO,TEN) OUTPUT inserted.ID values(03,N'Vĩnh Thọ')
 INSERT INTO QUAN(ID_THANH_PHO,TEN) OUTPUT inserted.ID values(04,N'Hải Châu')
 INSERT INTO QUAN(ID_THANH_PHO,TEN) OUTPUT inserted.ID values(04,N'Cẩm Lệ')
 INSERT INTO QUAN(ID_THANH_PHO,TEN) OUTPUT inserted.ID values(04,N'Thanh Khê')
@@ -274,10 +272,27 @@ INSERT INTO CHITIETDONHANG values (1,01,1,50000)
 INSERT INTO CHITIETDONHANG values (2,04,1,50000)
 INSERT INTO CHITIETDONHANG values (3,07,1,50000)
 
---Tạo thêm danhgia
 INSERT INTO DANHGIA values (01,01,'Ngon',1)
 INSERT INTO DANHGIA values (02,01,'Ngon',1)
 INSERT INTO DANHGIA values (03,01,'Ngon',1)
+--Tạo thêm danhgia
+
+INSERT INTO TUYCHONMON OUTPUT inserted.ID values (01,'Them mi',50000)
+INSERT INTO TUYCHONMON OUTPUT inserted.ID values (01,'Them trung',50000)
+INSERT INTO TUYCHONMON OUTPUT inserted.ID values (01,'Them rau',50000)
+INSERT INTO TUYCHONMON OUTPUT inserted.ID values (01,'Khong',0)
+INSERT INTO TUYCHONMON OUTPUT inserted.ID values (02,'Them mi',50000)
+INSERT INTO TUYCHONMON OUTPUT inserted.ID values (02,'Them trung',50000)
+INSERT INTO TUYCHONMON OUTPUT inserted.ID values (02,'Them rau',50000)
+INSERT INTO TUYCHONMON OUTPUT inserted.ID values (02,'Khong',0)
+
+--sửa lại unique ở id món,tùy chọn
+
+INSERT INTO CHITIETDONHANG values (1,01,2,100000)
+INSERT INTO CHITIETDONHANG values (1,02,3,100000)
+INSERT INTO CHITIETDONHANG values (1,04,2,100000)
+INSERT INTO CHITIETDONHANG values (2,02,2,100000)
+INSERT INTO CHITIETDONHANG values (2,05,2,100000)
 
 -- Used for drop the database
 use master 
