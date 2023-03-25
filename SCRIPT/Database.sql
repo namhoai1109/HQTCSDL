@@ -120,7 +120,6 @@ create table MON
 	ID_DOI_TAC INT,
 	TEN_MON nvarchar(25),
 	MIEU_TA nvarchar(200),
-	SOLUONG int,
 	TINH_TRANG_MON nvarchar(25),
 	RATING float,
 	PRIMARY KEY(ID)
@@ -130,6 +129,7 @@ create table TUYCHONMON
 	ID INT IDENTITY(1,1) not null,
 	ID_MON INT,
 	TUY_CHON varchar(25),
+	SOLUONG int,
 	GIA float
 	PRIMARY KEY(ID)
 )
