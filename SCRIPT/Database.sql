@@ -127,7 +127,7 @@ create table TUYCHONMON
 (
 	ID INT IDENTITY(1,1) not null,
 	ID_MON INT,
-	TUY_CHON varchar(25),
+	TUY_CHON nvarchar(25),
 	SOLUONG int,
 	GIA float
 	PRIMARY KEY(ID)
