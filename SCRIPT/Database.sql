@@ -1,4 +1,3 @@
-
 create database HQTCSDL2
 go
 use HQTCSDL2
@@ -120,7 +119,6 @@ create table MON
 	ID_DOI_TAC INT,
 	TEN_MON nvarchar(25),
 	MIEU_TA nvarchar(200),
-	SOLUONG int,
 	TINH_TRANG_MON nvarchar(25),
 	RATING float,
 	PRIMARY KEY(ID)
@@ -129,7 +127,8 @@ create table TUYCHONMON
 (
 	ID INT IDENTITY(1,1) not null,
 	ID_MON INT,
-	TUY_CHON varchar(25),
+	TUY_CHON nvarchar(25),
+	SOLUONG int,
 	GIA float
 	PRIMARY KEY(ID)
 )
@@ -238,31 +237,31 @@ INSERT INTO CHINHANH OUTPUT inserted.ID values (01, 01, 2,'210 Tran Hung Dao')
 INSERT INTO CHINHANH OUTPUT inserted.ID values (02, 02, 1,'550 Truong Son')
 INSERT INTO CHINHANH OUTPUT inserted.ID values (03, 01, 1,'100 Nam Ky Khoi Nghia')
 
-INSERT INTO MON OUTPUT inserted.ID values (01,N'Mì Soba',N'Mì lạnh', 20,'Con hang',null)
-INSERT INTO MON OUTPUT inserted.ID values (01,N'Mì gói',N'Mì hảo hảo',20,'Con hang',null)
-INSERT INTO MON OUTPUT inserted.ID values (02,N'Mì ramen',N'Mì nước',20,'Con hang',null)
-INSERT INTO MON OUTPUT inserted.ID values (02,N'Mì udon',N'Mì nước',20,'Con hang',null)
-INSERT INTO MON OUTPUT inserted.ID values (03,N'Yakisoba',N'Mì xào',20,'Con hang',null)
-INSERT INTO MON OUTPUT inserted.ID values (03,N'Katsudon',N'Thịt chiên',20,'Con hang',null)
+INSERT INTO MON OUTPUT inserted.ID values (01,N'Mì Soba',N'Mì lạnh', 'Con hang',null)
+INSERT INTO MON OUTPUT inserted.ID values (01,N'Mì gói',N'Mì hảo hảo','Con hang',null)
+INSERT INTO MON OUTPUT inserted.ID values (02,N'Mì ramen',N'Mì nước','Con hang',null)
+INSERT INTO MON OUTPUT inserted.ID values (02,N'Mì udon',N'Mì nước','Con hang',null)
+INSERT INTO MON OUTPUT inserted.ID values (03,N'Yakisoba',N'Mì xào','Con hang',null)
+INSERT INTO MON OUTPUT inserted.ID values (03,N'Katsudon',N'Thịt chiên','Con hang',null)
 
-INSERT INTO TUYCHONMON OUTPUT inserted.ID values (01,'Mặc định',50000)
-INSERT INTO TUYCHONMON OUTPUT inserted.ID values (01,'Thêm trứng',15000)
-INSERT INTO TUYCHONMON OUTPUT inserted.ID values (01,'Thêm rau',7000)
-INSERT INTO TUYCHONMON OUTPUT inserted.ID values (02,'Mặc định', 50000)
-INSERT INTO TUYCHONMON OUTPUT inserted.ID values (02,'Thêm trứng',15000)
-INSERT INTO TUYCHONMON OUTPUT inserted.ID values (02,'Thêm rau',7000)
-INSERT INTO TUYCHONMON OUTPUT inserted.ID values (03,'Mặc định', 50000)
-INSERT INTO TUYCHONMON OUTPUT inserted.ID values (03,'Thêm trứng',15000)
-INSERT INTO TUYCHONMON OUTPUT inserted.ID values (03,'Thêm rau',7000)
-INSERT INTO TUYCHONMON OUTPUT inserted.ID values (04,'Mặc định', 50000)
-INSERT INTO TUYCHONMON OUTPUT inserted.ID values (04,'Thêm trứng',15000)
-INSERT INTO TUYCHONMON OUTPUT inserted.ID values (04,'Thêm rau',7000)
-INSERT INTO TUYCHONMON OUTPUT inserted.ID values (05,'Mặc định', 50000)
-INSERT INTO TUYCHONMON OUTPUT inserted.ID values (05,'Thêm trứng',15000)
-INSERT INTO TUYCHONMON OUTPUT inserted.ID values (05,'Thêm rau',7000)
-INSERT INTO TUYCHONMON OUTPUT inserted.ID values (06,'Mặc định', 50000)
-INSERT INTO TUYCHONMON OUTPUT inserted.ID values (06,'Thêm trứng',15000)
-INSERT INTO TUYCHONMON OUTPUT inserted.ID values (06,'Thêm rau',7000)
+INSERT INTO TUYCHONMON OUTPUT inserted.ID values (01,N'Mặc định', 20, 50000)
+INSERT INTO TUYCHONMON OUTPUT inserted.ID values (01,N'Thêm trứng', 20, 15000)
+INSERT INTO TUYCHONMON OUTPUT inserted.ID values (01,N'Thêm rau',20, 7000)
+INSERT INTO TUYCHONMON OUTPUT inserted.ID values (02,N'Mặc định', 20,50000)
+INSERT INTO TUYCHONMON OUTPUT inserted.ID values (02,N'Thêm trứng',20,15000)
+INSERT INTO TUYCHONMON OUTPUT inserted.ID values (02,N'Thêm rau',20,7000)
+INSERT INTO TUYCHONMON OUTPUT inserted.ID values (03,N'Mặc định', 20,50000)
+INSERT INTO TUYCHONMON OUTPUT inserted.ID values (03,N'Thêm trứng',20,15000)
+INSERT INTO TUYCHONMON OUTPUT inserted.ID values (03,N'Thêm rau',20,7000)
+INSERT INTO TUYCHONMON OUTPUT inserted.ID values (04,N'Mặc định', 20,50000)
+INSERT INTO TUYCHONMON OUTPUT inserted.ID values (04,N'Thêm trứng',20,15000)
+INSERT INTO TUYCHONMON OUTPUT inserted.ID values (04,N'Thêm rau',20,7000)
+INSERT INTO TUYCHONMON OUTPUT inserted.ID values (05,N'Mặc định', 20,50000)
+INSERT INTO TUYCHONMON OUTPUT inserted.ID values (05,N'Thêm trứng',20,15000)
+INSERT INTO TUYCHONMON OUTPUT inserted.ID values (05,N'Thêm rau',20,7000)
+INSERT INTO TUYCHONMON OUTPUT inserted.ID values (06,N'Mặc định', 20,50000)
+INSERT INTO TUYCHONMON OUTPUT inserted.ID values (06,N'Thêm trứng',20,15000)
+INSERT INTO TUYCHONMON OUTPUT inserted.ID values (06,N'Thêm rau',20,7000)
 
 INSERT INTO DONHANG OUTPUT inserted.MADON values (01,01,01,'Xac nhan', 'Dang chuan bi', GETDATE(),null, 50000, 20000)
 INSERT INTO DONHANG OUTPUT inserted.MADON values (02,02,02,'Xac nhan', 'Dang chuan bi', GETDATE(),null, 50000, 25000)	
