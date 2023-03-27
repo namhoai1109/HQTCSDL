@@ -135,14 +135,13 @@ create table TUYCHONMON
 --ID cuar mỗi tùy chọn phải unique, nhiều tùy chọn cùng 1 món
 create table CHITIETDONHANG
 (
-	MADON INT,
-	ID_TUY_CHON INT,
+	ID INT IDENTITY(1,1) not null,
+	MADON INT not null,
+	ID_TUY_CHON INT null,
 	SO_LUONG int,
 	GIA_TIEN float,
-	PRIMARY KEY(MADON, ID_TUY_CHON)
+	PRIMARY KEY(ID)
 )
---set thêm id món để mapping 2 field 
-
 
 set dateformat dmy
 
@@ -152,7 +151,6 @@ alter table QUAN add
 alter table TAIXE add
 	constraint FK_TAIXE_QUAN foreign key (ID_HOAT_DONG) references QUAN(ID),
 	constraint FK_TAIXE_TAIKHOAN foreign key(ID_TAI_KHOAN) references TAIKHOAN(ID)
-
 
 alter table CHINHANH add
 	constraint FK_CHINHANH_QUAN foreign key (ID_QUAN_HUYEN) references QUAN(ID),
@@ -174,7 +172,8 @@ alter table DOITAC add
 
 alter table CHITIETDONHANG add
 	constraint FK_CHITIET_DONHANG foreign key (MADON) references DONHANG(MADON),
-	constraint FK_CHITIET_TUYCHONMON foreign key(ID_TUY_CHON) references TUYCHONMON(ID)
+	constraint UNIQUE_CHITIETDONHANG unique(MADON, ID_TUY_CHON),
+	constraint FK_TUYCHONMON foreign key (ID_TUY_CHON) references TUYCHONMON(ID) on delete set null
 
 alter table DONHANG add  
 	constraint FK_DONHANG_KHACHHANG foreign key(ID_KHACH_HANG) references KHACHHANG(ID),
@@ -182,7 +181,7 @@ alter table DONHANG add
 	constraint FK_DONHANG_CHINHANH foreign key (ID_CHI_NHANH) references CHINHANH(ID)
 
 alter table TUYCHONMON add
-	constraint FK_TUYCHON_MON foreign key(ID_MON) references MON(ID)
+	constraint FK_TUYCHON_MON foreign key(ID_MON) references MON(ID) on delete cascade
 
 INSERT INTO THANHPHO(TEN) OUTPUT inserted.ID values(N'Hồ Chí Minh')
 INSERT INTO THANHPHO(TEN) OUTPUT inserted.ID values(N'Hà Nội')
