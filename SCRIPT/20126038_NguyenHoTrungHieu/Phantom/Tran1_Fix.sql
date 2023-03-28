@@ -3,6 +3,7 @@ go
 
 --Truong hop 8: Unrepeatable Read
 -- Khach hang dat mon
+SET TRANSACTION ISOLATION LEVEL SERIALIZABLE
 BEGIN TRANSACTION datMon
 	declare @soLuongDat int
 	set @soLuongDat = 1
