@@ -3,6 +3,12 @@ go
 
 --Truong hop 8: Unrepeatable Read
 -- Tai xe xac nhan lay don hang
+-- Hướng giải quyết: Xin khóa XLOCK trên đơn vị dữ liệu để đọc
+-- Những thao tác khác khi cập nhật trên cùng đơn vị dữ liệu này sẽ phải đợi
+-- Khi select lại lần 2 dữ liệu ko thay đổi, đảm bảo tính consistency của giao tác
+-- Chỉ nhả khóa khi hết giao tác, lúc này các giao tác khác trong hàng đợi có thể tiến hành thực thi
+-- Giải quyết được Unrepeatable Read
+
 BEGIN TRANSACTION xacNhanLayDonHang
 	declare @idTaiXe int
 	set @idTaiXe = 1 --khvd = 2

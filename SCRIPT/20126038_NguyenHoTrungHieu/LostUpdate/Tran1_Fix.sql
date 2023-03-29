@@ -2,6 +2,13 @@
 GO
 
 --Truong hop 16: Lost Update
+-- Hướng giải quyết: Sử dụng khóa UPDLOCK khi đọc ghi trên cùng đơn vị dữ liệu
+-- => Những thao tác khác khi đọc ghi trên đơn vị dữ liệu này sẽ phải đợi
+-- Giao tác đang giữ khóa UPDLOCK sau đó sẽ nâng cấp lên XLOCK và tiến hành update
+-- Cuối cùng nhả khóa khi commit giao tác => Giao tác khác có thể xin khóa UPDLOCK và tiến hành
+-- update như thường
+-- Ko còn Lost Update
+
 BEGIN TRANSACTION datMon
 	declare @soLuongDat int
 	set @soLuongDat = 1
