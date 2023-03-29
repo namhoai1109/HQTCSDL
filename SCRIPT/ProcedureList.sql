@@ -37,7 +37,7 @@ go
 
 
 -- +) Customer.rateDish()
--- CREATE PROCEDURE rateDish
+-- CREATE PROCEDURE customerRateDish
 --     @customerId INT,
 --     @dishId INT,
 --     @isLike BIT,
@@ -95,7 +95,7 @@ go
 
 -- +) Staff.updateContract()
 
--- CREATE PROCEDURE updateContract
+-- CREATE PROCEDURE StaffUpdateContract
 --     @contractId INT,
 --     @isConfirmed BIT
 -- AS
@@ -111,7 +111,7 @@ go
 
 
 -- +) Partner.updateDish()
--- CREATE PROCEDURE updateDish
+-- CREATE PROCEDURE partnerUpdateDish
 -- @dishId int,
 -- @name NVARCHAR(50),
 -- @description NVARCHAR(50),
@@ -134,7 +134,7 @@ go
 
 
 -- +) Partner.getIncome()
--- CREATE PROCEDURE getIncome
+-- CREATE PROCEDURE partnerGetIncome
 -- @partnerId int
 
 -- as
@@ -149,7 +149,7 @@ go
 
 -- +) Partner.deleteDishDetail()
 
--- CREATE PROCEDURE deleteDishDetail
+-- CREATE PROCEDURE partnerDeleteDishDetail
 -- 	@dishID INT
 -- AS
 -- BEGIN
@@ -161,7 +161,7 @@ go
 
 
 -- +) Partner.getNumberOfOrders()
--- CREATE PROCEDURE getNumberOfOrders
+-- CREATE PROCEDURE partnerGetNumberOfOrders
 -- @partnerId int
 
 -- as
@@ -177,7 +177,7 @@ go
 
 --+) Partner.updateOrder()
 
--- CREATE PROCEDURE updateOrder
+-- CREATE PROCEDURE partnerUpdateOrder
 --  	@orderID INT,
 --  	@status NVARCHAR(50)
 --  AS
