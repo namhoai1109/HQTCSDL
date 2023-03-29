@@ -282,5 +282,5 @@ INSERT INTO CHITIETDONHANG values (2,05,2,100000)
 -- Used for drop the database
 --use master 
 --go
---alter database HQTCSDL2 set single_user with rollback immediate
---drop database HQTCSDL2
+--alter database HQTCSDL set single_user with rollback immediate
+--drop database HQTCSDL

@@ -1,0 +1,80 @@
+
+
+- Common:
++) login()	js
++) updatePassword()	js
+
+- Admin:
++) getStaffs()	js
++) updateStaffs()
+
+- Customer:
++) placeOrder()
++) updateOrder()
++) rateDish()
++) register()	js
++) updateProfile()
++) viewProfile()	js
++) viewCurrentOrders()	js
++) viewOrderDetail()
++) cancelOrder()
++) rateDish()
+
+- Staff:
++) getPartners()	js
++) deletePartner()	js
++) createContract()	js
++) deleteContract()	js
++) getContracts()	js
++) updatePartner()		js
++) updateContract()
+
++) sendContractConfirmation()	
++) notifyContractExpiration()
+
+- Shipper:
++) register()	js
++) getOrders()
++) confirmOrder()
++) getOrderHistory()
++) getIncome()
++) updateOrder()
++) confirmShipped()
++) updateProfile()
+
+- Partner:
++) register()	js
++) confirmContract()
++) getProfile()
++) updateProfile()
++) getDishes()
++) updateDish()
++) deleteDish()
++) getDishDetail()
++) updateDishDetail()
++) deleteDishDetail()
++) getOrders()
++) updateOrder()
++) deleteOrder()
++) getIncome()
++) getNumberOfOrders()
+
+- System:
++) transferMoneyTo()
++) generateAccessCode()
+
+- Concurrency related:
++) Customer.placeOrder()
++) Customer.updateOrder()
++) Customer.rateDish()
+
++) Shipper.confirmOrder()
++) Shipper.getIncome()
+
++) Staff.updateContract()
+
++) Partner.updateDish()
++) Partner.getIncome()
++) Partner.deleteDishDetail()
++) Partner.getNumberOfOrders()
++) Partner.updateOrder()
