@@ -70,9 +70,16 @@ go
 
 -- as
 -- BEGIN
--- update[dbo].[Order]  WITH (UPDLOCK, ROWLOCK)
--- set process = @process, shipperId = @shipperId
--- where id = @orderId
+-- IF EXISTS (SELECT * FROM [dbo].[Order] WHERE id = @orderId AND shipperId = null)
+    -- BEGIN
+        -- update[dbo].[Order]  WITH (UPDLOCK, ROWLOCK)
+        -- set process = @process, shipperId = @shipperId
+        -- where id = @orderId
+    -- END
+-- ELSE
+-- BEGIN
+--  ROLLBACK
+-- END 
 -- END
 
 
