@@ -25,8 +25,8 @@ BEGIN TRANSACTION
 	WHERE DH.TRANGTHAI = 'Chua xac nhan'
 	WAITFOR DELAY '00:00:05'
 
-	-- Update trạng thái của đơn hàng "Chưa xác nhận" --> "Xác nhận"
-	UPDATE DONHANG WITH (UPDLOCK)
+	-- Update trạng thái của đơn hàng 
+	UPDATE DONHANG WITH (UPDLOCK, ROWLOCK)
 	SET TRANGTHAI = 'Xac nhan' 
 	WHERE MADON = 14 AND TRANGTHAI = 'Chua xac nhan'
 

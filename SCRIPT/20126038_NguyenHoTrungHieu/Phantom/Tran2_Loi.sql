@@ -1,7 +1,7 @@
 use HQTCSDL2
 go
 
---Truong hop 8: Unrepeatable Read
+--Truong hop 12: Phantom
 -- Doi tac xoa tuy chon mon
 BEGIN TRANSACTION
 	delete from TUYCHONMON
