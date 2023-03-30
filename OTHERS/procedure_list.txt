@@ -66,15 +66,15 @@
 - Concurrency related:
 +) Customer.placeOrder()
 +) Customer.updateOrder()
-+) Customer.rateDish()
++) Customer.rateDish()          x
 
-+) Shipper.confirmOrder()
-+) Shipper.getIncome()
++) Shipper.confirmOrder()       x
++) Shipper.getIncome()          x
 
-+) Staff.updateContract()
++) Staff.updateContract()       x
 
-+) Partner.updateDish()
-+) Partner.getIncome()
-+) Partner.deleteDishDetail()
-+) Partner.getNumberOfOrders()
-+) Partner.updateOrder()
++) Partner.updateDish()         x
++) Partner.getIncome()          x
++) Partner.deleteDishDetail()   x
++) Partner.getNumberOfOrders()  x
++) Partner.updateOrder()        x
