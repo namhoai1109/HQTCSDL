@@ -1,7 +1,7 @@
 ﻿use HQTCSDL2
 go
 
---Truong hop 8: Unrepeatable Read
+--Truong hop 12: Phantom
 -- Khach hang dat mon
 BEGIN TRANSACTION datMon
 	declare @soLuongDat int

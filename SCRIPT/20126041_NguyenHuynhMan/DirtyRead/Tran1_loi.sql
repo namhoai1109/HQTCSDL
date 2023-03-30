@@ -5,6 +5,7 @@ go
 --Nhưng sau đó, giao dịch của đơn hàng khách A bị lỗi → rollback. 
 --Làm cho khách B đọc sai dữ liệu.
 -- Không cần fix vì isolation level default của database là read committed 
+
 begin transaction  
 Update Mon
 set Solg = 0, TINH_TRANG_MON='Het hang'

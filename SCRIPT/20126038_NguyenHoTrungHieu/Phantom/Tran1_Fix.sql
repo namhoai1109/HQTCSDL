@@ -1,7 +1,7 @@
 ﻿use HQTCSDL2
 go
 
---Truong hop 8: Unrepeatable Read
+--Truong hop 12: Phantom
 -- Khach hang dat mon
 -- Hướng giải quyêt: Sử dụng ISOLATION LEVEL SERIALIZABLE để cho các thao tác chạy tuần tự
 -- Giao tác nào vào trước sẽ chạy trước, những thao tác khác phải đợi

@@ -9,9 +9,10 @@ CÂU 6
 	nên sau đó đối tác đã xác nhận đơn hàng với số lượng món và giá tiền khác với ban đầu.
 */
 
+
 BEGIN TRANSACTION
 	SELECT *
-	FROM DONHANG
+	FROM DONHANG WITH (UPDLOCK, ROWLOCK)
 	WHERE TRANGTHAI = 'Chua xac nhan'
 
 	WAITFOR DELAY '00:00:05'
@@ -19,6 +20,8 @@ BEGIN TRANSACTION
 	UPDATE DONHANG
 	SET	TRANGTHAI = 'Xac nhan'
 	WHERE MADON = 01
+
 COMMIT
+
 
 
