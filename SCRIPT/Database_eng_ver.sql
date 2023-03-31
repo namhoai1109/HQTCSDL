@@ -1,6 +1,6 @@
-﻿create database HQTCSDL2
+﻿create database HQTCSDL2_EL
 go
-use HQTCSDL2
+use HQTCSDL2_EL
 go
 
 BEGIN TRY

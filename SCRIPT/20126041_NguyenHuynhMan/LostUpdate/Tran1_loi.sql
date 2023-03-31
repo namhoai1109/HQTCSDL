@@ -9,14 +9,14 @@ gây ra sự cố trong quá trình xử lý đơn hàng.
 */
 
 begin transaction
-
     IF EXISTS (
-        SELECT * FROM DONHANG WHERE MADON = 26 AND ID_TAI_XE = null
+        SELECT * 
+		FROM DONHANG 
+		WHERE MADON = 26 AND ID_TAI_XE = null
     )
     BEGIN
         UPDATE DONHANG 
         SET ID_TAI_XE = '01'
         WHERE MADON = '26';
     END
-
 commit

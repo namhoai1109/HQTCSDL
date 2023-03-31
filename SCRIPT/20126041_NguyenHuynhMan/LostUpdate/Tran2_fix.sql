@@ -4,7 +4,6 @@ go
 --C�u 13 : Lost Updated
 SET TRANSACTION ISOLATION LEVEL SERIALIZABLE
 BEGIN TRANSACTION;
-
 BEGIN TRY
     -- Attempt to update the row with the new value
     IF EXISTS (
@@ -30,8 +29,7 @@ BEGIN CATCH
     IF XACT_STATE() <> 0
     BEGIN
         ROLLBACK TRANSACTION;
-    END
-    
-   
+    END   
 END CATCH
+
 select * from DONHANG

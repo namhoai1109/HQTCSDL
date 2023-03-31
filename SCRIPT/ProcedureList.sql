@@ -1,6 +1,6 @@
-use HQTCSDL2
+﻿use HQTCSDL2_EL
 go
-
+--									=============== Concurrency ===============
 -- CREATE PROCEDURE addOrder
 -- @customerId int,
 -- @shipperId int,
@@ -195,3 +195,137 @@ go
 --  END
 
 --  EXEC updateOrder
+
+
+
+--									=============== Shipper ===============
+-- register()
+
+-- getOrders()    ==> PHẢI CÓ TRƯỜNG ĐỊA CHỈ CỦA ORDER
+CREATE PROCEDURE shipperGetOrders
+	  @shipperId INT
+AS
+BEGIN
+    SELECT *
+    FROM [dbo].[Order] orders
+    INNER JOIN [dbo].[OrderDetail] ordetail ON orders.id = ordetail.orderId
+    WHERE orders.shipperId = @shipperId
+END
+GO
+
+EXEC shipperGetOrders 1
+GO
+
+
+-- confirmOrder()
+CREATE PROCEDURE shipperConfirmOrder
+	@orderId INT,
+	@shipperId INT
+
+AS
+BEGIN
+	IF EXISTS (SELECT * FROM [dbo].[Order] WHERE id = @orderId AND shipperId IS NULL AND status = 'Verified')
+		BEGIN
+			UPDATE[dbo].[Order]  WITH (UPDLOCK, ROWLOCK)
+			SET process = 'Preparing', shipperId = @shipperId
+			WHERE id = @orderId
+		END
+	ELSE
+	BEGIN
+		RAISERROR (N'Order has been confirmed by another shipper',16,1)
+		ROLLBACK
+	END 
+END
+EXEC shipperConfirmOrder 1, 1
+GO
+
+
+
+-- getOrderHistory()
+CREATE PROCEDURE shipperGetOrderHistory
+    @shipperId INT
+AS
+BEGIN
+    SELECT *
+    FROM [dbo].[Order] AS o
+    INNER JOIN [dbo].[OrderDetail] AS od ON o.id = od.orderId
+    WHERE o.shipperId = @shipperId
+END
+GO
+EXEC shipperGetOrderHistory 2
+GO
+
+-- getIncome()
+CREATE PROCEDURE shipperGetIncome
+	@shipperId INT
+AS
+BEGIN
+	SELECT SUM(shippingPrice) 
+	FROM [dbo].[Order] WITH (UPDLOCK, ROWLOCK)
+	where shipperId = @shipperId AND MONTH(createdAt) = MONTH(GETDATE())
+END
+GO
+EXEC shipperGetIncome 1
+GO
+
+-- updateOrder()
+CREATE PROCEDURE shipperUpdateOrder
+	@orderId INT,
+	@shipperId INT
+
+AS
+BEGIN
+	IF EXISTS (SELECT * FROM [dbo].[Order] WHERE id = @orderId AND id = @shipperId AND status = 'Verified')
+		BEGIN
+			UPDATE[dbo].[Order]  WITH (UPDLOCK, ROWLOCK)
+			SET process = 'Shipping'
+			WHERE id = @orderId
+		END
+	ELSE
+	BEGIN
+		RAISERROR (N'Order has been confirmed by another shipper',16,1)
+		ROLLBACK
+	END 
+END
+GO
+
+-- confirmShipped()
+CREATE PROCEDURE shipperconfirmShipped
+	@orderId INT,
+	@shipperId INT
+
+AS
+BEGIN
+	IF EXISTS (SELECT * FROM [dbo].[Order] WHERE id = @orderId AND id = @shipperId AND status = 'Verified')
+		BEGIN
+			UPDATE[dbo].[Order]  WITH (UPDLOCK, ROWLOCK)
+			SET process = 'Shipped'
+			WHERE id = @orderId
+		END
+	ELSE
+	BEGIN
+		RAISERROR (N'Order has been confirmed by another shipper',16,1)
+		ROLLBACK
+	END 
+END
+GO
+
+-- updateProfile()
+CREATE PROCEDURE shipperUpdateProfile
+	@shipperId INT,
+	@districtId INT,
+	@name NVARCHAR(100),
+	@nationalId NVARCHAR(100),
+	@phone NVARCHAR(100),
+	@address NVARCHAR(100),
+	@licensePlate NVARCHAR(100),
+	@bankAccount NVARCHAR(100)
+AS
+BEGIN
+	UPDATE[dbo].[Shipper]  WITH (UPDLOCK, ROWLOCK)
+	SET [districtId] = @districtId, [name] = @name, 
+		[nationalId] = @nationalId, [phone] = @phone, 
+		[address]= @address, [licensePlate] = @licensePlate,
+		[bankAccount] = @bankAccount
+	WHERE id = @shipperId
+END

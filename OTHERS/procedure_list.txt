@@ -1,49 +1,49 @@
 
 
 - Common:
-+) login()	js
-+) updatePassword()	js
++) login()							js
++) updatePassword()					js
 
 - Admin:
-+) getStaffs()	js
++) getStaffs()						js
 +) updateStaffs()
 
 - Customer:
 +) placeOrder()
 +) updateOrder()
 +) rateDish()
-+) register()	js
++) register()						js
 +) updateProfile()
-+) viewProfile()	js
-+) viewCurrentOrders()	js
++) viewProfile()					js
++) viewCurrentOrders()				js
 +) viewOrderDetail()
 +) cancelOrder()
 +) rateDish()
 
 - Staff:
-+) getPartners()	js
-+) deletePartner()	js
-+) createContract()	js
-+) deleteContract()	js
-+) getContracts()	js
-+) updatePartner()		js
++) getPartners()					js
++) deletePartner()					js
++) createContract()					js
++) deleteContract()					js
++) getContracts()					js
++) updatePartner()					js
 +) updateContract()
 
 +) sendContractConfirmation()	
 +) notifyContractExpiration()
 
 - Shipper:
-+) register()	js
-+) getOrders()
-+) confirmOrder()
-+) getOrderHistory()
-+) getIncome()
-+) updateOrder()
-+) confirmShipped()
-+) updateProfile()
++) register()						js
++) getOrders()						x
++) confirmOrder()					x
++) getOrderHistory()				x			
++) getIncome()						x
++) updateOrder()					x
++) confirmShipped()					x
++) updateProfile()					x
 
 - Partner:
-+) register()	js
++) register()						js
 +) confirmContract()
 +) getProfile()
 +) updateProfile()
