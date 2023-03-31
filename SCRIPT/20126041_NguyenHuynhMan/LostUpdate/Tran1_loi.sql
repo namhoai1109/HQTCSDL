@@ -10,9 +10,13 @@ gây ra sự cố trong quá trình xử lý đơn hàng.
 
 begin transaction
 
-update DONHANG
-set ID_TAI_XE =01
-where MADON = 26
-waitfor delay '00:00:05'
+    IF EXISTS (
+        SELECT * FROM DONHANG WHERE MADON = 26 AND ID_TAI_XE = null
+    )
+    BEGIN
+        UPDATE DONHANG 
+        SET ID_TAI_XE = '01'
+        WHERE MADON = '26';
+    END
 
 commit

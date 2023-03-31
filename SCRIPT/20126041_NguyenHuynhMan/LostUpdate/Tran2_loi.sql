@@ -1,7 +1,7 @@
 use HQTCSDL
 go
 
---Câu 13 : Lost Updated
+--Cï¿½u 13 : Lost Updated
 
 begin transaction
 

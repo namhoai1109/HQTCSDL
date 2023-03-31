@@ -9,10 +9,19 @@ gây ra sự cố trong quá trình xử lý đơn hàng.
 */
 SET TRANSACTION ISOLATION LEVEL SERIALIZABLE
 begin transaction
-
-update DONHANG WITH (UPDLOCK, ROWLOCK)
-set ID_TAI_XE =01
-where MADON = 26
-waitfor delay '00:00:05'
+    IF EXISTS (
+        SELECT * FROM dbo.DONHANG WHERE  ID_TAI_XE is null
+    )
+    BEGIN
+        update DONHANG WITH (UPDLOCK, ROWLOCK)
+        set ID_TAI_XE =01
+        where MADON = 21
+        waitfor delay '00:00:05'
+    END
+	ELSE
+	 BEGIN
+        -- Nếu đơn hàng đã xác nhận, thông báo lỗi
+        PRINT N' --> This order cannot be DELETED, as it has already been CONFIRMED';  
+    END
 
 commit
