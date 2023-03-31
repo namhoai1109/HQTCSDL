@@ -16,19 +16,27 @@ gây ra sự cố trong quá trình xử lý đơn hàng.
 /*					T1							|					T2
 SET TRANSACTION ISOLATION LEVEL SERIALIZABLE	|
 begin transaction								|
-												|
+IF EXISTS (										|
+SELECT * FROM dbo.DONHANG						|
+WHERE  ID_TAI_XE is null						|
+    )											|
+BEGIN											|
 update DONHANG WITH (UPDLOCK, ROWLOCK)			|
 set ID_TAI_XE = 01								|
 where MADON = 26								|
 waitfor delay '00:00:05'						|
-												|
+END												|
 												|
 												|				SET TRANSACTION ISOLATION LEVEL SERIALIZABLE
 												|				begin transaction
-												|
+												|				IF EXISTS (
+												|					SELECT * FROM dbo.DONHANG WHERE  ID_TAI_XE is null
+												|				)
+												|				BEGIN
 												|				update DONHANG WITH (UPDLOCK, ROWLOCK)
 												|				set ID_TAI_XE =02
 												|				where MADON = 26
+												|				END
 												|
 commit											|				commit
 												|
