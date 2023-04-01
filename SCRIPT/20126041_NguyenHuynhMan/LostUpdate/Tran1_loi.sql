@@ -1,4 +1,4 @@
-﻿use HQTCSDL
+﻿use HQTCSDL2
 go
 
 --Câu 13 : Lost Updated
@@ -8,10 +8,12 @@ Khi xem lại thông tin đơn hàng, chỉ một trong hai cập nhật tình t
 gây ra sự cố trong quá trình xử lý đơn hàng.
 */
 
-begin transaction
+BEGIN transaction
 
     IF EXISTS (
-        SELECT * FROM DONHANG WHERE MADON = 26 AND ID_TAI_XE = null
+        SELECT * FROM 
+		DONHANG 
+		WHERE MADON = 26 AND ID_TAI_XE = null
     )
     BEGIN
         UPDATE DONHANG 
@@ -19,4 +21,4 @@ begin transaction
         WHERE MADON = '26';
     END
 
-commit
+COMMIT
