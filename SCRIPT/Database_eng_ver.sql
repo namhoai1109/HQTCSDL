@@ -5,7 +5,7 @@ go
 
 BEGIN TRY
 
-BEGIN TRAN;
+BEGIN TRAN; 
 
 -- CreateTable
 CREATE TABLE [dbo].[Account] (

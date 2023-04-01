@@ -23,7 +23,7 @@
 - Staff:
 +) getPartners()						
 +) deletePartner()						
-+) createContract()						
++) createContract()	                    js					
 +) deleteContract()						
 +) getContracts()						
 +) updatePartner()						
@@ -44,18 +44,18 @@
 
 - Partner:
 +) register()							js
-+) confirmContract()
++) confirmContract()                    js
 +) getProfile()							x
 +) updateProfile()						x
 +) getDishes()							x
 +) updateDish()							x
 +) deleteDish()							x
 +) getDishDetail()						x
-+) updateDishDetail()
++) updateDishDetail()                   x
 +) deleteDishDetail()					x
-+) getOrders()
++) getOrders()                          x
 +) updateOrder()						x
-+) deleteOrder()
++) deleteOrder()                        x
 +) getIncome()							x
 +) getNumberOfOrders()					x
 

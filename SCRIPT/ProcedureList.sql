@@ -333,7 +333,7 @@ CREATE PROCEDURE customerCancelOrder
 	@orderId INT
 AS
 BEGIN
-	IF EXISTS (SELECT * FROM [dbo].[Order] WHERE id = @orderId AND status != 'Verified')
+	IF EXISTS (SELECT * FROM [dbo].[Order] WHERE id = @orderId AND status = 'Pending')
  		BEGIN
        
         DELETE FROM [dbo].[Order] WHERE [id] = @orderId
@@ -391,7 +391,7 @@ CREATE PROCEDURE partnerGetDishes
 AS
 BEGIN
 	SELECT * FROM [dbo].[Dish] 
-	WHERE [id] = @dishId
+	WHERE [id] = @dishId AND [status] = 'In stock'
 END
 GO
 EXEC partnerGetDishes 1
@@ -402,9 +402,9 @@ CREATE PROCEDURE partnerDeleteDish
 	@dishId INT
 AS
 BEGIN
-	IF EXISTS (SELECT * FROM [dbo].[Dish] WHERE id = @dishId)
+	IF EXISTS (SELECT * FROM [dbo].[Dish] WHERE id = @dishId AND [status] = 'Out of stock')
  		BEGIN
-        DELETE FROM [dbo].[Order] WHERE [id] = @dishId
+        DELETE FROM [dbo].[Order] WITH (UPDLOCK, ROWLOCK) WHERE [id] = @dishId
     END
     ELSE
     BEGIN
@@ -425,5 +425,45 @@ BEGIN
 END
 GO
 EXEC partnerGetDishDetail 1
-
+GO
 -- deleteOrder
+CREATE PROCEDURE partnerDeleteOrder
+	@orderId INT,
+    @partnerId INT
+AS
+BEGIN
+	UPDATE[dbo].[Order]  WITH (UPDLOCK, ROWLOCK)
+	SET [status] = 'Cancelled'
+	WHERE id = @orderId AND [partnerId] = @partnerId
+END
+GO
+
+
+
+GO
+-- updateDishDetail
+CREATE PROCEDURE partnerUpdateDishDetail
+	@dishDetailId INT,
+    @name NVARCHAR(50),
+    @price FLOAT(53)
+AS
+BEGIN
+	UPDATE[dbo].[DishDetail]  WITH (UPDLOCK, ROWLOCK)
+	SET [price] = @price, [name] = @name
+	WHERE id = @dishDetailId
+END
+GO
+
+
+
+-- getOrders()
+CREATE PROCEDURE partnerGetOrders
+	@id INT
+AS
+BEGIN
+	SELECT * FROM [dbo].[Order]
+    WHERE [partnerId] = id AND [status] = 'Pending'
+END
+GO
+
+
