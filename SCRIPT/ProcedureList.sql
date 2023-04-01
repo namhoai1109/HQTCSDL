@@ -1,6 +1,8 @@
-use HQTCSDL2_EL
+use HQTCSDL_EL
 go
---									=============== Concurrency ===============
+--									=======================================
+--									=============== Concurrency ===========
+--									=======================================
 -- CREATE PROCEDURE addOrder
 -- @customerId int,
 -- @shipperId int,
@@ -75,7 +77,6 @@ go
 
 
 -- +) Staff.updateContract()
-
  CREATE PROCEDURE StaffUpdateContract
      @contractId INT,
      @isConfirmed BIT
@@ -87,11 +88,7 @@ go
  END
 
 
-
-
-
-
--- +) Partner.updateDish()
+ -- +) Partner.updateDish()
  CREATE PROCEDURE partnerUpdateDish
 	 @dishId int,
 	 @name NVARCHAR(50),
@@ -105,13 +102,7 @@ go
 	 SET name = @name, description = @description, status = @status
 	 WHERE id = @dishId
  END
-
-
-
-
-
-
-
+ 
 
 -- +) Partner.getIncome()
  CREATE PROCEDURE partnerGetIncome
@@ -139,9 +130,7 @@ go
  GO
 
 
-
-
--- +) Partner.getNumberOfOrders()
+ -- +) Partner.getNumberOfOrders()
  CREATE PROCEDURE partnerGetNumberOfOrders
 	@partnerId INT
  AS
@@ -152,9 +141,7 @@ go
  END
  GO
 
-
-
-
+ 
 --+) Partner.updateOrder()
 
 CREATE PROCEDURE partnerUpdateOrder
@@ -170,8 +157,9 @@ GO
 EXEC partnerUpdateOrder
 GO
 
-
+--									=======================================
 --									=============== Shipper ===============
+--									=======================================
 -- register()
 
 -- getOrders()    ==> PHẢI CÓ TRƯỜNG ĐỊA CHỈ CỦA ORDER
@@ -241,6 +229,7 @@ GO
 	EXEC shipperGetIncome 1
 GO
 
+
 -- updateOrder()
 CREATE PROCEDURE shipperUpdateOrder
 	@orderId INT,
@@ -260,7 +249,7 @@ BEGIN
  		ROLLBACK
 	END 
 END
--- GO
+GO
 
 -- confirmShipped()
 CREATE PROCEDURE shipperconfirmShipped
@@ -302,3 +291,139 @@ BEGIN
  		[bankAccount] = @bankAccount
 	WHERE id = @shipperId
 END
+GO
+
+--									=======================================
+--									=============== Customer ===============
+--									=======================================
+
+-- updateProfile()
+CREATE PROCEDURE customerUpdateProfile
+	@customerId INT,
+	
+	@name NVARCHAR(100),
+	@address NVARCHAR(100),
+	@phone NVARCHAR(100),
+	@email NVARCHAR(100)
+AS
+BEGIN
+	UPDATE[dbo].[Customer]  WITH (UPDLOCK, ROWLOCK)
+	SET [name] = @name, [address]= @address,
+ 		[phone] = @phone, [email] = @email
+	WHERE [id] = @customerId
+END
+GO
+
+-- viewOrderDetail()
+CREATE PROCEDURE customerViewOrderDetail
+	@orderId INT
+AS
+BEGIN
+	SELECT *
+    FROM [dbo].[Order] AS o
+    INNER JOIN [dbo].[OrderDetail] AS od ON o.id = od.orderId
+    WHERE o.id = @orderId
+END
+GO
+EXEC customerViewOrderDetail 1
+GO
+
+-- cancelOrder()
+CREATE PROCEDURE customerCancelOrder
+	@orderId INT
+AS
+BEGIN
+	IF EXISTS (SELECT * FROM [dbo].[Order] WHERE id = @orderId AND status != 'Verified')
+ 		BEGIN
+       
+        DELETE FROM [dbo].[Order] WHERE [id] = @orderId
+    END
+    ELSE
+    BEGIN
+        PRINT N' --> This order cannot be DELETED, as it has already been CONFIRMED';  
+    END
+END
+GO
+EXEC customerCancelOrder 1
+GO
+
+--									=======================================
+--									=============== Partner ===============
+--									=======================================
+
+-- getProfile
+CREATE PROCEDURE partnergetProfile
+	@partnerId INT
+AS
+BEGIN
+	SELECT * FROM [dbo].[Partner]
+	WHERE [id] = @partnerId
+END
+GO
+
+-- updateProfile
+CREATE PROCEDURE partnerUpdateProfile
+	@partnerId INT,
+	
+	@email NVARCHAR(100),
+	@bankAccount NVARCHAR(100),
+	@representative NVARCHAR(100),
+	@phone NVARCHAR(100),
+	@orderQuantity INT,
+	@brandName NVARCHAR(100),
+	@status NVARCHAR(100),
+	@culinaryStyle NVARCHAR(100)
+		
+AS
+BEGIN
+	UPDATE[dbo].[Partner]  WITH (UPDLOCK, ROWLOCK)
+	SET [email] = @email, [bankAccount]= @bankAccount,
+ 		[representative] = @representative, [phone] = @phone,
+		[orderQuantity] = @orderQuantity, [brandName] = @brandName,
+		[status] = @status, [culinaryStyle] = @culinaryStyle
+	WHERE [id] = @partnerId
+END
+GO
+
+-- getDishes
+CREATE PROCEDURE partnerGetDishes
+	@dishId INT
+AS
+BEGIN
+	SELECT * FROM [dbo].[Dish] 
+	WHERE [id] = @dishId
+END
+GO
+EXEC partnerGetDishes 1
+GO
+
+-- deleteDish
+CREATE PROCEDURE partnerDeleteDish
+	@dishId INT
+AS
+BEGIN
+	IF EXISTS (SELECT * FROM [dbo].[Dish] WHERE id = @dishId)
+ 		BEGIN
+        DELETE FROM [dbo].[Order] WHERE [id] = @dishId
+    END
+    ELSE
+    BEGIN
+        PRINT N' --> This dish cannot be DELETED';  
+    END
+END
+GO
+
+-- getDishDetail
+CREATE PROCEDURE partnerGetDishDetail
+	@dishId INT
+AS
+BEGIN
+	SELECT *
+    FROM [dbo].[Dish] AS o
+    INNER JOIN [dbo].[DishDetail] AS od ON o.id = od.dishId
+    WHERE o.id = @dishId
+END
+GO
+EXEC partnerGetDishDetail 1
+
+-- deleteOrder

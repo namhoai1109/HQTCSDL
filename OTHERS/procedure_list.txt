@@ -5,7 +5,7 @@
 +) updatePassword()						js
 
 - Admin:
-+) getStaffs()	js
++) getStaffs()							js
 +) updateStaffs()
 
 - Customer:
@@ -13,20 +13,20 @@
 +) updateOrder()					
 +) rateDish()							x
 +) register()							js
-+) updateProfile()
++) updateProfile()						x
 +) viewProfile()						js
 +) viewCurrentOrders()					js
-+) viewOrderDetail()
-+) cancelOrder()
++) viewOrderDetail()					x
++) cancelOrder()						x
 
 
 - Staff:
-+) getPartners()						js
-+) deletePartner()						js
-+) createContract()						js
-+) deleteContract()						js
-+) getContracts()						js
-+) updatePartner()						js
++) getPartners()						
++) deletePartner()						
++) createContract()						
++) deleteContract()						
++) getContracts()						
++) updatePartner()						
 +) updateContract()
 
 +) sendContractConfirmation()	
@@ -45,12 +45,12 @@
 - Partner:
 +) register()							js
 +) confirmContract()
-+) getProfile()
-+) updateProfile()
-+) getDishes()
++) getProfile()							x
++) updateProfile()						x
++) getDishes()							x
 +) updateDish()							x
-+) deleteDish()
-+) getDishDetail()
++) deleteDish()							x
++) getDishDetail()						x
 +) updateDishDetail()
 +) deleteDishDetail()					x
 +) getOrders()
