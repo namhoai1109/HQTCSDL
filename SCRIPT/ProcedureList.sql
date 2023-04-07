@@ -1,5 +1,9 @@
 use HQTCSDL_EL
 go
+
+
+
+
 --									=======================================
 --									=============== Concurrency ===========
 --									=======================================
@@ -50,14 +54,14 @@ go
      SET NOCOUNT ON;
     
      -- Check if the customer has already rated the dish
-     IF EXISTS (SELECT * FROM Rating WHERE customerId = @customerId)
+     IF EXISTS (SELECT * FROM [dbo].[Rating] WHERE customerId = @customerId)
      BEGIN
-         UPDATE Rating SET isLike = @isLike, description = @description, updatedAt = GETDATE()
-         WHERE customerId = @customerId AND dishId = @dishId
+         UPDATE [dbo].[Rating] SET [isLike] = @isLike, [description] = @description, [updatedAt] = GETDATE()
+         WHERE [customerId] = @customerId AND [dishId] = @dishId
      END
      ELSE
      BEGIN
-         INSERT INTO Rating (isLike, createdAt, description, updatedAt, customerId, dishId)
+         INSERT INTO [dbo].[Rating] (isLike, createdAt, description, updatedAt, customerId, dishId)
          VALUES (@isLike, GETDATE(), @description, GETDATE(), @customerId, @dishId)
      END
  END
@@ -70,11 +74,11 @@ go
  BEGIN
 	 SELECT SUM(shippingPrice) 
 	 FROM [dbo].[Order] WITH (UPDLOCK, ROWLOCK)
-	 WHERE shipperId = @shipperId AND MONTH(createdAt) = MONTH(GETDATE())
+	 WHERE [id] = @shipperId AND MONTH(createdAt) = MONTH(GETDATE())
  END
+ GO
 
-
-
+ 
 
 -- +) Staff.updateContract()
  CREATE PROCEDURE StaffUpdateContract
@@ -83,10 +87,10 @@ go
  AS
  BEGIN
      UPDATE [dbo].[Contract]
-     SET [isConfirmed] = @isConfirmed , confirmedAt = GETDATE()
+     SET [isConfirmed] = @isConfirmed , [confirmedAt] = GETDATE()
      WHERE [id] = @contractId
  END
-
+ GO
 
  -- +) Partner.updateDish()
  CREATE PROCEDURE partnerUpdateDish
@@ -99,22 +103,22 @@ go
  BEGIN
 
 	 UPDATE [dbo].[Dish] WITH (UPDLOCK, ROWLOCK)
-	 SET name = @name, description = @description, status = @status
-	 WHERE id = @dishId
+	 SET [name] = @name, [description] = @description, [status] = @status
+	 WHERE [id] = @dishId
  END
  
 
 -- +) Partner.getIncome()
  CREATE PROCEDURE partnerGetIncome
- @partnerId INT
+	@partnerId INT
 
  AS
  BEGIN
 	 SELECT SUM(orderPrice) AS INCOME
 	 FROM [dbo].[Order] WITH (UPDLOCK, ROWLOCK)
-	 WHERE partnerId = @partnerId AND month(createdAt) = MONTH(GETDATE())
+	 WHERE [partnerId] = @partnerId AND month(createdAt) = MONTH(GETDATE())
  END
-
+ GO
 
 
 
