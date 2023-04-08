@@ -1,4 +1,4 @@
-﻿use HQTCSDL2
+﻿use HQTCSDL_DEMO
 go
 
 --Truong hop 8: Unrepeatable Read
@@ -9,18 +9,18 @@ go
 -- Chỉ nhả khóa khi hết giao tác, lúc này các giao tác khác trong hàng đợi có thể tiến hành thực thi
 -- Giải quyết được Unrepeatable Read
 
-BEGIN TRANSACTION xacNhanLayDonHang
-	declare @idTaiXe int
-	set @idTaiXe = 1 --khvd = 2
-	declare @idDonHang int
-	set @idDonHang = 1 --kvhd = 2
+BEGIN TRANSACTION confirmTakeOrder
+	declare @idShipper int
+	set @idShipper = 1 --District: Quan 1
+	declare @orderCode nvarchar
+	set @orderCode = '82alal1ksl1958l11' --District: Quan 1
 
 	-- check don hang co thuoc khu vuc hoat dong cua tai xe
-	if not exists(select * from DONHANG dh (xlock), CHINHANH cn
-	where dh.MADON = @idDonHang
-	and dh.TRANGTHAI like N'Xac nhan'
-	and dh.ID_CHI_NHANH = cn.ID
-	and cn.ID_QUAN_HUYEN = (select ID_HOAT_DONG from TAIXE where ID = @idTaiXe))
+	if not exists(select * from [dbo].[Order] dh with (XLOCK), [dbo].[Branch] cn
+	where dh.[orderCode] = '82alal1ksl1958l11' --temporary
+	and dh.[status] like 'confirmed'
+	and dh.[branchId] = cn.[id]
+	and cn.[districtId] = (select [districtId] from [dbo].[Shipper] where [id] = @idShipper))
 	begin
 		raiserror(N'Đơn hàng không tồn tại trong khu vực', 16, 1)
 		rollback
@@ -29,13 +29,13 @@ BEGIN TRANSACTION xacNhanLayDonHang
 
 	waitfor delay '00:00:05'
 
-	update DONHANG
-	set ID_TAI_XE = @idTaiXe
-	where exists(select * from DONHANG dh, CHINHANH cn 
-	where dh.MADON = @idDonHang
-	and dh.TRANGTHAI like N'Xac nhan'
-	and dh.ID_CHI_NHANH = cn.ID
-	and cn.ID_QUAN_HUYEN = (select ID_HOAT_DONG from TAIXE where ID = @idTaiXe))
+	update [dbo].[Order]
+	set [shipperId] = @idShipper
+	where exists(select * from [dbo].[Order] dh, [dbo].[Branch] cn
+	where dh.[orderCode] = '82alal1ksl1958l11' --temporary
+	and dh.[status] like 'confirmed'
+	and dh.[branchId] = cn.[id]
+	and cn.[districtId] = (select [districtId] from [dbo].[Shipper] where [id] = @idShipper))
 
 	if @@ERROR <> NULL
 	begin

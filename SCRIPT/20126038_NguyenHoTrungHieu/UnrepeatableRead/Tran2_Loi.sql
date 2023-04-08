@@ -1,36 +1,38 @@
-﻿use HQTCSDL2
+﻿use HQTCSDL_DEMO
 go
 
 --Truong hop 8: Unrepeatable Read
 -- Doi tac cap nhat lai chi nhanh cua don hang
-BEGIN TRANSACTION capNhatDonHang
-	declare @idDonHang int
-	set @idDonHang = 1
+BEGIN TRANSACTION updateOrder
+	declare @orderCode varchar
+	set @orderCode = '82alal1ksl1958l11'
 
-	declare @idChiNhanhMoi int
-	set @idChiNhanhMoi = 1 -- id quan huyen = 4
+	declare @idNewBranch int
+	set @idNewBranch = 2
 
-	if (not exists(select * from DONHANG where MADON = @idDonHang))
+	if (not exists(select * from [dbo].[Order] where [orderCode] = '82alal1ksl1958l11'))
 	begin
 		raiserror(N'Đơn hàng không tồn tại', 16, 1)
 		rollback
 		return
 	end
 
-	if (select ID_TAI_XE from DONHANG where MADON = @idDonHang) <> null
+	if (select [shipperId] from [dbo].[Order] where [orderCode] = '82alal1ksl1958l11') is not null
 	begin
 		raiserror(N'Đơn hàng đã xác nhận bởi tài xế', 16, 1)
 		rollback
 		return
 	end
 
-	update DONHANG
-	set ID_CHI_NHANH = @idChiNhanhMoi
-	where MADON = @idDonHang
+	update [dbo].[Order]
+	set [branchId] = @idNewBranch
+	where [orderCode] = '82alal1ksl1958l11'
 
 COMMIT
 
--- Nho set lai cho madon 1 - ID Chi nhanh = 5 moi lan chay
---update DONHANG
---set ID_CHI_NHANH = 5, ID_TAI_XE = null
---where MADON = 1
+--select * from [dbo].[Order]
+
+---- Nho set lai cho madon 1 - ID Chi nhanh = 5 moi lan chay
+--update [dbo].[Order]
+--set [branchId] = 1, [shipperId] = null
+--where [orderCode] = '82alal1ksl1958l11'

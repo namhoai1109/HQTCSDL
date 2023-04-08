@@ -1,15 +1,15 @@
-﻿use HQTCSDL2
+﻿use HQTCSDL_DEMO
 go
 
 --Truong hop 12: Phantom
 -- Khach hang dat mon
-BEGIN TRANSACTION datMon
-	declare @soLuongDat int
-	set @soLuongDat = 1
+BEGIN TRANSACTION placeOrder
+	declare @quantity int
+	set @quantity = 1
 
 	--check so luong tuy chon
 	-- lay khoa update
-	if ((select SOLUONG from TUYCHONMON where id = 1) < @soLuongDat)
+	if ((select [quantity] from [dbo].[DishDetail] where [dishId] = 1 and [name] = 'S') < @quantity)
 	begin
 		raiserror(N'Số lượng không đủ', 16, 1)
 		rollback
@@ -18,9 +18,9 @@ BEGIN TRANSACTION datMon
 
 	waitfor delay '00:00:5'
 
-	update TUYCHONMON
-	set SOLUONG = SOLUONG - @soLuongDat
-	where ID = 1
+	update [dbo].[DishDetail]
+	set [quantity] = [quantity] - @quantity
+	where [dishId] = 1 and [name] = 'S'
 
 	if @@ERROR <> null
 	begin
@@ -33,6 +33,4 @@ BEGIN TRANSACTION datMon
 
 COMMIT
 
---update TUYCHONMON
---set SOLUONG = 1
---where ID = 1
+--select * from [dbo].[DishDetail]
