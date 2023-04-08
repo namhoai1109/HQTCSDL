@@ -11,16 +11,16 @@ set transaction isolation level repeatable read
 begin transaction  
 
 --Xem tổng thu nhập của đối tác
-SELECT SUM(o.orderPrice) as INCOME_FEB
-FROM dbo.Partner pa, Branch br, Order o
-where pa.ID = br.partnerId and br.ID = o.branchId AND month(o.createdAt) = 2
-group by pa.ID
+SELECT SUM([dbo].[Order].[orderPrice]) as INCOME_FEB
+FROM [dbo].[Partner], [dbo].[Branch], [dbo].[Order]
+where [dbo].[Partner].[ID] = [dbo].[Branch].[partnerId] and [dbo].[Branch].[ID] = [dbo].[Order].[branchId] AND month([dbo].[Order].[createdAt]) = 2
+group by [dbo].[Partner].[ID]
 
 waitfor delay '00:00:10'
 --Xem chi tiết tổng thu nhập của đối tác
-SELECT br.ID , o.createdAt as INCOME_FEB, o.orderPrice
-FROM dbo.Partner pa, Branch br, Order o
-where pa.ID = br.partnerId and br.ID = o.branchId AND month(o.createdAt) = 2
-group by pa.ID, o.createdAt, o.orderPrice
+SELECT cn.[ID] ,  [dbo].[Order].[createdAt] as INCOME_FEB,  [dbo].[Order].[orderPrice]
+FROM [dbo].[Partner], [dbo].[Branch], [dbo].[Order]
+where [dbo].[Partner].[ID] = [dbo].[Branch].[partnerId] and [dbo].[Branch].[ID] = [dbo].[Order].[branchId] AND month([dbo].[Order].[createdAt]) = 2
+group by [dbo].[Partner].[ID],  [dbo].[Order].[createdAt],  [dbo].[Order].[orderPrice]
 
 commit transaction

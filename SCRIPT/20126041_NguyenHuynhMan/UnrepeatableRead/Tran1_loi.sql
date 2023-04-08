@@ -10,16 +10,15 @@ go
 set transaction isolation level read uncommitted
 begin transaction  
 --Xem tổng thu nhập của đối tác
-SELECT SUM(o.orderPrice)
-FROM dbo.Partner pa, Branch br, Order o
-where pa.id = br.partnerId and br.id = o.branchId 
-group by dt.ID
+SELECT SUM([dbo].[Order].[orderPrice])
+FROM [dbo].[Partner], [dbo].[Branch], [dbo].[Order]
+where [dbo].[Partner].[id] = [dbo].[Branch].[partnerId] and [dbo].[Branch].[ID] = [dbo].[Order].[branchId] 
+group by [dbo].[Partner].[id]
 
 waitfor delay '00:00:05'
 --Xem chi tiết tổng thu nhập của đối tác
-SELECT br.id ,SUM(o.orderPrice)
-FROM dbo.Partner pa, Branch br, Order o
-where pa.id = br.partnerId and br.id = o.branchId 
-group by dt.ID
-
+SELECT [dbo].[Branch].[id] ,SUM([dbo].[Order].[orderPrice])
+FROM [dbo].[Partner], [dbo].[Branch], [dbo].[Order]
+where  [dbo].[Partner].[id] = [dbo].[Branch].[partnerId] and [dbo].[Branch].[ID] = [dbo].[Order].[branchId] and [dbo].[Order].[process] = 'delivered'
+group by [dbo].[Branch].[id]
 commit transaction

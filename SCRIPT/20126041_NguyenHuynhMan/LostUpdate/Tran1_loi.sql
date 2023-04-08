@@ -12,13 +12,13 @@ BEGIN transaction
 
     IF EXISTS (
         SELECT * FROM 
-		ORDER o 
-		WHERE id = 26 AND shipperId = null
+		[dbo].[Order] 
+		WHERE [dbo].[Order].[id] = 26 AND [dbo].[Order].[shipperId] = null
     )
     BEGIN
-        UPDATE ORDER 
-        SET shipperId = '01'
-        WHERE id = '26';
+        UPDATE [dbo].[Order] 
+        SET [dbo].[Order].[shipperId] = '01'
+        WHERE [dbo].[Order].[id] = '26';
     END
 
 COMMIT

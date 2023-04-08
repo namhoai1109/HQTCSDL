@@ -23,15 +23,15 @@ SET TRANSACTION ISOLATION LEVEL SERIALIZABLE  --> sử dụng isolation level SE
 BEGIN TRANSACTION
 	-- LẤY LỊCH SỬ ĐƠN HÀNG THÁNG NÀY CỦA TÀI XẾ
 	SELECT *
-	FROM Order AS o
-	WHERE shipperId = 1 AND o.process = 'delivered'
-	AND MONTH(o.createdAt) = MONTH(GETDATE())
+	FROM [dbo].[Order] AS o
+	WHERE [dbo].[Order].[shipperId] = 1 AND [dbo].[Order].[process] = 'delivered'
+	AND MONTH([dbo].[Order].[createdAt]) = MONTH(GETDATE())
 	WAITFOR DELAY '00:00:05'
 
 	-- Tính tổng thu nhập tháng này của tài xế
-	SELECT SUM(o.shippingPrice) 
-	FROM Order AS o
-	WHERE shipperId = 1 AND o.process = 'delivered' 
-	AND MONTH(o.createdAt) = MONTH(GETDATE())
+	SELECT SUM([dbo].[Order].[shippingPrice]) 
+	FROM [dbo].[Order] AS o
+	WHERE [dbo].[Order].[shipperId] = 1 AND [dbo].[Order].[process] = 'delivered' 
+	AND MONTH([dbo].[Order].[createdAt]) = MONTH(GETDATE())
 
 COMMIT

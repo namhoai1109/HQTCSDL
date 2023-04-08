@@ -12,14 +12,14 @@ SELECT * FROM DONHANG
 BEGIN TRANSACTION
 	-- Xem thông tin các đơn hàng chưa xác nhận
 	SELECT * 
-	FROM Order AS o
-	WHERE o.status = 'pending'
+	FROM [dbo].[Order]
+	WHERE [dbo].[Order].[status] = 'pending'
 	WAITFOR DELAY '00:00:05'
 
 	-- Update trạng thái của đơn hàng "Chưa xác nhận" --> "Xác nhận"
-	UPDATE Order o
-	SET o.status = 'confirmed' 
-	WHERE id = 10 AND o.status = 'pending'
+	UPDATE [dbo].[Order]
+	SET [dbo].[Order].[status] = 'confirmed' 
+	WHERE [dbo].[Order].[id] = 10 AND [dbo].[Order].[status] = 'pending'
 
 		
 COMMIT

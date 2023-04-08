@@ -12,8 +12,9 @@ CÂU 2
 SELECT * FROM Order
 
 BEGIN TRANSACTION
-	UPDATE Order o WITH (UPDLOCK, ROWLOCK)
-	SET o.shipperId = 01 , o.status = 'confirmed'
-	WHERE o.id=4
+	UPDATE [dbo].[Order] WITH (UPDLOCK, ROWLOCK)
+	SET [dbo].[Order].[shipperId] = 01 , [dbo].[Order].[status] = 'confirmed'
+	WHERE [dbo].[Order].[id]=4
 	WAITFOR DELAY '00:00:05'
 ROLLBACK
+

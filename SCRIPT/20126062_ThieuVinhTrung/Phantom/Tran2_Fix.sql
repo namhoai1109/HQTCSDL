@@ -4,5 +4,5 @@ go
 SET TRANSACTION ISOLATION LEVEL SERIALIZABLE  --> sử dụng thêm isolation level SERIALIZABLE
 BEGIN TRANSACTION
 	-- Cập nhật đơn hàng mới
-	UPDATE Order o SET o.process = 'delivered' WHERE o.id = 11
+	UPDATE [dbo].[Order] SET [dbo].[Order].[process] = 'delivered' WHERE [dbo].[Order].[id] = 11
 COMMIT

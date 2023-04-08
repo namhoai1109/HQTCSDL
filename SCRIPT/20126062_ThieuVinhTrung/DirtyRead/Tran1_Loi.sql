@@ -10,8 +10,8 @@ không xem được đơn X
 
 
 BEGIN TRANSACTION
-	UPDATE Order o
-	SET o.shipperId = 01 , o.status = 'confirmed'
-	WHERE o.id=4
+	UPDATE [dbo].[Order]
+	SET [dbo].[Order].[shipperId] = 01 , [dbo].[Order].[status] = 'confirmed'
+	WHERE [dbo].[Order].[id]=4
 	WAITFOR DELAY '00:00:05'
 ROLLBACK

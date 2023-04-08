@@ -8,12 +8,12 @@ BEGIN TRANSACTION;
 BEGIN TRY
     -- Attempt to update the row with the new value
     IF EXISTS (
-        SELECT * FROM Order WHERE id = 21 AND shipperId is null
+        SELECT * FROM [dbo].[Order] WHERE [dbo].[Order].[id] = 21 AND [dbo].[Order].[shipperId] is null
     )
     BEGIN
-        UPDATE Order 
-        SET shipperId = '02'
-        WHERE id = '21';
+        UPDATE [dbo].[Order] 
+        SET [dbo].[Order].[shipperId] = '02'
+        WHERE [dbo].[Order].[id] = '21';
     END
 
     -- Check if the update affected any rows

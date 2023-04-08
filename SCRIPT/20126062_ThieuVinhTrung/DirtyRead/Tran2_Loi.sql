@@ -4,6 +4,6 @@ go
 -- C�u 2 : Dirty Read
 SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED
 BEGIN TRANSACTION
-	SELECT * FROM Order o
-	WHERE o.status = 'confirmed' AND o.shipperId LIKE NULL
+	SELECT * FROM [dbo].[Order]
+	WHERE [dbo].[Order].[status] = 'confirmed' AND [dbo].[Order].[shipperId] LIKE NULL
 COMMIT
