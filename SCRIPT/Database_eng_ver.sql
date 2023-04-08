@@ -100,7 +100,8 @@ CREATE TABLE [dbo].[Branch] (
     [districtId] INT NOT NULL,
     [orderQuantity] INT,
     [address] NVARCHAR(1000) NOT NULL,
-    CONSTRAINT [Branch_pkey] PRIMARY KEY CLUSTERED ([id])
+    CONSTRAINT [Branch_pkey] PRIMARY KEY CLUSTERED ([id]),
+    CONSTRAINT [Branch_address_key] UNIQUE NONCLUSTERED ([address])
 );
 
 -- CreateTable
@@ -120,6 +121,7 @@ CREATE TABLE [dbo].[DishDetail] (
     [dishId] INT NOT NULL,
     [name] NVARCHAR(1000) NOT NULL,
     [price] FLOAT(53) NOT NULL,
+    [quantity] INT,
     CONSTRAINT [DishDetail_pkey] PRIMARY KEY CLUSTERED ([id])
 );
 
@@ -136,14 +138,16 @@ CREATE TABLE [dbo].[Order] (
     [id] INT NOT NULL IDENTITY(1,1),
     [customerId] INT NOT NULL,
     [shipperId] INT,
-    [branchId] INT NOT NULL,
+    [branchId] INT,
     [createdAt] DATETIME2 NOT NULL CONSTRAINT [Order_createdAt_df] DEFAULT CURRENT_TIMESTAMP,
     [deliveredAt] DATETIME2,
     [status] NVARCHAR(1000) NOT NULL CONSTRAINT [Order_status_df] DEFAULT 'pending',
     [process] NVARCHAR(1000) NOT NULL CONSTRAINT [Order_process_df] DEFAULT 'pending',
     [orderPrice] FLOAT(53),
     [shippingPrice] FLOAT(53),
-    CONSTRAINT [Order_pkey] PRIMARY KEY CLUSTERED ([id])
+    [orderCode] NVARCHAR(1000),
+    CONSTRAINT [Order_pkey] PRIMARY KEY CLUSTERED ([id]),
+    CONSTRAINT [Order_orderCode_key] UNIQUE NONCLUSTERED ([orderCode])
 );
 
 -- CreateTable
@@ -152,8 +156,8 @@ CREATE TABLE [dbo].[OrderDetail] (
     [orderId] INT NOT NULL,
     [dishName] NVARCHAR(1000) NOT NULL,
     [dishDetail] NVARCHAR(1000) NOT NULL,
-    [quantity] INT NOT NULL,
     [price] FLOAT(53) NOT NULL,
+    [quantity] INT NOT NULL,
     CONSTRAINT [OrderDetail_pkey] PRIMARY KEY CLUSTERED ([id])
 );
 
@@ -194,7 +198,7 @@ ALTER TABLE [dbo].[Customer] ADD CONSTRAINT [Customer_accountId_fkey] FOREIGN KE
 ALTER TABLE [dbo].[Partner] ADD CONSTRAINT [Partner_accountId_fkey] FOREIGN KEY ([accountId]) REFERENCES [dbo].[Account]([id]) ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE [dbo].[Partner] ADD CONSTRAINT [Partner_contractId_fkey] FOREIGN KEY ([contractId]) REFERENCES [dbo].[Contract]([id]) ON DELETE SET NULL ON UPDATE CASCADE;
+--ALTER TABLE [dbo].[Partner] ADD CONSTRAINT [Partner_contractId_fkey] FOREIGN KEY ([contractId]) REFERENCES [dbo].[Contract]([id]) ON DELETE SET NULL ON UPDATE CASCADE;
 CREATE UNIQUE INDEX [Partner_contractId_unique] on [dbo].[Partner] ([contractId]) where [contractId] is not null
 
 -- AddForeignKey
@@ -225,7 +229,7 @@ ALTER TABLE [dbo].[Order] ADD CONSTRAINT [Order_customerId_fkey] FOREIGN KEY ([c
 ALTER TABLE [dbo].[Order] ADD CONSTRAINT [Order_shipperId_fkey] FOREIGN KEY ([shipperId]) REFERENCES [dbo].[Shipper]([id]) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 -- AddForeignKey
-ALTER TABLE [dbo].[Order] ADD CONSTRAINT [Order_branchId_fkey] FOREIGN KEY ([branchId]) REFERENCES [dbo].[Branch]([id]) ON DELETE NO ACTION ON UPDATE NO ACTION;
+ALTER TABLE [dbo].[Order] ADD CONSTRAINT [Order_branchId_fkey] FOREIGN KEY ([branchId]) REFERENCES [dbo].[Branch]([id]) ON DELETE SET NULL ON UPDATE NO ACTION;
 
 -- AddForeignKey
 ALTER TABLE [dbo].[OrderDetail] ADD CONSTRAINT [OrderDetail_orderId_fkey] FOREIGN KEY ([orderId]) REFERENCES [dbo].[Order]([id]) ON DELETE NO ACTION ON UPDATE CASCADE;
@@ -335,13 +339,13 @@ OUTPUT inserted.ID values (3, 4, 20, N'100 Hoàng Diệu')
 --Contract table
 --Partner 1's contract
 INSERT INTO [dbo].[Contract] ([isConfirmed], [taxCode], [representative], [accessCode], [bankAccount], [branchQuantity])
-OUTPUT inserted.ID values(1, '8765432', N'Nguyễn Huỳnh Mẫn', 'abc1@)*(SKj13sjhsdk', '9995123444909555', 2)
+OUTPUT inserted.ID values(0, '8765432', N'Nguyễn Huỳnh Mẫn', 'abc1@)*(SKj13sjhsdk', '9995123444909555', 2)
 --Partner 2's contract
 INSERT INTO [dbo].[Contract] ([isConfirmed], [taxCode], [representative], [accessCode], [bankAccount], [branchQuantity])
-OUTPUT inserted.ID values(1, '5765432', N'Nguyễn Hồ Trung Hiếu', '6661@)zssKj13sjhsdk', '9195123444909555', 1)
+OUTPUT inserted.ID values(0, '5765432', N'Nguyễn Hồ Trung Hiếu', '6661@)zssKj13sjhsdk', '9195123444909555', 1)
 -- Partner 3's contract
 INSERT INTO [dbo].[Contract] ([isConfirmed], [taxCode], [representative], [accessCode], [bankAccount], [branchQuantity])
-OUTPUT inserted.ID values(1, '8225432', N'Thiều Vĩnh Trung', '666sz@@Kj13sjhsdk', '9295123444909555', 1)
+OUTPUT inserted.ID values(0, '8225432', N'Thiều Vĩnh Trung', '666sz@@Kj13sjhsdk', '9295123444909555', 1)
 
 --Dish table
 INSERT INTO [dbo].[Dish] ([partnerId], [name], [status])
@@ -358,30 +362,30 @@ INSERT INTO [dbo].[Dish] ([partnerId], [name], [status])
 OUTPUT inserted.ID values (3, N'Ramen', 'available')
 
 --Dish Detail Table
-INSERT INTO [dbo].[DishDetail] ([dishId], [name], [price]) OUTPUT inserted.ID values (1, 'S', 30000)
-INSERT INTO [dbo].[DishDetail] ([dishId], [name], [price]) OUTPUT inserted.ID values (1, 'M', 35000)
-INSERT INTO [dbo].[DishDetail] ([dishId], [name], [price]) OUTPUT inserted.ID values (1, 'L', 40000)
-INSERT INTO [dbo].[DishDetail] ([dishId], [name], [price]) OUTPUT inserted.ID values (2, 'S', 32000)
-INSERT INTO [dbo].[DishDetail] ([dishId], [name], [price]) OUTPUT inserted.ID values (2, 'M', 37000)
-INSERT INTO [dbo].[DishDetail] ([dishId], [name], [price]) OUTPUT inserted.ID values (2, 'L', 40000)
-INSERT INTO [dbo].[DishDetail] ([dishId], [name], [price]) OUTPUT inserted.ID values (3, 'S', 30000)
-INSERT INTO [dbo].[DishDetail] ([dishId], [name], [price]) OUTPUT inserted.ID values (3, 'M', 35000)
-INSERT INTO [dbo].[DishDetail] ([dishId], [name], [price]) OUTPUT inserted.ID values (3, 'L', 40000)
-INSERT INTO [dbo].[DishDetail] ([dishId], [name], [price]) OUTPUT inserted.ID values (4, 'S', 32000)
-INSERT INTO [dbo].[DishDetail] ([dishId], [name], [price]) OUTPUT inserted.ID values (4, 'M', 37000)
-INSERT INTO [dbo].[DishDetail] ([dishId], [name], [price]) OUTPUT inserted.ID values (4, 'L', 40000)
-INSERT INTO [dbo].[DishDetail] ([dishId], [name], [price]) OUTPUT inserted.ID values (5, 'Default', 40000)
-INSERT INTO [dbo].[DishDetail] ([dishId], [name], [price]) OUTPUT inserted.ID values (5, 'Extra Noodle', 45000)
-INSERT INTO [dbo].[DishDetail] ([dishId], [name], [price]) OUTPUT inserted.ID values (6, 'Default', 45000)
-INSERT INTO [dbo].[DishDetail] ([dishId], [name], [price]) OUTPUT inserted.ID values (6, 'Extra Noodle', 50000)
+INSERT INTO [dbo].[DishDetail] ([dishId], [name], [price], [quantity]) OUTPUT inserted.ID values (1, 'S', 30000, 20)
+INSERT INTO [dbo].[DishDetail] ([dishId], [name], [price], [quantity]) OUTPUT inserted.ID values (1, 'M', 35000, 20)
+INSERT INTO [dbo].[DishDetail] ([dishId], [name], [price], [quantity]) OUTPUT inserted.ID values (1, 'L', 40000, 20)
+INSERT INTO [dbo].[DishDetail] ([dishId], [name], [price], [quantity]) OUTPUT inserted.ID values (2, 'S', 32000, 20)
+INSERT INTO [dbo].[DishDetail] ([dishId], [name], [price], [quantity]) OUTPUT inserted.ID values (2, 'M', 37000, 20)
+INSERT INTO [dbo].[DishDetail] ([dishId], [name], [price], [quantity]) OUTPUT inserted.ID values (2, 'L', 40000, 20)
+INSERT INTO [dbo].[DishDetail] ([dishId], [name], [price], [quantity]) OUTPUT inserted.ID values (3, 'S', 30000, 20)
+INSERT INTO [dbo].[DishDetail] ([dishId], [name], [price], [quantity]) OUTPUT inserted.ID values (3, 'M', 35000, 20)
+INSERT INTO [dbo].[DishDetail] ([dishId], [name], [price], [quantity]) OUTPUT inserted.ID values (3, 'L', 40000, 20)
+INSERT INTO [dbo].[DishDetail] ([dishId], [name], [price], [quantity]) OUTPUT inserted.ID values (4, 'S', 32000, 20)
+INSERT INTO [dbo].[DishDetail] ([dishId], [name], [price], [quantity]) OUTPUT inserted.ID values (4, 'M', 37000, 20)
+INSERT INTO [dbo].[DishDetail] ([dishId], [name], [price], [quantity]) OUTPUT inserted.ID values (4, 'L', 40000, 20)
+INSERT INTO [dbo].[DishDetail] ([dishId], [name], [price], [quantity]) OUTPUT inserted.ID values (5, 'Default', 40000, 20)
+INSERT INTO [dbo].[DishDetail] ([dishId], [name], [price], [quantity]) OUTPUT inserted.ID values (5, 'Extra Noodle', 45000, 20)
+INSERT INTO [dbo].[DishDetail] ([dishId], [name], [price], [quantity]) OUTPUT inserted.ID values (6, 'Default', 45000, 20)
+INSERT INTO [dbo].[DishDetail] ([dishId], [name], [price], [quantity]) OUTPUT inserted.ID values (6, 'Extra Noodle', 50000, 20)
 
 --Order Table
-INSERT INTO [dbo].[Order] ([customerId], [branchId], [status], [process])
-OUTPUT inserted.ID values (1, 1, 'confirmed', 'pending')
-INSERT INTO [dbo].[Order] ([customerId], [branchId], [status], [process])
-OUTPUT inserted.ID values (2, 1, 'confirmed', 'pending')
-INSERT INTO [dbo].[Order] ([customerId], [branchId], [status], [process])
-OUTPUT inserted.ID values (3, 3, 'confirmed', 'pending')
+INSERT INTO [dbo].[Order] ([customerId], [branchId], [status], [process], [orderCode])
+OUTPUT inserted.ID values (1, 1, 'confirmed', 'pending', '82alal1ksl1958l11')
+INSERT INTO [dbo].[Order] ([customerId], [branchId], [status], [process], [orderCode])
+OUTPUT inserted.ID values (2, 1, 'confirmed', 'pending', '10192skzkzl1l123s')
+INSERT INTO [dbo].[Order] ([customerId], [branchId], [status], [process], [orderCode])
+OUTPUT inserted.ID values (3, 3, 'confirmed', 'pending', '10sisjo6954o1olks')
 
 --Order Detail
 INSERT INTO [dbo].[OrderDetail] ([orderId], [dishName], [dishDetail], [quantity], [price])

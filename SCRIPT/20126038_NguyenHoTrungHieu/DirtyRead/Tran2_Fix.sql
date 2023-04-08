@@ -1,9 +1,8 @@
-use HQTCSDL2
+use HQTCSDL_DEMO
 go
 
 --Truong hop: 4
---SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED
---Bo cai isolation level read uncommitted, su dung mac dinh cua he quan tri
-BEGIN TRANSACTION xemHopDong
-	SELECT * FROM HOPDONG
+SET TRANSACTION ISOLATION LEVEL READ COMMITTED
+BEGIN TRANSACTION viewContract
+	SELECT * FROM [dbo].[Contract]
 COMMIT
