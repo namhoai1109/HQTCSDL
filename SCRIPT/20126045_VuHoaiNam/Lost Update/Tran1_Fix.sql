@@ -1,14 +1,14 @@
-﻿use HQTCSDL2
+﻿use HQTCSDL_DEMO
 go 
 --truong hop 15
 --cap nhat hop dong
-set transaction isolation level read uncommitted 
+set transaction isolation level serializable 
 begin transaction 
-	if exists (select * from HOPDONG with (updlock) where NGUOI_DAI_DIEN = N'Nguyễn Huỳnh Mẫn')
+	if exists (select * from [dbo].[Contract] where [representative] = N'Nguyễn Huỳnh Mẫn')
 	begin
 		waitfor delay '00:00:05'
-		update HOPDONG
-		set TK_NGAN_HANG = '1111111111111111'
-		where NGUOI_DAI_DIEN = N'Nguyễn Huỳnh Mẫn'
+		update [dbo].[Contract]
+		set [bankAccount] = '1111111111111111'
+		where [representative] = N'Nguyễn Huỳnh Mẫn'
 	end
 commit
