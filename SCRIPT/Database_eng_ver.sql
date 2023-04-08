@@ -198,7 +198,7 @@ ALTER TABLE [dbo].[Customer] ADD CONSTRAINT [Customer_accountId_fkey] FOREIGN KE
 ALTER TABLE [dbo].[Partner] ADD CONSTRAINT [Partner_accountId_fkey] FOREIGN KEY ([accountId]) REFERENCES [dbo].[Account]([id]) ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
---ALTER TABLE [dbo].[Partner] ADD CONSTRAINT [Partner_contractId_fkey] FOREIGN KEY ([contractId]) REFERENCES [dbo].[Contract]([id]) ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE [dbo].[Partner] ADD CONSTRAINT [Partner_contractId_fkey] FOREIGN KEY ([contractId]) REFERENCES [dbo].[Contract]([id]) ON DELETE SET NULL ON UPDATE CASCADE;
 CREATE UNIQUE INDEX [Partner_contractId_unique] on [dbo].[Partner] ([contractId]) where [contractId] is not null
 
 -- AddForeignKey
