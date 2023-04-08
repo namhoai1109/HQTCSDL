@@ -1,4 +1,4 @@
-﻿use HQTCSDL
+﻿use HQTCSDL_DEMO
 go
 
 --Câu 13 : Lost Updated
@@ -10,12 +10,12 @@ gây ra sự cố trong quá trình xử lý đơn hàng.
 SET TRANSACTION ISOLATION LEVEL SERIALIZABLE
 begin transaction
     IF EXISTS (
-        SELECT * FROM dbo.DONHANG WHERE  ID_TAI_XE is null
+        SELECT * FROM dbo.Order WHERE  shipperId is null
     )
     BEGIN
-        update DONHANG WITH (UPDLOCK, ROWLOCK)
-        set ID_TAI_XE =01
-        where MADON = 21
+        update dbo.Order WITH (UPDLOCK, ROWLOCK)
+        set shipperId =01
+        where id = 21
         waitfor delay '00:00:05'
     END
 	ELSE

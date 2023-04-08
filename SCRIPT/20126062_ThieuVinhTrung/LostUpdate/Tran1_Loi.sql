@@ -1,4 +1,4 @@
-﻿use HQTCSDL2
+﻿use HQTCSDL_DEMO
 go
 
 /*
@@ -12,14 +12,14 @@ SELECT * FROM DONHANG
 BEGIN TRANSACTION
 	-- Xem thông tin các đơn hàng chưa xác nhận
 	SELECT * 
-	FROM DONHANG AS DH
-	WHERE DH.TRANGTHAI = 'Chua xac nhan'
+	FROM Order AS o
+	WHERE o.status = 'pending'
 	WAITFOR DELAY '00:00:05'
 
 	-- Update trạng thái của đơn hàng "Chưa xác nhận" --> "Xác nhận"
-	UPDATE DONHANG 
-	SET TRANGTHAI = 'Xac nhan' 
-	WHERE MADON = 10 AND TRANGTHAI = 'Chua xac nhan'
+	UPDATE Order o
+	SET o.status = 'confirmed' 
+	WHERE id = 10 AND o.status = 'pending'
 
 		
 COMMIT

@@ -4,5 +4,5 @@ go
 -- Câu 10 : Phantom
 BEGIN TRANSACTION
 	-- Cập nhật đơn hàng mới
-	UPDATE DONHANG SET TRANGTHAI = 'Xac nhan' WHERE MADON = 4
+	UPDATE Order o SET o.process = 'delivered' WHERE id = 11
 COMMIT

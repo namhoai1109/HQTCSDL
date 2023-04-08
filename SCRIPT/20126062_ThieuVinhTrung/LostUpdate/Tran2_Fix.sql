@@ -1,15 +1,15 @@
-﻿use HQTCSDL2
+﻿use HQTCSDL_DEMO
 go
 
 SET TRANSACTION ISOLATION LEVEL SERIALIZABLE --> Sử dụng thêm SERIALIZABLE
 BEGIN TRANSACTION
     -- Kiểm tra trạng thái của đơn hàng
     IF EXISTS (
-        SELECT * FROM DONHANG WHERE MADON = 14 AND TRANGTHAI = 'Chua xac nhan'
+        SELECT * FROM Order o WHERE o.id = 1 AND o.status = 'pending'
     )
     BEGIN
         -- Nếu đơn hàng chưa xác nhận, xóa nó
-        DELETE FROM DONHANG WHERE MADON = 14
+        DELETE FROM Order WHERE id = 1
     END
     ELSE
     BEGIN

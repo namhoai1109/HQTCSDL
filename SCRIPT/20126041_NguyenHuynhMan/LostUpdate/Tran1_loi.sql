@@ -1,4 +1,4 @@
-﻿use HQTCSDL2
+﻿use HQTCSDL_DEMO
 go
 
 --Câu 13 : Lost Updated
@@ -12,13 +12,13 @@ BEGIN transaction
 
     IF EXISTS (
         SELECT * FROM 
-		DONHANG 
-		WHERE MADON = 26 AND ID_TAI_XE = null
+		ORDER o 
+		WHERE id = 26 AND shipperId = null
     )
     BEGIN
-        UPDATE DONHANG 
-        SET ID_TAI_XE = '01'
-        WHERE MADON = '26';
+        UPDATE ORDER 
+        SET shipperId = '01'
+        WHERE id = '26';
     END
 
 COMMIT

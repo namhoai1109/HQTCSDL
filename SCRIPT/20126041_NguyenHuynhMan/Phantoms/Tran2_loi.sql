@@ -2,10 +2,10 @@ use HQTCSDL
 go
 
 
---Câu 9 : Phantom
+--Cï¿½u 9 : Phantom
 
 begin transaction
 
-INSERT INTO DONHANG OUTPUT inserted.MADON values (02,01,01,'Xac nhan', 'Dang chuan bi','23/02/2023','03/03/2023',200000,15000)
+INSERT INTO Order OUTPUT inserted.id values (02,01,01,'23/02/2023','03/03/2023','confirmed', 'Preparing',200000,15000)
 
 commit

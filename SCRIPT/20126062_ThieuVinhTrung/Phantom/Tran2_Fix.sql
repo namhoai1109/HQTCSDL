@@ -4,5 +4,5 @@ go
 SET TRANSACTION ISOLATION LEVEL SERIALIZABLE  --> sử dụng thêm isolation level SERIALIZABLE
 BEGIN TRANSACTION
 	-- Cập nhật đơn hàng mới
-	UPDATE DONHANG SET TRANGTHAI = 'Xac nhan' WHERE MADON = 11
+	UPDATE Order o SET o.process = 'delivered' WHERE o.id = 11
 COMMIT

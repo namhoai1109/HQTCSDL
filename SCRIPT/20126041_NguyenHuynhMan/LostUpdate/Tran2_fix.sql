@@ -1,4 +1,4 @@
-use HQTCSDL
+use HQTCSDL_DEMO
 go
 
 --C�u 13 : Lost Updated
@@ -8,12 +8,12 @@ BEGIN TRANSACTION;
 BEGIN TRY
     -- Attempt to update the row with the new value
     IF EXISTS (
-        SELECT * FROM DONHANG WHERE MADON = 21 AND ID_TAI_XE is null
+        SELECT * FROM Order WHERE id = 21 AND shipperId is null
     )
     BEGIN
-        UPDATE DONHANG 
-        SET ID_TAI_XE = '02'
-        WHERE MADON = '21';
+        UPDATE Order 
+        SET shipperId = '02'
+        WHERE id = '21';
     END
 
     -- Check if the update affected any rows
@@ -34,4 +34,4 @@ BEGIN CATCH
     
    
 END CATCH
-select * from DONHANG
+select * from Order

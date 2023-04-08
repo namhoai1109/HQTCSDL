@@ -12,13 +12,13 @@ CÂU 6
 
 BEGIN TRANSACTION
 	SELECT *
-	FROM DONHANG
-	WHERE TRANGTHAI = 'Chua xac nhan'
+	FROM Order o
+	WHERE o.status = 'pending'
 
 	WAITFOR DELAY '00:00:05'
 
-	UPDATE DONHANG
-	SET	TRANGTHAI = 'Xac nhan'
+	UPDATE Order o 
+	SET	o.status = 'confirmed'
 	WHERE MADON = 01
 
 COMMIT
