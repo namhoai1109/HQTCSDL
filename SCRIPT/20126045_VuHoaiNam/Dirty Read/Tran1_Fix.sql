@@ -1,11 +1,11 @@
-use HQTCSDL2
+use HQTCSDL_DEMO
 go
 --truong hop 3
 --doi tac cap nhat so luong mon
 set transaction isolation level read committed 
 begin transaction
-	update MON
-	set SOLUONG = 30
-	where ID = 1
+	update [dbo].[DishDetail]
+	set [quantity] = 30
+	where [dishId] = 1
 	waitfor delay '00:00:05'
 rollback

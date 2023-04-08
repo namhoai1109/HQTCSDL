@@ -1,10 +1,12 @@
-use HQTCSDL2
+use HQTCSDL_DEMO
 go 
 --truong hop 7
 --doi tac sua gia tien
 set transaction isolation level read uncommitted 
 begin transaction 
-	update TUYCHONMON
-	set GIA = 70000
-	where ID = 1 and ID_MON = 1
+	update [dbo].[DishDetail]
+	set [price] = 70000
+	where [id] = 3 and [dishId] = 1
 commit
+
+select * from [dbo].[DishDetail]
