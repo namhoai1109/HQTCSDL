@@ -1,4 +1,4 @@
-﻿use HQTCSDL2
+﻿use HQTCSDL_DEMO
 go
 
 /*
@@ -15,19 +15,19 @@ CÂU 14:
 		+ Dùng SERIALIZABLE cho cả 2 transaction
 		+ Dùng thêm WITH(UPDLOCK) để đảm bảo rằng chỉ có 1 transaction được cập nhật đơn hàng đó
 */
-select * from DONHANG
+select * from Order
 
 SET TRANSACTION ISOLATION LEVEL SERIALIZABLE
 BEGIN TRANSACTION
 	-- Xem thông tin các đơn hàng chưa xác nhận
-	SELECT *
-	FROM DONHANG AS DH
-	WHERE DH.TRANGTHAI = 'Chua xac nhan'
+	SELECT * 
+	FROM Order AS o
+	WHERE o.status = 'pending'
 	WAITFOR DELAY '00:00:05'
 
 	-- Update trạng thái của đơn hàng 
-	UPDATE DONHANG WITH (UPDLOCK, ROWLOCK)
-	SET TRANGTHAI = 'Xac nhan' 
-	WHERE MADON = 14 AND TRANGTHAI = 'Chua xac nhan'
+	UPDATE Order o WITH (UPDLOCK, ROWLOCK)
+	SET o.status = 'confirmed' 
+	WHERE id = 10 AND o.status = 'pending'
 
 COMMIT	

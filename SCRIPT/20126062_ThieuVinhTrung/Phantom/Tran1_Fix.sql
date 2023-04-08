@@ -23,13 +23,15 @@ SET TRANSACTION ISOLATION LEVEL SERIALIZABLE  --> sử dụng isolation level SE
 BEGIN TRANSACTION
 	-- LẤY LỊCH SỬ ĐƠN HÀNG THÁNG NÀY CỦA TÀI XẾ
 	SELECT *
-	FROM DONHANG AS DH
-	WHERE ID_TAI_XE = 1 AND DH.TRANGTHAI = 'Xac nhan' AND MONTH(DH.TG_TAO) = MONTH(GETDATE())
+	FROM Order AS o
+	WHERE shipperId = 1 AND o.process = 'delivered'
+	AND MONTH(o.createdAt) = MONTH(GETDATE())
 	WAITFOR DELAY '00:00:05'
 
 	-- Tính tổng thu nhập tháng này của tài xế
-	SELECT SUM(DH.TIENSHIP) 
-	FROM DONHANG AS DH
-	WHERE ID_TAI_XE = 1 AND DH.TRANGTHAI = 'Xac nhan' AND MONTH(DH.TG_TAO) = MONTH(GETDATE())
+	SELECT SUM(o.shippingPrice) 
+	FROM Order AS o
+	WHERE shipperId = 1 AND o.process = 'delivered' 
+	AND MONTH(o.createdAt) = MONTH(GETDATE())
 
 COMMIT

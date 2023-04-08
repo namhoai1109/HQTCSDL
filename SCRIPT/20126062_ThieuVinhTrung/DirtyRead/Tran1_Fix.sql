@@ -1,4 +1,4 @@
-﻿use HQTCSDL2
+﻿use HQTCSDL_DEMO
 go
 /*
 CÂU 2
@@ -9,11 +9,11 @@ CÂU 2
 */
 -- Ta có thể sử dụng cơ chế locking để đảm bảo rằng đơn hàng X chỉ được tài xế A đang xử lý truy cập vào
 
-SELECT * FROM DONHANG
+SELECT * FROM Order
 
 BEGIN TRANSACTION
-	UPDATE DONHANG WITH (UPDLOCK, ROWLOCK)
-	SET ID_TAI_XE = 01 , TRANGTHAI = 'Chua xac nhan'
-	WHERE MADON = 3
+	UPDATE Order o WITH (UPDLOCK, ROWLOCK)
+	SET o.shipperId = 01 , o.status = 'confirmed'
+	WHERE o.id=4
 	WAITFOR DELAY '00:00:05'
 ROLLBACK

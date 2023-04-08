@@ -1,13 +1,14 @@
-use HQTCSDL
+use HQTCSDL_DEMO
 go
 
 
 set transaction isolation level read committed
 set dateformat dmy
 
--- Câu 1: Dirty read
+-- Cï¿½u 1: Dirty read
 begin transaction
-select * from Mon 
+select * from DISH d where d.status = 'available' 
 waitfor delay '00:00:05'
 commit
+
 

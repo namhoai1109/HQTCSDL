@@ -12,14 +12,14 @@ CÂU 6
 
 BEGIN TRANSACTION
 	SELECT *
-	FROM DONHANG WITH (UPDLOCK, ROWLOCK)
-	WHERE TRANGTHAI = 'Chua xac nhan'
+	FROM Order o WITH (UPDLOCK, ROWLOCK)
+	WHERE o.status = 'pending'
 
 	WAITFOR DELAY '00:00:05'
 
-	UPDATE DONHANG
-	SET	TRANGTHAI = 'Xac nhan'
-	WHERE MADON = 01
+	UPDATE Order o
+	SET	o.status = 'confirmed'
+	WHERE o.id = 01
 
 COMMIT
 

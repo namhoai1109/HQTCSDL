@@ -1,4 +1,4 @@
-﻿use HQTCSDL
+﻿use HQTCSDL_DEMO
 go
 
 --Câu 5 : Unrepeatable read : Khi đối tác xem tổng thu nhập của mình trên tất cả chi nhánh 
@@ -10,16 +10,16 @@ go
 set transaction isolation level read uncommitted
 begin transaction  
 --Xem tổng thu nhập của đối tác
-SELECT SUM(dh.TIENDON)
-FROM DOITAC dt, CHINHANH cn, DONHANG dh
-where dt.ID = cn.ID_DOI_TAC and cn.ID = dh.ID_CHI_NHANH and dh.QUATRINH = 'Da giao'
+SELECT SUM(o.orderPrice)
+FROM dbo.Partner pa, Branch br, Order o
+where pa.id = br.partnerId and br.id = o.branchId 
 group by dt.ID
 
 waitfor delay '00:00:05'
 --Xem chi tiết tổng thu nhập của đối tác
-SELECT cn.ID ,SUM(dh.TIENDON)
-FROM DOITAC dt, CHINHANH cn, DONHANG dh
-where dt.ID = cn.ID_DOI_TAC and cn.ID = dh.ID_CHI_NHANH and dh.QUATRINH = 'Da giao'
-group by cn.ID
+SELECT br.id ,SUM(o.orderPrice)
+FROM dbo.Partner pa, Branch br, Order o
+where pa.id = br.partnerId and br.id = o.branchId 
+group by dt.ID
 
 commit transaction

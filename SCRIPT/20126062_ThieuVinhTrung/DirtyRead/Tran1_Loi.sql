@@ -1,4 +1,4 @@
-﻿use HQTCSDL2
+﻿use HQTCSDL_DEMO
 go
 /*
 		CÂU 2
@@ -8,12 +8,10 @@ X, nhưng trong quá trình tài xế A chọn bị lỗi hệ thống và bị 
 không xem được đơn X
 */
 
--- INSERT INTO DONHANG OUTPUT inserted.MADON values (03,null,03,'Chua xac nhan', 'Dang chuan bi', GETDATE(),null, 50000, 25000)
--- SELECT * FROM DONHANG
 
 BEGIN TRANSACTION
-	UPDATE DONHANG
-	SET ID_TAI_XE = 01 , TRANGTHAI = 'Xac nhan'
-	WHERE MADON=4
+	UPDATE Order o
+	SET o.shipperId = 01 , o.status = 'confirmed'
+	WHERE o.id=4
 	WAITFOR DELAY '00:00:05'
 ROLLBACK

@@ -1,4 +1,4 @@
-use HQTCSDL_EL
+use HQTCSDL_DEMO
 go
 
 
@@ -189,10 +189,10 @@ CREATE PROCEDURE shipperConfirmOrder
 
 AS
 BEGIN
-	IF EXISTS (SELECT * FROM [dbo].[Order] WHERE id = @orderId AND shipperId IS NULL AND status = 'Verified')
+	IF EXISTS (SELECT * FROM [dbo].[Order] WHERE id = @orderId AND shipperId IS NULL AND status = 'confirmed')
  		BEGIN
  			UPDATE[dbo].[Order]  WITH (UPDLOCK, ROWLOCK)
- 			SET process = 'Preparing', shipperId = @shipperId
+ 			SET process = 'preparing', shipperId = @shipperId
  			WHERE id = @orderId
  		END
 	ELSE
@@ -241,10 +241,10 @@ CREATE PROCEDURE shipperUpdateOrder
 
 AS
 BEGIN
-	IF EXISTS (SELECT * FROM [dbo].[Order] WHERE id = @orderId AND shipperId = @shipperId AND status = 'Verified' AND process = 'Preparing')
+	IF EXISTS (SELECT * FROM [dbo].[Order] WHERE id = @orderId AND shipperId = @shipperId AND status = 'confirmed' AND process = 'preparing')
  		BEGIN
  			UPDATE[dbo].[Order]  WITH (UPDLOCK, ROWLOCK)
- 			SET process = 'Shipping'
+ 			SET process = 'shipping'
  			WHERE id = @orderId
  		END
 	ELSE
@@ -262,10 +262,10 @@ CREATE PROCEDURE shipperconfirmShipped
 
 AS
 BEGIN
-	IF EXISTS (SELECT * FROM [dbo].[Order] WHERE id = @orderId AND AND shipperId = @shipperId AND status = 'Verified' AND process = 'Shipping')
+	IF EXISTS (SELECT * FROM [dbo].[Order] WHERE id = @orderId AND AND shipperId = @shipperId AND status = 'confirmed' AND process = 'shipping')
  		BEGIN
  			UPDATE[dbo].[Order]  WITH (UPDLOCK, ROWLOCK)
- 			SET process = 'Shipped'
+ 			SET process = 'shipped'
  			WHERE id = @orderId
  		END
 	ELSE
@@ -281,18 +281,14 @@ CREATE PROCEDURE shipperUpdateProfile
 	@shipperId INT,
 	@districtId INT,
 	@name NVARCHAR(100),
-	@nationalId NVARCHAR(100),
-	@phone NVARCHAR(100),
 	@address NVARCHAR(100),
-	@licensePlate NVARCHAR(100),
-	@bankAccount NVARCHAR(100)
+	@licensePlate NVARCHAR(100)
 AS
 BEGIN
 	UPDATE[dbo].[Shipper]  WITH (UPDLOCK, ROWLOCK)
 	SET [districtId] = @districtId, [name] = @name, 
- 		[nationalId] = @nationalId, [phone] = @phone, 
  		[address]= @address, [licensePlate] = @licensePlate,
- 		[bankAccount] = @bankAccount
+ 		
 	WHERE id = @shipperId
 END
 GO
@@ -306,14 +302,12 @@ CREATE PROCEDURE customerUpdateProfile
 	@customerId INT,
 	
 	@name NVARCHAR(100),
-	@address NVARCHAR(100),
-	@phone NVARCHAR(100),
-	@email NVARCHAR(100)
+	@address NVARCHAR(100)
+	
 AS
 BEGIN
 	UPDATE[dbo].[Customer]  WITH (UPDLOCK, ROWLOCK)
-	SET [name] = @name, [address]= @address,
- 		[phone] = @phone, [email] = @email
+	SET [name] = @name, [address]= @address
 	WHERE [id] = @customerId
 END
 GO
@@ -337,7 +331,7 @@ CREATE PROCEDURE customerCancelOrder
 	@orderId INT
 AS
 BEGIN
-	IF EXISTS (SELECT * FROM [dbo].[Order] WHERE id = @orderId AND status = 'Pending')
+	IF EXISTS (SELECT * FROM [dbo].[Order] WHERE id = @orderId AND status = 'pending')
  		BEGIN
        
         DELETE FROM [dbo].[Order] WHERE [id] = @orderId
@@ -369,10 +363,7 @@ GO
 CREATE PROCEDURE partnerUpdateProfile
 	@partnerId INT,
 	
-	@email NVARCHAR(100),
-	@bankAccount NVARCHAR(100),
 	@representative NVARCHAR(100),
-	@phone NVARCHAR(100),
 	@orderQuantity INT,
 	@brandName NVARCHAR(100),
 	@status NVARCHAR(100),
@@ -381,8 +372,7 @@ CREATE PROCEDURE partnerUpdateProfile
 AS
 BEGIN
 	UPDATE[dbo].[Partner]  WITH (UPDLOCK, ROWLOCK)
-	SET [email] = @email, [bankAccount]= @bankAccount,
- 		[representative] = @representative, [phone] = @phone,
+	SET [representative] = @representative,
 		[orderQuantity] = @orderQuantity, [brandName] = @brandName,
 		[status] = @status, [culinaryStyle] = @culinaryStyle
 	WHERE [id] = @partnerId
@@ -395,7 +385,7 @@ CREATE PROCEDURE partnerGetDishes
 AS
 BEGIN
 	SELECT * FROM [dbo].[Dish] 
-	WHERE [id] = @dishId AND [status] = 'In stock'
+	WHERE [id] = @dishId AND [status] = 'in stock'
 END
 GO
 EXEC partnerGetDishes 1
@@ -406,9 +396,10 @@ CREATE PROCEDURE partnerDeleteDish
 	@dishId INT
 AS
 BEGIN
-	IF EXISTS (SELECT * FROM [dbo].[Dish] WHERE id = @dishId AND [status] = 'Out of stock')
+	IF EXISTS (SELECT * FROM [dbo].[Dish] WHERE id = @dishId AND [status] = 'out of stock')
  		BEGIN
-        DELETE FROM [dbo].[Order] WITH (UPDLOCK, ROWLOCK) WHERE [id] = @dishId
+        DELETE FROM [dbo].[Dish] WITH (UPDLOCK, ROWLOCK) WHERE [id] = @dishId
+        DELETE FROM [dbo].[DishDetail] WITH (UPDLOCK, ROWLOCK) WHERE [dishId] = @dishId
     END
     ELSE
     BEGIN
@@ -437,7 +428,7 @@ CREATE PROCEDURE partnerDeleteOrder
 AS
 BEGIN
 	UPDATE[dbo].[Order]  WITH (UPDLOCK, ROWLOCK)
-	SET [status] = 'Cancelled'
+	SET [status] = 'cancelled'
 	WHERE id = @orderId AND [partnerId] = @partnerId
 END
 GO
@@ -449,11 +440,12 @@ GO
 CREATE PROCEDURE partnerUpdateDishDetail
 	@dishDetailId INT,
     @name NVARCHAR(50),
-    @price FLOAT(53)
+    @price FLOAT(53),
+	@quantity INT
 AS
 BEGIN
 	UPDATE[dbo].[DishDetail]  WITH (UPDLOCK, ROWLOCK)
-	SET [price] = @price, [name] = @name
+	SET [price] = @price, [name] = @name, [quantity] = @quantity
 	WHERE id = @dishDetailId
 END
 GO
@@ -466,7 +458,7 @@ CREATE PROCEDURE partnerGetOrders
 AS
 BEGIN
 	SELECT * FROM [dbo].[Order]
-    WHERE [partnerId] = id AND [status] = 'Pending'
+    WHERE [partnerId] = id AND [status] = 'pending'
 END
 GO
 

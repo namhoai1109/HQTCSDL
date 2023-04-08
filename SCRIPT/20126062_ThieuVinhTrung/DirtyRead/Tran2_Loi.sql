@@ -1,9 +1,9 @@
-use HQTCSDL2
+use HQTCSDL_DEMO
 go
 
--- Câu 2 : Dirty Read
+-- Cï¿½u 2 : Dirty Read
 SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED
 BEGIN TRANSACTION
-	SELECT * FROM DONHANG
-	WHERE TRANGTHAI = 'Chua xac nhan'
+	SELECT * FROM Order o
+	WHERE o.status = 'confirmed' AND o.shipperId LIKE NULL
 COMMIT
