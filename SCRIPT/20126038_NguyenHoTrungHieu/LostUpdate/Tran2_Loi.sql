@@ -3,21 +3,21 @@ GO
 
 --Truong hop 16: Lost Update
 SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED
-BEGIN TRANSACTION datMon
-	declare @soLuongDat int
-	set @soLuongDat = 1
+BEGIN TRANSACTION placeOrder
+	declare @quantity int
+	set @quantity = 1
 
 	--check so luong tuy chon
-	if ((select SOLUONG from TUYCHONMON where id = 1) < @soLuongDat)
+	if ((select [quantity] from [dbo].[DishDetail] where [id] = 1) < @quantity)
 	begin
 		raiserror(N'Số lượng không đủ', 16, 1)
 		rollback
 		return
 	end
 
-	update TUYCHONMON
-	set SOLUONG = SOLUONG - @soLuongDat
-	where ID = 1
+	update [dbo].[DishDetail]
+	set [quantity] = [quantity] - @quantity
+	where [id] = 1
 
 	--tao don hang
 	--insert chi tiet

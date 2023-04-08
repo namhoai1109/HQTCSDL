@@ -1,4 +1,4 @@
-﻿USE HQTCSDL2
+﻿USE HQTCSDL_DEMO
 GO
 
 --Truong hop 16: Lost Update
@@ -9,13 +9,12 @@ GO
 -- update như thường
 -- Ko còn Lost Update
 
-BEGIN TRANSACTION datMon
-	declare @soLuongDat int
-	set @soLuongDat = 1
+BEGIN TRANSACTION placeOrder
+	declare @quantity int
+	set @quantity = 1
 
 	--check so luong tuy chon
-	-- lay khoa update
-		if ((select SOLUONG from TUYCHONMON with (UPDLOCK) where id = 1) < @soLuongDat)
+	if ((select [quantity] from [dbo].[DishDetail] with (UPDLOCK) where [id] = 1) < @quantity)
 	begin
 		raiserror(N'Số lượng không đủ', 16, 1)
 		rollback
@@ -23,14 +22,17 @@ BEGIN TRANSACTION datMon
 	end
 
 	waitfor delay '00:00:05'
-	update TUYCHONMON
-	set SOLUONG = SOLUONG - @soLuongDat
-	where ID = 1
+	update [dbo].[DishDetail]
+	set [quantity] = [quantity] - @quantity
+	where [id] = 1
 
 	--tao don hang
 	--insert chi tiet
 COMMIT
 
---update TUYCHONMON
---set SOLUONG = 1
---where ID = 1
+--select * from [dbo].[DishDetail]
+
+--Run this after transaction
+--update [dbo].[DishDetail]
+--set [quantity] = 1
+--where [id] = 1
