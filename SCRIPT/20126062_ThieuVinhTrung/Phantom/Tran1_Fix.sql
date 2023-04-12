@@ -1,4 +1,4 @@
-﻿use HQTCSDL2
+﻿use HQTCSDL_EL
 go
 
 /*
@@ -24,14 +24,14 @@ BEGIN TRANSACTION
 	-- LẤY LỊCH SỬ ĐƠN HÀNG THÁNG NÀY CỦA TÀI XẾ
 	SELECT *
 	FROM [dbo].[Order] AS o
-	WHERE [dbo].[Order].[shipperId] = 1 AND [dbo].[Order].[process] = 'delivered'
-	AND MONTH([dbo].[Order].[createdAt]) = MONTH(GETDATE())
+	WHERE [shipperId] = 1 AND [process] = 'delivered'
+	AND MONTH([createdAt]) = MONTH(GETDATE())
 	WAITFOR DELAY '00:00:05'
 
 	-- Tính tổng thu nhập tháng này của tài xế
-	SELECT SUM([dbo].[Order].[shippingPrice]) 
+	SELECT SUM([shippingPrice]) 
 	FROM [dbo].[Order] AS o
-	WHERE [dbo].[Order].[shipperId] = 1 AND [dbo].[Order].[process] = 'delivered' 
-	AND MONTH([dbo].[Order].[createdAt]) = MONTH(GETDATE())
+	WHERE [shipperId] = 1 AND[process] = 'delivered' 
+	AND MONTH([createdAt]) = MONTH(GETDATE())
 
 COMMIT
