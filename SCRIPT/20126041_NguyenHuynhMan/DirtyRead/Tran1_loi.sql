@@ -7,8 +7,8 @@ go
 -- Không cần fix vì isolation level default của database là read committed 
 
 begin transaction  
-Update DISH d
-set d.status = 'unavailable'
-where d.name Like N'Yakisoba'
+Update [dbo].[Dish]
+set [dbo].[Dish].[status] = 'unavailable'
+where [dbo].[Dish].[name] Like N'Yakisoba'
 waitfor delay '00:00:05'
 rollback transaction

@@ -10,16 +10,16 @@ go
 set transaction isolation level REPEATABLE READ
 begin transaction  
 --Xem tổng thu nhập của đối tác
-SELECT SUM(o.orderPrice)
-FROM dbo.Partner pa, Branch br, Order o
-where pa.id = br.partnerId and br.id = o.branchId 
-group by dt.ID
+SELECT SUM([dbo].[Order].[orderPrice])
+FROM [dbo].[Partner], [dbo].[Branch], [dbo].[Order]
+where [dbo].[Partner].[id] = [dbo].[Branch].[partnerId] and [dbo].[Branch].[ID] = [dbo].[Order].[branchId] 
+group by [dbo].[Partner].[id]
 
 waitfor delay '00:00:05'
 --Xem chi tiết tổng thu nhập của đối tác
-SELECT cn.ID ,SUM(dh.TIENDON)
-FROM DOITAC dt, CHINHANH cn, DONHANG dh
-where dt.ID = cn.ID_DOI_TAC and cn.ID = dh.ID_CHI_NHANH and dh.QUATRINH = 'Da giao'
-group by cn.ID
+SELECT [dbo].[Branch].[id] ,SUM([dbo].[Order].[orderPrice])
+FROM [dbo].[Partner], [dbo].[Branch], [dbo].[Order]
+where  [dbo].[Partner].[id] = [dbo].[Branch].[partnerId] and [dbo].[Branch].[ID] = [dbo].[Order].[branchId] and [dbo].[Order].[process] = 'delivered'
+group by [dbo].[Branch].[id]
 
 commit transaction

@@ -6,8 +6,8 @@ go
 
 SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED
 BEGIN TRANSACTION
-	SELECT * FROM Order o WITH (UPDLOCK, ROWLOCK)
-	WHERE o.status = 'confirmed' AND o.shipperId LIKE NULL
+	SELECT * FROM [dbo].[Order] WITH (UPDLOCK, ROWLOCK)
+	WHERE [dbo].[Order].[status] = 'confirmed' AND [dbo].[Order].[shipperId] LIKE NULL
 COMMIT
 
 

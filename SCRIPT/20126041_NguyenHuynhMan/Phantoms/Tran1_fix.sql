@@ -11,16 +11,16 @@ set transaction isolation level SERIALIZABLE
 begin transaction  
 
 --Xem tổng thu nhập của đối tác
-SELECT SUM(o.orderPrice) as INCOME_FEB
-FROM dbo.Partner pa, Branch br, Order o
-where pa.ID = br.partnerId and br.ID = o.branchId AND month(o.createdAt) = 2
-group by pa.ID
+SELECT SUM([dbo].[Order].[orderPrice]) as INCOME_FEB
+FROM [dbo].[Partner], [dbo].[Branch], [dbo].[Order]
+where [dbo].[Partner].[ID] = [dbo].[Branch].[partnerId] and [dbo].[Branch].[ID] = [dbo].[Order].[branchId] AND month([dbo].[Order].[createdAt]) = 2
+group by [dbo].[Partner].[ID]
 
 waitfor delay '00:00:10'
 --Xem chi tiết tổng thu nhập của đối tác
-SELECT cn.ID , dh.TG_TAO as DON_THANG2, dh.TIENDON
-FROM DOITAC dt, CHINHANH cn, DONHANG dh
-where dt.ID = cn.ID_DOI_TAC and cn.ID = dh.ID_CHI_NHANH AND month(dh.TG_TAO) = 2
-group by cn.ID, dh.TG_TAO, dh.TIENDON
+SELECT cn.[ID] ,  [dbo].[Order].[createdAt] as DON_THANG2,  [dbo].[Order].[orderPrice]
+FROM [dbo].[Partner], [dbo].[Branch], [dbo].[Order]
+where [dbo].[Partner].[ID] = [dbo].[Branch].[partnerId] and [dbo].[Branch].[ID] = [dbo].[Order].[branchId] AND month([dbo].[Order].[createdAt]) = 2
+group by [dbo].[Partner].[ID],  [dbo].[Order].[createdAt],  [dbo].[Order].[orderPrice]
 
 commit transaction

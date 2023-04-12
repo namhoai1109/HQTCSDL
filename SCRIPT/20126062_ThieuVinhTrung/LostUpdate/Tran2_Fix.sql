@@ -5,11 +5,11 @@ SET TRANSACTION ISOLATION LEVEL SERIALIZABLE --> Sử dụng thêm SERIALIZABLE
 BEGIN TRANSACTION
     -- Kiểm tra trạng thái của đơn hàng
     IF EXISTS (
-        SELECT * FROM Order o WHERE o.id = 1 AND o.status = 'pending'
+        SELECT * FROM [dbo].[Order] WHERE [dbo].[Order].[id] = 1 AND [dbo].[Order].[status] = 'pending'
     )
     BEGIN
         -- Nếu đơn hàng chưa xác nhận, xóa nó
-        DELETE FROM Order WHERE id = 1
+        DELETE FROM [dbo].[Order] WHERE [dbo].[Order].[id] = 1
     END
     ELSE
     BEGIN

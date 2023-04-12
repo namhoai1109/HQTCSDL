@@ -12,14 +12,14 @@ CÂU 6
 
 BEGIN TRANSACTION
 	SELECT *
-	FROM Order o WITH (UPDLOCK, ROWLOCK)
-	WHERE o.status = 'pending'
+	FROM [dbo].[Order] WITH (UPDLOCK, ROWLOCK)
+	WHERE [dbo].[Order].[status] = 'pending'
 
 	WAITFOR DELAY '00:00:05'
 
-	UPDATE Order o
-	SET	o.status = 'confirmed'
-	WHERE o.id = 01
+	UPDATE [dbo].[Order]
+	SET	[dbo].[Order].[status] = 'confirmed'
+	WHERE [dbo].[Order].[id] = 01
 
 COMMIT
 

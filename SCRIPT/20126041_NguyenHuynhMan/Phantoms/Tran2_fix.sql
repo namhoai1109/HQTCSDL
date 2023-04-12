@@ -6,6 +6,6 @@ go
 set transaction isolation level SERIALIZABLE
 begin transaction
 
-INSERT INTO Order OUTPUT inserted.id values (02,01,01,'23/02/2023','03/03/2023','confirmed', 'Preparing',200000,15000)
+INSERT INTO [dbo].[Order] OUTPUT inserted.id values (02,01,01,'23/02/2023','03/03/2023','confirmed', 'preparing',200000,15000)
 
 commit

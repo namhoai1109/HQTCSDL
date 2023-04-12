@@ -4,9 +4,9 @@ go
 -- Câu 6:  Unrepeatable
 BEGIN TRANSACTION
 	-- Update đơn hàng
-	UPDATE Order o WITH (UPDLOCK)
-	SET o.orderPrice = 65000
-	WHERE o.id = 01 AND o.status = 'pending'
+	UPDATE [dbo].[Order] WITH (UPDLOCK)
+	SET [dbo].[Order].[orderPrice] = 65000
+	WHERE [dbo].[Order].[id] = 01 AND [dbo].[Order].[status] = 'pending'
 	IF @@ROWCOUNT = 0
 		BEGIN
 			-- Nếu đơn hàng đã xác nhận, thông báo lỗi

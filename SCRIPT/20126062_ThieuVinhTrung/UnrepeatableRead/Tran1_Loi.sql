@@ -12,13 +12,13 @@ CÂU 6
 
 BEGIN TRANSACTION
 	SELECT *
-	FROM Order o
-	WHERE o.status = 'pending'
+	FROM [dbo].[Order]
+	WHERE [dbo].[Order].[status] = 'pending'
 
 	WAITFOR DELAY '00:00:05'
 
-	UPDATE Order o 
-	SET	o.status = 'confirmed'
-	WHERE MADON = 01
+	UPDATE [dbo].[Order] 
+	SET	[dbo].[Order].[status] = 'confirmed'
+	WHERE [dbo].[Order].[id] = 01
 
 COMMIT
