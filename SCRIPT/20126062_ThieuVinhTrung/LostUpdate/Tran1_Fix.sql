@@ -22,12 +22,12 @@ BEGIN TRANSACTION
 	-- Xem thông tin các đơn hàng chưa xác nhận
 	SELECT * 
 	FROM [dbo].[Order]
-	WHERE [dbo].[Order].[status] = 'pending'
+	WHERE [status] = 'pending'
 	WAITFOR DELAY '00:00:05'
 
 	-- Update trạng thái của đơn hàng 
 	UPDATE [dbo].[Order] WITH (UPDLOCK, ROWLOCK)
-	SET [dbo].[Order].[status] = 'confirmed' 
-	WHERE id = 10 AND [dbo].[Order].[status] = 'pending'
+	SET [status] = 'confirmed' 
+	WHERE id = 10 AND [status] = 'pending'
 
 COMMIT	

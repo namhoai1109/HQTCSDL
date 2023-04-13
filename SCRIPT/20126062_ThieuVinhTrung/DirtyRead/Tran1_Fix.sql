@@ -9,7 +9,7 @@ CÂU 2
 */
 -- Ta có thể sử dụng cơ chế locking để đảm bảo rằng đơn hàng X chỉ được tài xế A đang xử lý truy cập vào
 
-SELECT * FROM Order
+SELECT * FROM [dbo].[Order]
 
 BEGIN TRANSACTION
 	UPDATE [dbo].[Order] WITH (UPDLOCK, ROWLOCK)
