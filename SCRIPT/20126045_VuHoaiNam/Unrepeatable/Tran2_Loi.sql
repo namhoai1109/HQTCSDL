@@ -4,9 +4,14 @@ go
 --doi tac sua gia tien
 set transaction isolation level read uncommitted 
 begin transaction 
+	declare @dishId int
+	set @dishId = 1
+	declare @dishDetailId int
+	set @dishDetailId = 2
+
 	update [dbo].[DishDetail]
-	set [price] = 70000
-	where [id] = 3 and [dishId] = 1
+	set [price] = 35000
+	where [id] = @dishDetailId and [dishId] = @dishId
 commit
 
 select * from [dbo].[DishDetail]

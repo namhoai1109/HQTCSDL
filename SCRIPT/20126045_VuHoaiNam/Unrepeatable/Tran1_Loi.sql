@@ -4,14 +4,23 @@ go
 --khach hang tao don hang
 set transaction isolation level read uncommitted 
 begin transaction 
-	--doc du lieu tu bang de hien thi cho nguoi dung
-	select * from [dbo].[Dish] where [partnerId] = 1
-	select * from [dbo].[DishDetail] dishDetail join [dbo].[Dish] dish 
-	on dishDetail.[dishId] = dish.[id] and dish.[partnerId] = 1
+	declare @quantityFromCustomer int
+	set @quantityFromCustomer = 2
+	declare @dishId int
+	set @dishId = 1
+	declare @dishDetailId int
+	set @dishDetailId = 2
 
-	--khach hang chon mon
-	waitfor delay '00:00:10'
-	--he thong tinh tong bill
-	select sum([price]) from [dbo].[DishDetail] where ([id] = 3 or [id] = 2) and [dishId] = 1
+	--them thong tin vao bang Order
+	insert into [dbo].[Order] ([customerId], [branchId], [orderCode])
+	output inserted.ID values (3, 1, '10eisbo6a54y1olks')
+	--lay thong tin chi tiet mon, insert vao bang chi tiet hoa don 
+	select [name], [price] from [dbo].[DishDetail] where [dishId] = @dishId and [id] = @dishDetailId
+	--them vao bang chi tiet hoa don
+
+	waitfor delay '00:00:05'
+
+	--tinh gia tien cho chi tiet hoa don
+	select [price] * @quantityFromCustomer from [dbo].[DishDetail] where [id] = @dishDetailId and [dishId] = @dishId
 commit
 

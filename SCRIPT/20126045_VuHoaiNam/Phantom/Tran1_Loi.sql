@@ -10,5 +10,5 @@ begin transaction
 	waitfor delay '00:00:05'
 
 	--thong ke doanh thu trong ngay hom nay
-	select sum([orderPrice]) from [dbo].[Order] where MONTH([createdAt]) = MONTH(GETDATE())
+	select sum([orderPrice]) from [dbo].[Order] where DAY([createdAt]) = DAY(GETDATE())
 commit
