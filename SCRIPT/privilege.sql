@@ -1,5 +1,6 @@
-﻿--SCRIPT CHO BÁO CÁO, sử dụng database demo
-use SQL_PROJECT
+--SCRIPT CHO BÁO CÁO
+use HQTCSDL_DEMO
+go
 
 --Tạo role
 CREATE ROLE CUSTOMER
@@ -55,9 +56,6 @@ FROM [dbo].[SHIPPER]
 Where [ID] = @SHIPPER_ID
 go
 
-
-
-
 --Phân quyền tài xế
 
 GRANT UPDATE ON [dbo].[SHIPPER](DISTRICTID) TO SHIPPER;					-- Thay đổi khu vực hoạt động
@@ -93,5 +91,3 @@ GRANT ALL PRIVILEGES ON [dbo].[CONTRACT] TO STAFF			--Gán privileges trên từ
 GRANT ALL PRIVILEGES ON VIEW_CONTRACT TO PRO_PARTNER		--Gán privileges trên từng view
 GRANT ALL PRIVILEGES ON VIEW_ORDER TO SHIPPER		--Gán privileges trên từng view
 GRANT ALL PRIVILEGES ON SHIPPER_INFO TO SHIPPER			--Gán privileges trên từng view
-
-
