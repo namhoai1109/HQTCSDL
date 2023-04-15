@@ -102,7 +102,7 @@ go
  END
  GO
  
--- +) Partner.getIncome()
+-- +) Partner.getIncome() 
 -- Viet lai logic cho nay
  CREATE PROCEDURE partnerGetIncome
 	@partnerId INT
@@ -110,15 +110,19 @@ go
  BEGIN
 	BEGIN TRAN
 		BEGIN TRY
-			SELECT SUM(orderPrice) AS INCOME
-			FROM [dbo].[Order] WITH (UPDLOCK, ROWLOCK)
-			WHERE [branchId] = @partnerId AND month(createdAt) = MONTH(GETDATE())
+			    SELECT SUM(o.totalPrice) 
+				FROM [dbo].[Order] o
+				INNER JOIN [dbo].[Branch] b ON o.[branchId] = b.id
+				INNER JOIN [dbo].[Partner] p ON b.[partnerId] = p.id
+				WHERE p.id = @partnerId AND month(createdAt) = MONTH(GETDATE())
 			COMMIT TRAN
 		END TRY
 		BEGIN CATCH
 			ROLLBACK TRAN
 		END CATCH
  END
+ GO
+ EXEC partnerGetIncome 1
  GO
 
 -- +) Partner.deleteDishDetail()
@@ -144,11 +148,23 @@ go
 	@partnerId INT
  AS
  BEGIN
-	 SELECT count(*) 
-	 FROM [dbo].[Order] WITH (ROWLOCK)
-	 WHERE [branchId] = @partnerId AND month(createdAt) = MONTH(GETDATE())
+ BEGIN TRAN
+		BEGIN TRY
+			SELECT SUM(b.[orderQuantity]) as numberOfOrders
+			FROM [dbo].[Partner] p
+			JOIN [dbo].[Branch] b ON p.id = b.partnerId
+			JOIN [dbo].[Order] o ON b.id = o.branchId
+			WHERE [branchId] = @partnerId AND MONTH(createdAt) = MONTH(GETDATE())
+			COMMIT TRAN
+		END TRY
+		BEGIN CATCH
+			ROLLBACK TRAN
+		END CATCH
  END
  GO
+ EXEC partnerGetNumberOfOrders 1
+GO
+
 
 --+) Partner.updateOrder()
 CREATE PROCEDURE partnerUpdateOrder
