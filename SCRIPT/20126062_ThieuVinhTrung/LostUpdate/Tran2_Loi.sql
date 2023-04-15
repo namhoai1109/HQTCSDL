@@ -17,5 +17,4 @@ BEGIN TRANSACTION
         -- Nếu đơn hàng đã xác nhận, thông báo lỗi
         PRINT N' --> This order cannot be DELETED, as it has already been CONFIRMED';  
     END
-	
 COMMIT

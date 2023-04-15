@@ -13,8 +13,7 @@ SELECT * FROM [dbo].[Order]
 
 BEGIN TRANSACTION
 	UPDATE [dbo].[Order] WITH (UPDLOCK, ROWLOCK)
-	SET [dbo].[Order].[shipperId] = 01 , [dbo].[Order].[status] = 'confirmed'
-	WHERE [dbo].[Order].[id]=4
+	SET [shipperId] = 01 , [status] = 'confirmed'
+	WHERE [id] = 1
 	WAITFOR DELAY '00:00:05'
 ROLLBACK
-
