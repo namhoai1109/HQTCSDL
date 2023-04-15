@@ -6,9 +6,8 @@ go
 -- Làm cho khách B đọc sai dữ liệu.
 -- Không cần fix vì isolation level default của database là read committed 
 
-begin transaction  
-Update [dbo].[Dish]
-set [status] = 'unavailable'
-where [name] Like N'Yakisoba'
+set transaction isolation level read uncommitted
+begin transaction
+select * from [dbo].[Dish] where [status] = 'available' 
 waitfor delay '00:00:05'
-rollback transaction
+commit
