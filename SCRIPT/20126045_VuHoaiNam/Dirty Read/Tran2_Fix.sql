@@ -4,5 +4,5 @@ go
 --khach hang xem so luong mon
 set transaction isolation level read committed
 begin transaction
-	select [quantity] from [DishDetail] where [dishId] = 2
+	select [quantity] from [dbo].[DishDetail] where [dishId] = 2
 commit
