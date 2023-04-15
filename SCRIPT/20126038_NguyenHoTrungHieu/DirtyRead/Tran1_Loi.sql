@@ -16,4 +16,4 @@ WAITFOR DELAY '00:00:07'
 --some error
 ROLLBACK
 
-select * from [dbo].[Contract]
+--select * from [dbo].[Contract]

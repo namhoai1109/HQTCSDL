@@ -30,7 +30,7 @@ BEGIN TRANSACTION placeOrder
 	--insert chi tiet
 COMMIT
 
---select * from [dbo].[DishDetail]
+select * from [dbo].[DishDetail]
 
 --Run this after transaction
 --update [dbo].[DishDetail]
