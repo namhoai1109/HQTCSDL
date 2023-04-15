@@ -12,8 +12,19 @@ CÂU 2
 SELECT * FROM [dbo].[Order]
 
 BEGIN TRANSACTION
-	UPDATE [dbo].[Order] WITH (UPDLOCK, ROWLOCK)
-	SET [shipperId] = 01 , [status] = 'confirmed'
-	WHERE [id] = 1
-	WAITFOR DELAY '00:00:05'
+	IF EXISTS (SELECT * FROM [dbo].[Order]
+	WHERE [status] = 'confirmed' AND [id] = 1)
+		BEGIN
+			UPDATE [dbo].[Order] WITH (UPDLOCK, ROWLOCK)
+			SET [shipperId] = 01, [process] = 'confirmed'
+			WHERE [id] = 1 AND [status] = 'confirmed';
+	
+			WAITFOR DELAY '00:00:05';
+			
+		END
+	ELSE
+		BEGIN
+			RAISERROR('Order status is not confirmed', 16, 1);
+			ROLLBACK
+		END
 ROLLBACK

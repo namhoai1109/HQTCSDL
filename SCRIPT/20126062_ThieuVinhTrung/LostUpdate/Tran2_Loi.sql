@@ -4,17 +4,16 @@ go
 -- Câu 14: Lost Update
 
 BEGIN TRANSACTION
-    -- Kiểm tra trạng thái của đơn hàng
-    IF EXISTS (
-        SELECT * FROM [dbo].[Order] WHERE [id] = 1 AND [status] = 'pending'
-    )
-    BEGIN
-        -- Nếu đơn hàng chưa xác nhận, xóa nó
-        DELETE FROM [dbo].[Order] WHERE [id] = 1
-    END
-    ELSE
-    BEGIN
-        -- Nếu đơn hàng đã xác nhận, thông báo lỗi
-        PRINT N' --> This order cannot be DELETED, as it has already been CONFIRMED';  
-    END
+	-- Xem thông tin các đơn hàng chưa xác nhận
+	IF EXISTS(SELECT * FROM [dbo].[Order] WHERE [id] = 6 AND [status] = 'pending' )
+		BEGIN
+			UPDATE [dbo].[Order]
+			SET [status] = 'confirmed' 
+			WHERE [id] = 6 AND [status] = 'pending'
+		END
+	ELSE
+		BEGIN
+			RAISERROR('Order status is confirmed', 16, 1);
+			ROLLBACK
+		END		
 COMMIT

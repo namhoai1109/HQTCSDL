@@ -12,6 +12,7 @@ BEGIN TRANSACTION
 		BEGIN
 			-- Nếu đơn hàng đã xác nhận, thông báo lỗi
 			PRINT N' --> This order cannot be UPDATED, 
-			as it has already been CONFIRMED';  
+			as it has already been CONFIRMED'; 
+			ROLLBACK
 		END
 COMMIT

@@ -2,31 +2,32 @@
 go
 
 /*
-CÂU 14:
-	Lost update: Khi khách hàng đặt món và gửi yêu cầu đặt hàng cho đối tác, đối tác 
-	tiếp nhận yêu cầu và thực hiện xác nhận đơn hàng. Trong khi đang chờ xác nhận 
-	từ đối tác, khách hàng quyết định hủy đơn hàng và gửi yêu cầu hủy đơn hàng 
-	cho đối tác, cùng lúc đó đối tác bấm xác nhận đơn → Gây ra sự cố xử lý dữ liệu
-*/
+		CÂU 14:
+Lost update: Khi khách hàng đặt món và gửi yêu cầu đặt hàng cho đối tác, đối tác 
+tiếp nhận yêu cầu và thực hiện xác nhận đơn hàng. Trong khi đang chờ xác nhận 
+từ đối tác, khách hàng quyết định hủy đơn hàng và gửi yêu cầu hủy đơn hàng 
+cho đối tác, cùng lúc đó đối tác bấm xác nhận đơn → Gây ra sự cố xử lý dữ liệu*/
 
-
-/*
-	Giải quyết:
-		+ Dùng SERIALIZABLE cho cả 2 transaction
-		+ Dùng thêm WITH(UPDLOCK) để đảm bảo rằng chỉ có 1 transaction được cập nhật đơn hàng đó
-*/
-
-SET TRANSACTION ISOLATION LEVEL SERIALIZABLE
 BEGIN TRANSACTION
-	-- Xem thông tin các đơn hàng chưa xác nhận
-	SELECT * 
-	FROM [dbo].[Order]
-	WHERE [status] = 'pending'
-	WAITFOR DELAY '00:00:05'
+    -- Kiểm tra trạng thái của đơn hàng
+	BEGIN TRY
+		IF EXISTS (
+			SELECT * 
+			FROM [dbo].[Order] WITH(XLOCK) 
+			WHERE [id] = 9 AND [status] = 'pending'
+		)
 
-	-- Update trạng thái của đơn hàng 
-	UPDATE [dbo].[Order] WITH (UPDLOCK, ROWLOCK)
-	SET [status] = 'confirmed' 
-	WHERE [id] = 1 AND [status] = 'pending'
-
-COMMIT	
+		BEGIN
+			WAITFOR DELAY '00:00:05'
+			-- Nếu đơn hàng chưa xác nhận, xóa nó
+			DELETE FROM [dbo].[Order] 
+			WHERE [id] = 9 AND [status] = 'pending'
+		END
+    END TRY
+    BEGIN CATCH
+        -- Nếu đơn hàng đã xác nhận, thông báo lỗi
+        PRINT N' --> This order cannot be DELETED, 
+		as it has already been CONFIRMED';  
+		ROLLBACK
+    END CATCH
+COMMIT 
