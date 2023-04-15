@@ -103,14 +103,13 @@ go
  GO
  
 -- +) Partner.getIncome() 
--- Viet lai logic cho nay
  CREATE PROCEDURE partnerGetIncome
 	@partnerId INT
  AS
  BEGIN
 	BEGIN TRAN
 		BEGIN TRY
-			    SELECT SUM(o.totalPrice) 
+			    SELECT SUM(o.orderPrice) 
 				FROM [dbo].[Order] o
 				INNER JOIN [dbo].[Branch] b ON o.[branchId] = b.id
 				INNER JOIN [dbo].[Partner] p ON b.[partnerId] = p.id
@@ -121,8 +120,6 @@ go
 			ROLLBACK TRAN
 		END CATCH
  END
- GO
- EXEC partnerGetIncome 1
  GO
 
 -- +) Partner.deleteDishDetail()
@@ -143,7 +140,6 @@ go
  GO
 
  -- +) Partner.getNumberOfOrders()
- -- Chinh logic cho nay
  CREATE PROCEDURE partnerGetNumberOfOrders
 	@partnerId INT
  AS
@@ -583,7 +579,6 @@ END
 GO
 
 -- getOrders()
--- sua lai logic
 CREATE PROCEDURE partnerGetOrders
 	@partnerId INT
 AS
