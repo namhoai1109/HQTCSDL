@@ -5,7 +5,7 @@ set dateformat dmy
 -- C�u 1: Dirty read
 set transaction isolation level read uncommitted
 begin transaction
-select * from [dbo].[Dish] where [dbo].[Dish].[status] = 'available' 
+select * from [dbo].[Dish] where [status] = 'available' 
 waitfor delay '00:00:05'
 commit
 

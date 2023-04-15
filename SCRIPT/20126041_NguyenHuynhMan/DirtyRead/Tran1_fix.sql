@@ -10,7 +10,7 @@ go
 set transaction isolation level read committed
 begin transaction  
 Update [dbo].[Dish]
-set [dbo].[Dish].[status] = 'unavailable'
-where [dbo].[Dish].[name] Like N'Yakisoba'
+set [status] = 'unavailable'
+where [name] Like N'Yakisoba'
 waitfor delay '00:00:05'
 rollback transaction
