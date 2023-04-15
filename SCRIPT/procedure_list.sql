@@ -150,11 +150,11 @@ go
  BEGIN
  BEGIN TRAN
 		BEGIN TRY
-			SELECT SUM(b.[orderQuantity]) as numberOfOrders
-			FROM [dbo].[Partner] p
-			JOIN [dbo].[Branch] b ON p.id = b.partnerId
-			JOIN [dbo].[Order] o ON b.id = o.branchId
-			WHERE [branchId] = @partnerId AND MONTH(createdAt) = MONTH(GETDATE())
+			SELECT COUNT(*) as numberOfOrders
+			 FROM [dbo].[Order] o
+			 INNER JOIN [dbo].[Branch] b ON o.branchId = b.id
+			 INNER JOIN [dbo].[Partner] p ON b.partnerId = p.id
+			WHERE p.id = @partnerId AND MONTH(createdAt) = MONTH(GETDATE())
 			COMMIT TRAN
 		END TRY
 		BEGIN CATCH
