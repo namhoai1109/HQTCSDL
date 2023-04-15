@@ -171,10 +171,18 @@ CREATE PROCEDURE shipperGetOrders
 	  @shipperId INT
 AS
 BEGIN
-    SELECT *
-    FROM [dbo].[Order] orders
-    INNER JOIN [dbo].[OrderDetail] ordetail ON orders.id = ordetail.orderId
-    WHERE orders.shipperId = @shipperId
+	BEGIN TRAN
+		BEGIN TRY
+			SELECT *
+			FROM [dbo].[Order] orders
+			INNER JOIN [dbo].[OrderDetail] ordetail ON orders.[id] = ordetail.[orderId]
+			JOIN [dbo].[Branch] b ON orders.[branchId] = b.[id] 
+			WHERE orders.[shipperId] = @shipperId
+			COMMIT TRAN
+		END TRY
+		BEGIN CATCH
+			ROLLBACK TRAN
+		END CATCH
 END
 GO
 
@@ -454,12 +462,22 @@ GO
 
 -- getOrders()
 CREATE PROCEDURE partnerGetOrders
-	@id INT
+	@partnerId INT
 AS
 BEGIN
-	SELECT * FROM [dbo].[Order]
-    WHERE [partnerId] = id AND [status] = 'pending'
+	BEGIN TRAN
+		BEGIN TRY
+			SELECT * FROM [dbo].[Order] o JOIN [dbo].OrderDetail od ON  o.[id] = od.[orderId]
+										JOIN [dbo].Branch b ON o.branchId = b.id
+			WHERE b.[partnerId] = @partnerId
+			
+			COMMIT TRAN
+		END TRY
+		BEGIN CATCH
+			ROLLBACK TRAN
+		END CATCH
 END
 GO
+
 
 
