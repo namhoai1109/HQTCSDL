@@ -1,285 +1,420 @@
-create database HQTCSDL2
+﻿create database HQTCSDL_DEMO
 go
-use HQTCSDL2
+use HQTCSDL_DEMO
 go
 
-create table THANHPHO
-(
-	ID INT IDENTITY(1,1) not null,
-	TEN NVARCHAR(25),
-	PRIMARY KEY(ID)
-)
+BEGIN TRY
 
-create table QUAN
-(
-	ID INT IDENTITY(1,1) not null,
-	TEN NVARCHAR(25),
-	ID_THANH_PHO INT,
-	PRIMARY KEY(ID)
-)
-create table DONHANG
-(	
-	MADON INT IDENTITY(1,1) not null,
-	ID_KHACH_HANG INT,
-	ID_TAI_XE INT,
-	ID_CHI_NHANH INT,
-	TRANGTHAI varchar(25),
-	QUATRINH varchar(25),
-	TG_TAO datetime,
-	TG_GIAO datetime,
-	TIENDON float,
-	TIENSHIP float,
-	PRIMARY KEY(MADON)
-)
-create table TAIXE
-(
-	ID INT IDENTITY(1,1) not null,
-	ID_TAI_KHOAN INT,
-	ID_HOAT_DONG INT,
-	HOTEN nvarchar(25),
-	CMND varchar(25),
-	SDT varchar(25),
-	BIEN_SO_XE varchar(25),
-	EMAIL varchar(25),
-	TK_NGAN_HANG varchar(25),
-	PRIMARY KEY(ID)
-)
-create table HOPDONG
-(
-	ID INT IDENTITY(1,1) not null,
-	MA_SO_THUE varchar(25),
-	NGUOI_DAI_DIEN nvarchar(25),
-	MA_TRUY_CAP varchar(25),
-	TK_NGAN_HANG varchar(25),
-	TG_TAO datetime,
-	DA_XAC_NHAN bit,
-	DA_HET_HAN bit,
-	TG_XAC_NHAN datetime,
-	TG_HET_HIEU_LUC datetime,
-	PRIMARY KEY(ID)
-)
-create table TAIKHOAN
-(
-	ID INT IDENTITY(1,1) not null,
-	USERNAME varchar(25),
-	MAT_KHAU varchar(25),
-	VAI_TRO varchar(25),
-	TRANG_THAI varchar(25),
-	PRIMARY KEY(ID)
-)
-create table KHACHHANG
-(
-	ID INT IDENTITY(1,1) not null,
-	ID_TAI_KHOAN INT,
-	HOTEN nvarchar(50) not null,
-	DIACHI nvarchar(50) not null,
-	SDT varchar(25) not null,
-	EMAIL varchar(50) unique,
-	PRIMARY KEY(ID)
-)
+BEGIN TRAN;
 
-create table CHINHANH
-(
-	ID INT IDENTITY(1,1) not null,
-	ID_DOI_TAC INT,
-	ID_QUAN_HUYEN INT,
-	STT int,
-	DIACHI varchar(25) UNIQUE,
-	PRIMARY KEY(ID)
-)
+-- CreateTable
+CREATE TABLE [dbo].[Account] (
+    [id] INT NOT NULL IDENTITY(1,1),
+    [username] NVARCHAR(1000) NOT NULL,
+    [password] NVARCHAR(1000) NOT NULL,
+    [email] NVARCHAR(1000),
+    [phone] NVARCHAR(1000),
+    [bankAccount] NVARCHAR(1000),
+    [nationalId] NVARCHAR(1000),
+    [role] NVARCHAR(1000) NOT NULL,
+    [isConfirmed] BIT NOT NULL CONSTRAINT [Account_isConfirmed_df] DEFAULT 0,
+    [status] NVARCHAR(1000) NOT NULL CONSTRAINT [Account_status_df] DEFAULT 'active',
+    CONSTRAINT [Account_pkey] PRIMARY KEY CLUSTERED ([id]),
+    CONSTRAINT [Account_username_key] UNIQUE NONCLUSTERED ([username])
+);
 
-create table DOITAC
-(
-	ID INT IDENTITY(1,1) not null,
-	ID_TAI_KHOAN INT,
-	ID_HOP_DONG INT,
-	EMAIL varchar(25),
-	TAIKHOAN_NGAN_HANG varchar(25),
-	NG_DAI_DIEN varchar(25),
-	STD varchar(25),
-	SO_LG_DON_HANG int,
-	TEN_CUA_HANG nvarchar(25),
-	TINHTRANG varchar(25),
-	LOAI_AM_THUC varchar(25),
-	PRIMARY KEY(ID)
-)
-create table DANHGIA
-(
-	ID_KHACH_HANG INT,
-	ID_MON INT,
-	MIEU_TA varchar(25),
-	THICH_KOTHICH bit,
-	PRIMARY KEY(ID_KHACH_HANG, ID_MON)
-)
+-- CreateTable
+CREATE TABLE [dbo].[Staff] (
+    [id] INT NOT NULL IDENTITY(1,1),
+    [accountId] INT,
+    [name] NVARCHAR(1000) NOT NULL,
+    [address] NVARCHAR(1000),
+    CONSTRAINT [Staff_pkey] PRIMARY KEY CLUSTERED ([id]),
+    CONSTRAINT [Staff_accountId_key] UNIQUE NONCLUSTERED ([accountId])
+);
+
+-- CreateTable
+CREATE TABLE [dbo].[Customer] (
+    [id] INT NOT NULL IDENTITY(1,1),
+    [accountId] INT,
+    [name] NVARCHAR(1000) NOT NULL,
+    [address] NVARCHAR(1000) NOT NULL,
+    CONSTRAINT [Customer_pkey] PRIMARY KEY CLUSTERED ([id]),
+    CONSTRAINT [Customer_accountId_key] UNIQUE NONCLUSTERED ([accountId])
+);
+
+-- CreateTable
+CREATE TABLE [dbo].[Partner] (
+    [id] INT NOT NULL IDENTITY(1,1),
+    [accountId] INT,
+    [brandName] NVARCHAR(1000) NOT NULL,
+    [taxCode] NVARCHAR(1000) NOT NULL,
+    [representative] NVARCHAR(1000),
+    [orderQuantity] INT,
+    [status] NVARCHAR(1000),
+    [culinaryStyle] NVARCHAR(1000),
+    CONSTRAINT [Partner_pkey] PRIMARY KEY CLUSTERED ([id]),
+    CONSTRAINT [Partner_accountId_key] UNIQUE NONCLUSTERED ([accountId]),
+    CONSTRAINT [Partner_taxCode_key] UNIQUE NONCLUSTERED ([taxCode])
+);
+
+-- CreateTable
+CREATE TABLE [dbo].[Shipper] (
+    [id] INT NOT NULL IDENTITY(1,1),
+    [accountId] INT,
+    [districtId] INT NOT NULL,
+    [name] NVARCHAR(1000) NOT NULL,
+    [address] NVARCHAR(1000),
+    [licensePlate] NVARCHAR(1000) NOT NULL,
+    CONSTRAINT [Shipper_pkey] PRIMARY KEY CLUSTERED ([id]),
+    CONSTRAINT [Shipper_accountId_key] UNIQUE NONCLUSTERED ([accountId]),
+	CONSTRAINT [Shipper_licensePlate_key] UNIQUE NONCLUSTERED ([licensePlate])
+);
+
+-- CreateTable
+CREATE TABLE [dbo].[Contract] (
+    [id] INT NOT NULL IDENTITY(1,1),
+	[partnerId] INT NOT NULL,
+    [createdAt] DATETIME2 NOT NULL CONSTRAINT [Contract_createdAt_df] DEFAULT CURRENT_TIMESTAMP,
+    [confirmedAt] DATETIME2,
+    [expiredAt] DATETIME2,
+    [isConfirmed] BIT NOT NULL CONSTRAINT [Contract_isConfirmed_df] DEFAULT 0,
+    [isExpired] BIT NOT NULL CONSTRAINT [Contract_isExpired_df] DEFAULT 0,
+    [taxCode] NVARCHAR(1000) NOT NULL,
+    [representative] NVARCHAR(1000),
+    [accessCode] NVARCHAR(1000),
+    [bankAccount] NVARCHAR(1000),
+    [commission] FLOAT(53) NOT NULL CONSTRAINT [Contract_commission_df] DEFAULT 0.1,
+    [effectTimeInYear] INT NOT NULL CONSTRAINT [Contract_effectTimeInYear_df] DEFAULT 1,
+    [branchQuantity] INT,
+    CONSTRAINT [Contract_pkey] PRIMARY KEY CLUSTERED ([id]),
+	CONSTRAINT [Contract_partnerId_key] UNIQUE NONCLUSTERED ([partnerId]),
+    CONSTRAINT [Contract_taxCode_key] UNIQUE NONCLUSTERED ([taxCode]),
+    CONSTRAINT [Contract_accessCode_key] UNIQUE NONCLUSTERED ([accessCode]),
+    CONSTRAINT [Contract_bankAccount_key] UNIQUE NONCLUSTERED ([bankAccount])
+);
+
+-- CreateTable
+CREATE TABLE [dbo].[Branch] (
+    [id] INT NOT NULL IDENTITY(1,1),
+    [partnerId] INT NOT NULL,
+    [districtId] INT NOT NULL,
+    [orderQuantity] INT,
+    [address] NVARCHAR(1000) NOT NULL,
+    CONSTRAINT [Branch_pkey] PRIMARY KEY CLUSTERED ([id]),
+    CONSTRAINT [Branch_address_key] UNIQUE NONCLUSTERED ([address])
+);
+
+-- CreateTable
+CREATE TABLE [dbo].[Dish] (
+    [id] INT NOT NULL IDENTITY(1,1),
+    [partnerId] INT NOT NULL,
+    [name] NVARCHAR(1000) NOT NULL,
+    [description] NVARCHAR(1000),
+    [status] NVARCHAR(1000),
+    [rating] INT,
+    CONSTRAINT [Dish_pkey] PRIMARY KEY CLUSTERED ([id])
+);
+
+-- CreateTable
+CREATE TABLE [dbo].[DishDetail] (
+    [id] INT NOT NULL IDENTITY(1,1),
+    [dishId] INT NOT NULL,
+    [name] NVARCHAR(1000) NOT NULL,
+    [price] FLOAT(53) NOT NULL,
+    [quantity] INT,
+    CONSTRAINT [DishDetail_pkey] PRIMARY KEY CLUSTERED ([id])
+);
+
+-- CreateTable
+CREATE TABLE [dbo].[Image] (
+    [id] INT NOT NULL IDENTITY(1,1),
+    [dishId] INT NOT NULL,
+    [filename] NVARCHAR(1000) NOT NULL,
+    CONSTRAINT [Image_pkey] PRIMARY KEY CLUSTERED ([id])
+);
+
+-- CreateTable
+CREATE TABLE [dbo].[Order] (
+    [id] INT NOT NULL IDENTITY(1,1),
+    [customerId] INT NOT NULL,
+    [shipperId] INT,
+    [branchId] INT,
+    [createdAt] DATETIME2 NOT NULL CONSTRAINT [Order_createdAt_df] DEFAULT CURRENT_TIMESTAMP,
+    [deliveredAt] DATETIME2,
+    [status] NVARCHAR(1000) NOT NULL CONSTRAINT [Order_status_df] DEFAULT 'pending',
+    [process] NVARCHAR(1000) NOT NULL CONSTRAINT [Order_process_df] DEFAULT 'pending',
+    [orderPrice] FLOAT(53),
+    [shippingPrice] FLOAT(53) CONSTRAINT [Order_shippingPrice_df] DEFAULT 0,
+	[totalPrice] FLOAT(53) CONSTRAINT [Order_totalPrice_df] DEFAULT 0,
+    [orderCode] NVARCHAR(1000),
+    CONSTRAINT [Order_pkey] PRIMARY KEY CLUSTERED ([id]),
+    CONSTRAINT [Order_orderCode_key] UNIQUE NONCLUSTERED ([orderCode])
+);
+
+-- CreateTable
+CREATE TABLE [dbo].[OrderDetail] (
+    [id] INT NOT NULL IDENTITY(1,1),
+    [orderId] INT NOT NULL,
+	[dishId] INT NOT NULL,
+	[dishDetailId] INT NOT NULL,
+    [dishName] NVARCHAR(1000) NOT NULL,
+    [dishDetailName] NVARCHAR(1000) NOT NULL,
+    [price] FLOAT(53) NOT NULL,
+    [quantity] INT NOT NULL,
+    CONSTRAINT [OrderDetail_pkey] PRIMARY KEY CLUSTERED ([id])
+);
+
+-- CreateTable
+CREATE TABLE [dbo].[City] (
+    [id] INT NOT NULL IDENTITY(1,1),
+    [name] NVARCHAR(1000) NOT NULL,
+    CONSTRAINT [City_pkey] PRIMARY KEY CLUSTERED ([id]),
+    CONSTRAINT [City_name_key] UNIQUE NONCLUSTERED ([name])
+);
+
+-- CreateTable
+CREATE TABLE [dbo].[District] (
+    [id] INT NOT NULL IDENTITY(1,1),
+    [cityId] INT NOT NULL,
+    [name] NVARCHAR(1000) NOT NULL,
+    CONSTRAINT [District_pkey] PRIMARY KEY CLUSTERED ([id])
+);
+
+-- CreateTable
+CREATE TABLE [dbo].[Rating] (
+    [isLike] BIT NOT NULL,
+    [description] NVARCHAR(1000),
+    [createdAt] DATETIME2 NOT NULL CONSTRAINT [Rating_createdAt_df] DEFAULT CURRENT_TIMESTAMP,
+    [updatedAt] DATETIME2,
+    [customerId] INT NOT NULL,
+    [dishId] INT NOT NULL,
+    CONSTRAINT [Rating_pkey] PRIMARY KEY CLUSTERED ([dishId], [customerId])
+);
+
+-- AddForeignKey
+ALTER TABLE [dbo].[Staff] ADD CONSTRAINT [Staff_accountId_fkey] FOREIGN KEY ([accountId]) REFERENCES [dbo].[Account]([id]) ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE [dbo].[Customer] ADD CONSTRAINT [Customer_accountId_fkey] FOREIGN KEY ([accountId]) REFERENCES [dbo].[Account]([id]) ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE [dbo].[Partner] ADD CONSTRAINT [Partner_accountId_fkey] FOREIGN KEY ([accountId]) REFERENCES [dbo].[Account]([id]) ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE [dbo].[Contract] ADD CONSTRAINT [Contract_partnerId_fkey] FOREIGN KEY ([partnerId]) REFERENCES [dbo].[Partner]([id]) ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE [dbo].[Shipper] ADD CONSTRAINT [Shipper_accountId_fkey] FOREIGN KEY ([accountId]) REFERENCES [dbo].[Account]([id]) ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE [dbo].[Shipper] ADD CONSTRAINT [Shipper_districtId_fkey] FOREIGN KEY ([districtId]) REFERENCES [dbo].[District]([id]) ON DELETE NO ACTION ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE [dbo].[Branch] ADD CONSTRAINT [Branch_partnerId_fkey] FOREIGN KEY ([partnerId]) REFERENCES [dbo].[Partner]([id]) ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE [dbo].[Branch] ADD CONSTRAINT [Branch_districtId_fkey] FOREIGN KEY ([districtId]) REFERENCES [dbo].[District]([id]) ON DELETE NO ACTION ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE [dbo].[Dish] ADD CONSTRAINT [Dish_partnerId_fkey] FOREIGN KEY ([partnerId]) REFERENCES [dbo].[Partner]([id]) ON DELETE NO ACTION ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE [dbo].[DishDetail] ADD CONSTRAINT [DishDetail_dishId_fkey] FOREIGN KEY ([dishId]) REFERENCES [dbo].[Dish]([id]) ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE [dbo].[Image] ADD CONSTRAINT [Image_dishId_fkey] FOREIGN KEY ([dishId]) REFERENCES [dbo].[Dish]([id]) ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE [dbo].[Order] ADD CONSTRAINT [Order_customerId_fkey] FOREIGN KEY ([customerId]) REFERENCES [dbo].[Customer]([id]) ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+-- AddForeignKey
+ALTER TABLE [dbo].[Order] ADD CONSTRAINT [Order_shipperId_fkey] FOREIGN KEY ([shipperId]) REFERENCES [dbo].[Shipper]([id]) ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+-- AddForeignKey
+ALTER TABLE [dbo].[Order] ADD CONSTRAINT [Order_branchId_fkey] FOREIGN KEY ([branchId]) REFERENCES [dbo].[Branch]([id]) ON DELETE SET NULL ON UPDATE NO ACTION;
+
+-- AddForeignKey
+ALTER TABLE [dbo].[OrderDetail] ADD CONSTRAINT [OrderDetail_orderId_fkey] FOREIGN KEY ([orderId]) REFERENCES [dbo].[Order]([id]) ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE [dbo].[District] ADD CONSTRAINT [District_cityId_fkey] FOREIGN KEY ([cityId]) REFERENCES [dbo].[City]([id]) ON DELETE NO ACTION ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE [dbo].[Rating] ADD CONSTRAINT [Rating_customerId_fkey] FOREIGN KEY ([customerId]) REFERENCES [dbo].[Customer]([id]) ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+-- AddForeignKey
+ALTER TABLE [dbo].[Rating] ADD CONSTRAINT [Rating_dishId_fkey] FOREIGN KEY ([dishId]) REFERENCES [dbo].[Dish]([id]) ON DELETE CASCADE ON UPDATE CASCADE;
+
+COMMIT TRAN;
+
+END TRY
+BEGIN CATCH
+
+IF @@TRANCOUNT > 0
+BEGIN
+    ROLLBACK TRAN;
+END;
+THROW
+
+END CATCH
 
 
-create table MON
-(
-	ID INT IDENTITY(1,1) not null,
-	ID_DOI_TAC INT,
-	TEN_MON nvarchar(25),
-	MIEU_TA nvarchar(200),
-	TINH_TRANG_MON nvarchar(25),
-	RATING float,
-	PRIMARY KEY(ID)
-)
-create table TUYCHONMON
-(
-	ID INT IDENTITY(1,1) not null,
-	ID_MON INT,
-	TUY_CHON nvarchar(25),
-	SOLUONG int,
-	GIA float
-	PRIMARY KEY(ID)
-)
---ID cuar mỗi tùy chọn phải unique, nhiều tùy chọn cùng 1 món
-create table CHITIETDONHANG
-(
-	ID INT IDENTITY(1,1) not null,
-	MADON INT not null,
-	ID_TUY_CHON INT null,
-	SO_LUONG int,
-	GIA_TIEN float,
-	PRIMARY KEY(ID)
-)
+INSERT INTO [dbo].[City] ([name]) OUTPUT inserted.ID values(N'Hồ Chí Minh')
+INSERT INTO [dbo].[City] ([name]) OUTPUT inserted.ID values(N'Hà Nội')
+INSERT INTO [dbo].[City] ([name]) OUTPUT inserted.ID values(N'Nha Trang')
+INSERT INTO [dbo].[City] ([name]) OUTPUT inserted.ID values(N'Đà Nẵng')
 
-set dateformat dmy
+INSERT INTO [dbo].[District] ([cityId],[name]) OUTPUT inserted.ID values(01,N'Quận 1')
+INSERT INTO [dbo].[District] ([cityId],[name]) OUTPUT inserted.ID values(01,N'Quận 2')
+INSERT INTO [dbo].[District] ([cityId],[name]) OUTPUT inserted.ID values(01,N'Quận 3')
+INSERT INTO [dbo].[District] ([cityId],[name]) OUTPUT inserted.ID values(01,N'Quận 4')
+INSERT INTO [dbo].[District] ([cityId],[name]) OUTPUT inserted.ID values(02,N'Quận Hoàn Kiếm')
+INSERT INTO [dbo].[District] ([cityId],[name]) OUTPUT inserted.ID values(02,N'Quận Đống Đa')
+INSERT INTO [dbo].[District] ([cityId],[name]) OUTPUT inserted.ID values(02,N'Quận Thanh Xuân')
+INSERT INTO [dbo].[District] ([cityId],[name]) OUTPUT inserted.ID values(02,N'Quận Hà Đông')
+INSERT INTO [dbo].[District] ([cityId],[name]) OUTPUT inserted.ID values(03,N'Vĩnh Hòa')
+INSERT INTO [dbo].[District] ([cityId],[name]) OUTPUT inserted.ID values(03,N'Vĩnh Phước')
+INSERT INTO [dbo].[District] ([cityId],[name]) OUTPUT inserted.ID values(03,N'Vĩnh Hải')
+INSERT INTO [dbo].[District] ([cityId],[name]) OUTPUT inserted.ID values(03,N'Vĩnh Thọ')
+INSERT INTO [dbo].[District] ([cityId],[name]) OUTPUT inserted.ID values(04,N'Hải Châu')
+INSERT INTO [dbo].[District] ([cityId],[name]) OUTPUT inserted.ID values(04,N'Cẩm Lệ')
+INSERT INTO [dbo].[District] ([cityId],[name]) OUTPUT inserted.ID values(04,N'Thanh Khê')
+INSERT INTO [dbo].[District] ([cityId],[name]) OUTPUT inserted.ID values(04,N'Sơn Trà')
 
-alter table QUAN add
-	constraint FK_QUAN_THANHPHO foreign key (ID_THANH_PHO)references THANHPHO (ID)
+--Account Table
+--Admin account
+INSERT INTO [dbo].[Account] ([username], [password], [email], [phone], [bankAccount], [nationalId], [role], [isConfirmed], [status])
+OUTPUT inserted.ID values ('admin', 'admin', 'admin@gmail.com', '0123456789', '1234432112344321', '111111111111', 'admin', 1, 'active')
+--Customer account
+INSERT INTO [dbo].[Account] ([username], [password], [email], [phone], [bankAccount], [nationalId], [role], [isConfirmed], [status])
+OUTPUT inserted.ID values ('customer1', 'password', 'customer1@gmail.com', '0213456789', '3213123444445555', '222222222222', 'customer', 1, 'active')
+INSERT INTO [dbo].[Account] ([username], [password], [email], [phone], [bankAccount], [nationalId], [role], [isConfirmed], [status])
+OUTPUT inserted.ID values ('customer2', 'password', 'customer2@gmail.com', '0213456799', '3213123475545555', '222222222122', 'customer', 1, 'active')
+INSERT INTO [dbo].[Account] ([username], [password], [email], [phone], [bankAccount], [nationalId], [role], [isConfirmed], [status])
+OUTPUT inserted.ID values ('customer3', 'password', 'customer3@gmail.com', '0213456111', '3213123444909555', '222222223322', 'customer', 1, 'active')
+--Shipper account
+INSERT INTO [dbo].[Account] ([username], [password], [email], [phone], [bankAccount], [nationalId], [role], [isConfirmed], [status])
+OUTPUT inserted.ID values ('shipper1', 'password', 'shipper1@gmail.com', '0213456541', '1113123444909555', '098222223322', 'shipper', 1, 'active')
+INSERT INTO [dbo].[Account] ([username], [password], [email], [phone], [bankAccount], [nationalId], [role], [isConfirmed], [status])
+OUTPUT inserted.ID values ('shipper2', 'password', 'shipper2@gmail.com', '0993456541', '1119993444909555', '091922223322', 'shipper', 1, 'active')
+INSERT INTO [dbo].[Account] ([username], [password], [email], [phone], [bankAccount], [nationalId], [role], [isConfirmed], [status])
+OUTPUT inserted.ID values ('shipper3', 'password', 'shipper3@gmail.com', '0213956541', '1113076444909555', '098220923322', 'shipper', 1, 'active')
+--Partner account
+INSERT INTO [dbo].[Account] ([username], [password], [email], [phone], [bankAccount], [nationalId], [role], [isConfirmed], [status])
+OUTPUT inserted.ID values ('partner1', 'password', 'partner1@gmail.com', '0822256541', '9995123444909555', '098976221322', 'partner', 1, 'active')
+INSERT INTO [dbo].[Account] ([username], [password], [email], [phone], [bankAccount], [nationalId], [role], [isConfirmed], [status])
+OUTPUT inserted.ID values ('partner2', 'password', 'partner2@gmail.com', '0322256541', '9195123444909555', '078976221322', 'partner', 1, 'active')
+INSERT INTO [dbo].[Account] ([username], [password], [email], [phone], [bankAccount], [nationalId], [role], [isConfirmed], [status])
+OUTPUT inserted.ID values ('partner3', 'password', 'partner3@gmail.com', '0622256541', '9295123444909555', '078976221322', 'partner', 1, 'active')
 
-alter table TAIXE add
-	constraint FK_TAIXE_QUAN foreign key (ID_HOAT_DONG) references QUAN(ID),
-	constraint FK_TAIXE_TAIKHOAN foreign key(ID_TAI_KHOAN) references TAIKHOAN(ID)
+--Customer table
+INSERT INTO [dbo].[Customer] ([accountId], [name], [address]) OUTPUT inserted.ID values (2, N'Customer 1', N'400 Điện Biên Phủ, Quận 3, Hồ Chí Minh')
+INSERT INTO [dbo].[Customer] ([accountId], [name], [address]) OUTPUT inserted.ID values (3, N'Customer 2', N'450 Điện Biên Phủ, Quận 3, Hồ Chí Minh')
+INSERT INTO [dbo].[Customer] ([accountId], [name], [address]) OUTPUT inserted.ID values (4, N'Customer 3', N'500 Điện Biên Phủ, Quận 3, Hồ Chí Minh')
 
-alter table CHINHANH add
-	constraint FK_CHINHANH_QUAN foreign key (ID_QUAN_HUYEN) references QUAN(ID),
-	constraint FK_CHINHANH_DOITAC foreign key (ID_DOI_TAC) references DOITAC(ID)
+--Shipper table
+INSERT INTO [dbo].[Shipper] ([accountId], [districtId], [name], [address], [licensePlate])
+OUTPUT inserted.ID values (5, 1, N'Shipper 1', N'227 Nguyễn Văn Cừ, Quận 5, Hồ Chí Minh', '59D-65419')
+INSERT INTO [dbo].[Shipper] ([accountId], [districtId], [name], [address], [licensePlate])
+OUTPUT inserted.ID values (6, 2, N'Shipper 2', N'250 Nguyễn Văn Cừ, Quận 5, Hồ Chí Minh', '59D-65551')
+INSERT INTO [dbo].[Shipper] ([accountId], [districtId], [name], [address], [licensePlate])
+OUTPUT inserted.ID values (7, 3, N'Shipper 3', N'280 Nguyễn Văn Cừ, Quận 5, Hồ Chí Minh', '59D-99910')
 
-alter table KHACHHANG add
-	constraint FK_KHACHHANG_TAIKHOAN foreign key(ID_TAI_KHOAN) references TAIKHOAN(ID)
+--Partner table
+INSERT INTO [dbo].[Partner] ([accountId], [brandName], [taxCode], [representative], [orderQuantity], [status], [culinaryStyle])
+OUTPUT inserted.ID values (8, N'Gờ Cafe', '8765432', N'Nguyễn Huỳnh Mẫn', 20, 'active', 'drink')
+INSERT INTO [dbo].[Partner] ([accountId], [brandName], [taxCode], [representative], [orderQuantity], [status], [culinaryStyle])
+OUTPUT inserted.ID values (9, N'Cộng Cafe', '5765432', N'Nguyễn Hồ Trung Hiếu', 20, 'active', 'drink')
+INSERT INTO [dbo].[Partner] ([accountId], [brandName], [taxCode], [representative], [orderQuantity], [status], [culinaryStyle])
+OUTPUT inserted.ID values (10, N'La Cà Quán', '8225432', N'Thiều Vĩnh Trung', 20, 'active', 'food')
 
-alter table DANHGIA add
-	constraint FK_DANHGIA_KHACHHANG foreign key(ID_KHACH_HANG) references KHACHHANG(ID),
-	constraint FK_DANHGIA_MON foreign key(ID_MON) references MON(ID)
+-- Branch table
+INSERT INTO [dbo].[Branch] ([partnerId], [districtId], [orderQuantity], [address])
+OUTPUT inserted.ID values (1, 1, 20, N'200 Trần Hưng Đạo')
+INSERT INTO [dbo].[Branch] ([partnerId], [districtId], [orderQuantity], [address])
+OUTPUT inserted.ID values (1, 3, 20, N'200 Điện Biên Phủ')
+INSERT INTO [dbo].[Branch] ([partnerId], [districtId], [orderQuantity], [address])
+OUTPUT inserted.ID values (2, 1, 20, N'300 Trần Hưng Đạo')
+INSERT INTO [dbo].[Branch] ([partnerId], [districtId], [orderQuantity], [address])
+OUTPUT inserted.ID values (3, 4, 20, N'100 Hoàng Diệu')
 
-alter table MON add
-	constraint FK_MON_DOITAC foreign key (ID_DOI_TAC) references DOITAC(ID)
+--Contract table
+--Partner 1's contract
+INSERT INTO [dbo].[Contract] ([partnerId], [taxCode], [representative], [accessCode], [bankAccount], [branchQuantity])
+OUTPUT inserted.ID values(1, '8765432', N'Nguyễn Huỳnh Mẫn', 'abc1@)*(SKj13sjhsdk', '9995123444909555', 2)
+--Partner 2's contract
+INSERT INTO [dbo].[Contract] ([partnerId], [taxCode], [representative], [accessCode], [bankAccount], [branchQuantity])
+OUTPUT inserted.ID values(2, '5765432', N'Nguyễn Hồ Trung Hiếu', '6661@)zssKj13sjhsdk', '9195123444909555', 1)
+-- Partner 3's contract
+INSERT INTO [dbo].[Contract] ([partnerId], [taxCode], [representative], [accessCode], [bankAccount], [branchQuantity])
+OUTPUT inserted.ID values(3, '8225432', N'Thiều Vĩnh Trung', '666sz@@Kj13sjhsdk', '9295123444909555', 1)
 
-alter table DOITAC add
-	constraint FK_DOITAC_TAIKHOAN foreign key(ID_TAI_KHOAN) references TAIKHOAN(ID),
-	constraint FK_DOITAC_HOPDONG foreign key(ID_HOP_DONG)references HOPDONG(ID)
+--Dish table
+INSERT INTO [dbo].[Dish] ([partnerId], [name], [status])
+OUTPUT inserted.ID values (1, N'Cà phê', 'available')
+INSERT INTO [dbo].[Dish] ([partnerId], [name], [status])
+OUTPUT inserted.ID values (1, N'Sinh tố', 'available')
+INSERT INTO [dbo].[Dish] ([partnerId], [name], [status])
+OUTPUT inserted.ID values (2, N'Cà phê', 'available')
+INSERT INTO [dbo].[Dish] ([partnerId], [name], [status])
+OUTPUT inserted.ID values (2, N'Sinh tố', 'available')
+INSERT INTO [dbo].[Dish] ([partnerId], [name], [status])
+OUTPUT inserted.ID values (3, N'Yakisoba', 'available')
+INSERT INTO [dbo].[Dish] ([partnerId], [name], [status])
+OUTPUT inserted.ID values (3, N'Ramen', 'available')
 
-alter table CHITIETDONHANG add
-	constraint FK_CHITIET_DONHANG foreign key (MADON) references DONHANG(MADON),
-	constraint UNIQUE_CHITIETDONHANG unique(MADON, ID_TUY_CHON),
-	constraint FK_TUYCHONMON foreign key (ID_TUY_CHON) references TUYCHONMON(ID) on delete set null
+--Dish Detail Table
+INSERT INTO [dbo].[DishDetail] ([dishId], [name], [price], [quantity]) OUTPUT inserted.ID values (1, 'S', 30000, 20)
+INSERT INTO [dbo].[DishDetail] ([dishId], [name], [price], [quantity]) OUTPUT inserted.ID values (1, 'M', 35000, 20)
+INSERT INTO [dbo].[DishDetail] ([dishId], [name], [price], [quantity]) OUTPUT inserted.ID values (1, 'L', 40000, 20)
+INSERT INTO [dbo].[DishDetail] ([dishId], [name], [price], [quantity]) OUTPUT inserted.ID values (2, 'S', 32000, 20)
+INSERT INTO [dbo].[DishDetail] ([dishId], [name], [price], [quantity]) OUTPUT inserted.ID values (2, 'M', 37000, 20)
+INSERT INTO [dbo].[DishDetail] ([dishId], [name], [price], [quantity]) OUTPUT inserted.ID values (2, 'L', 40000, 20)
+INSERT INTO [dbo].[DishDetail] ([dishId], [name], [price], [quantity]) OUTPUT inserted.ID values (3, 'S', 30000, 20)
+INSERT INTO [dbo].[DishDetail] ([dishId], [name], [price], [quantity]) OUTPUT inserted.ID values (3, 'M', 35000, 20)
+INSERT INTO [dbo].[DishDetail] ([dishId], [name], [price], [quantity]) OUTPUT inserted.ID values (3, 'L', 40000, 20)
+INSERT INTO [dbo].[DishDetail] ([dishId], [name], [price], [quantity]) OUTPUT inserted.ID values (4, 'S', 32000, 20)
+INSERT INTO [dbo].[DishDetail] ([dishId], [name], [price], [quantity]) OUTPUT inserted.ID values (4, 'M', 37000, 20)
+INSERT INTO [dbo].[DishDetail] ([dishId], [name], [price], [quantity]) OUTPUT inserted.ID values (4, 'L', 40000, 20)
+INSERT INTO [dbo].[DishDetail] ([dishId], [name], [price], [quantity]) OUTPUT inserted.ID values (5, 'Default', 40000, 20)
+INSERT INTO [dbo].[DishDetail] ([dishId], [name], [price], [quantity]) OUTPUT inserted.ID values (5, 'Extra Noodle', 45000, 20)
+INSERT INTO [dbo].[DishDetail] ([dishId], [name], [price], [quantity]) OUTPUT inserted.ID values (6, 'Default', 45000, 20)
+INSERT INTO [dbo].[DishDetail] ([dishId], [name], [price], [quantity]) OUTPUT inserted.ID values (6, 'Extra Noodle', 50000, 20)
 
-alter table DONHANG add  
-	constraint FK_DONHANG_KHACHHANG foreign key(ID_KHACH_HANG) references KHACHHANG(ID),
-	constraint FK_DONHANG_TAIXE foreign key(ID_TAI_XE) references TAIXE(ID),
-	constraint FK_DONHANG_CHINHANH foreign key (ID_CHI_NHANH) references CHINHANH(ID)
+--Order Table
+INSERT INTO [dbo].[Order] ([customerId], [branchId], [status], [process], [orderCode])
+OUTPUT inserted.ID values (1, 1, 'confirmed', 'pending', '82alal1ksl1958l11')
+INSERT INTO [dbo].[Order] ([customerId], [branchId], [status], [process], [orderCode])
+OUTPUT inserted.ID values (2, 1, 'confirmed', 'pending', '10192skzkzl1l123s')
+INSERT INTO [dbo].[Order] ([customerId], [branchId], [status], [process], [orderCode])
+OUTPUT inserted.ID values (3, 3, 'confirmed', 'pending', '10sisjo6954o1olks')
 
-alter table TUYCHONMON add
-	constraint FK_TUYCHON_MON foreign key(ID_MON) references MON(ID) on delete cascade
+--Order Detail
+INSERT INTO [dbo].[OrderDetail] ([orderId], [dishId], [dishDetailId], [dishName], [dishDetailName], [quantity], [price])
+OUTPUT inserted.id values(1, 1, 2, N'Cà phê', 'M', 2, 70000)
+INSERT INTO [dbo].[OrderDetail] ([orderId], [dishId], [dishDetailId], [dishName], [dishDetailName], [quantity], [price])
+OUTPUT inserted.id values(1, 1, 1, N'Cà phê', 'S', 1, 30000)
+INSERT INTO [dbo].[OrderDetail] ([orderId], [dishId], [dishDetailId], [dishName], [dishDetailName], [quantity], [price])
+OUTPUT inserted.id values(2, 1, 2, N'Cà phê', 'M', 2, 70000)
+INSERT INTO [dbo].[OrderDetail] ([orderId], [dishId], [dishDetailId], [dishName], [dishDetailName], [quantity], [price])
+OUTPUT inserted.id values(3, 3, 7, N'Cà phê', 'S', 1, 35000)
 
-INSERT INTO THANHPHO(TEN) OUTPUT inserted.ID values(N'Hồ Chí Minh')
-INSERT INTO THANHPHO(TEN) OUTPUT inserted.ID values(N'Hà Nội')
-INSERT INTO THANHPHO(TEN) OUTPUT inserted.ID values(N'Nha Trang')
-INSERT INTO THANHPHO(TEN) OUTPUT inserted.ID values(N'Đà Nẵng')
+--Update order
+UPDATE [dbo].[Order] set [orderPrice] = 100000, [totalPrice] = 100000 where [id] = 1
+UPDATE [dbo].[Order] set [orderPrice] = 70000, [totalPrice] = 70000 where [id] = 2
+UPDATE [dbo].[Order] set [orderPrice] = 35000, [totalPrice] = 35000 where [id] = 3
 
-INSERT INTO QUAN(ID_THANH_PHO,TEN) OUTPUT inserted.ID values(01,N'Quận 1')
-INSERT INTO QUAN(ID_THANH_PHO,TEN) OUTPUT inserted.ID values(01,N'Quận 2')
-INSERT INTO QUAN(ID_THANH_PHO,TEN) OUTPUT inserted.ID values(01,N'Quận 3')
-INSERT INTO QUAN(ID_THANH_PHO,TEN) OUTPUT inserted.ID values(01,N'Quận 4')
-INSERT INTO QUAN(ID_THANH_PHO,TEN) OUTPUT inserted.ID values(02,N'Quận Hoàn Kiếm')
-INSERT INTO QUAN(ID_THANH_PHO,TEN) OUTPUT inserted.ID values(02,N'Quận Đống Đa')
-INSERT INTO QUAN(ID_THANH_PHO,TEN) OUTPUT inserted.ID values(02,N'Quận Thanh Xuân')
-INSERT INTO QUAN(ID_THANH_PHO,TEN) OUTPUT inserted.ID values(02,N'Quận Hà Đông')
-INSERT INTO QUAN(ID_THANH_PHO,TEN) OUTPUT inserted.ID values(03,N'Vĩnh Hòa')
-INSERT INTO QUAN(ID_THANH_PHO,TEN) OUTPUT inserted.ID values(03,N'Vĩnh Phước')
-INSERT INTO QUAN(ID_THANH_PHO,TEN) OUTPUT inserted.ID values(03,N'Vĩnh Hải')
-INSERT INTO QUAN(ID_THANH_PHO,TEN) OUTPUT inserted.ID values(03,N'Vĩnh Thọ')
-INSERT INTO QUAN(ID_THANH_PHO,TEN) OUTPUT inserted.ID values(04,N'Hải Châu')
-INSERT INTO QUAN(ID_THANH_PHO,TEN) OUTPUT inserted.ID values(04,N'Cẩm Lệ')
-INSERT INTO QUAN(ID_THANH_PHO,TEN) OUTPUT inserted.ID values(04,N'Thanh Khê')
-INSERT INTO QUAN(ID_THANH_PHO,TEN) OUTPUT inserted.ID values(04,N'Sơn Trà')
+--Rating Table
+INSERT INTO [dbo].[Rating] ([customerId], [dishId], [description], [isLike])
+values (1, 1, N'Ngon', 1)
+INSERT INTO [dbo].[Rating] ([customerId], [dishId], [description], [isLike])
+values (2, 3, N'Ngon', 1)
+INSERT INTO [dbo].[Rating] ([customerId], [dishId], [description], [isLike])
+values (3, 5, N'Cũng tạm', 0)
 
-INSERT INTO TAIKHOAN OUTPUT inserted.ID values ('taixe1','taixe','taixe','active')
-INSERT INTO TAIKHOAN OUTPUT inserted.ID values ('taixe2','taixe','taixe','active')
-INSERT INTO TAIKHOAN OUTPUT inserted.ID values ('taixe3','taixe','taixe','active')
-INSERT INTO TAIKHOAN OUTPUT inserted.ID values ('khach1','khachhang','khachhang','active')
-INSERT INTO TAIKHOAN OUTPUT inserted.ID values ('khach2','khachhang','khachhang','active')
-INSERT INTO TAIKHOAN OUTPUT inserted.ID values ('khach3','khachhang','khachhang','active')
-INSERT INTO TAIKHOAN OUTPUT inserted.ID values ('doitac1','doitac','doitac','active')
-INSERT INTO TAIKHOAN OUTPUT inserted.ID values ('doitac2','doitac','doitac','active')
-INSERT INTO TAIKHOAN OUTPUT inserted.ID values ('doitac3','doitac','doitac','active')
-
-INSERT INTO TAIXE OUTPUT inserted.ID values (01,02,N'Nguyễn Văn A','123123321321','0123456789', '59D657892','nva@gmail.com', '9867986712341234')
-INSERT INTO TAIXE OUTPUT inserted.ID values (02,02,N'Nguyễn Văn B','758111928099','0987654321', '59F123456','nvb@gmail.com', '4536728192873024')
-INSERT INTO TAIXE OUTPUT inserted.ID values (03,04,N'Nguyễn Văn C','102111928293','0123123421', '59A987654','nvc@gmail.com', '1234897859172101')
-
-INSERT INTO HOPDONG OUTPUT inserted.ID values('8271892819', N'Nguyễn Huỳnh Mẫn', '551717', '9817293085828371', GETDATE(), 0, 0, null, null)
-INSERT INTO HOPDONG OUTPUT inserted.ID values('8291829187', N'Nguyễn Hồ Trung Hiếu', '1231223', '4627110829189840', GETDATE(), 0, 0, null, null)
-INSERT INTO HOPDONG OUTPUT inserted.ID values('1829908118', N'Thiều Vĩnh Trung', '551718', '40198568920129130', GETDATE(), 0, 0, null, null)
-
-INSERT INTO DOITAC OUTPUT inserted.ID values (07, 01,'abc@gmail.com', '9817293085828371', N'Nguyễn Huỳnh Mẫn', '087691920192', 20, N'CAFE N GO','active','Nuoc')
-INSERT INTO DOITAC OUTPUT inserted.ID values (08, 02,'xyz@gmail.com', '4627110829189840', N'Nguyễn Hồ Trung Hiếu', '0777058016', 20, N'GO CAFE','active', 'Nuoc')
-INSERT INTO DOITAC OUTPUT inserted.ID values (09, 03,'def@gmail.com', '40198568920129130', N'Thiều Vĩnh Trung', '013458910291', 25, N'3 MIEN','active', 'Thuc An')
-
-INSERT INTO KHACHHANG OUTPUT inserted.ID values (04,N'Tran Thi A', N'400 Điện Biên Phủ, HCM','09810238912','hello@gmail.com')
-INSERT INTO KHACHHANG OUTPUT inserted.ID values (05,N'Tran Thi B', N'250 Trần Hưng đạo','09898798798','hello1@gmail.com')
-INSERT INTO KHACHHANG OUTPUT inserted.ID values (06,N'Tran Thi C', N'1000 Trường Chinh','09879872231','hello2@gmail.com')
-
-INSERT INTO CHINHANH OUTPUT inserted.ID values (01, 04, 1,'227 Nguyen Van Cu')
-INSERT INTO CHINHANH OUTPUT inserted.ID values (01, 01, 2,'210 Tran Hung Dao')
-INSERT INTO CHINHANH OUTPUT inserted.ID values (02, 02, 1,'550 Truong Son')
-INSERT INTO CHINHANH OUTPUT inserted.ID values (03, 01, 1,'100 Nam Ky Khoi Nghia')
-
-INSERT INTO MON OUTPUT inserted.ID values (01,N'Mì Soba',N'Mì lạnh', 'Con hang',null)
-INSERT INTO MON OUTPUT inserted.ID values (01,N'Mì gói',N'Mì hảo hảo','Con hang',null)
-INSERT INTO MON OUTPUT inserted.ID values (02,N'Mì ramen',N'Mì nước','Con hang',null)
-INSERT INTO MON OUTPUT inserted.ID values (02,N'Mì udon',N'Mì nước','Con hang',null)
-INSERT INTO MON OUTPUT inserted.ID values (03,N'Yakisoba',N'Mì xào','Con hang',null)
-INSERT INTO MON OUTPUT inserted.ID values (03,N'Katsudon',N'Thịt chiên','Con hang',null)
-
-INSERT INTO TUYCHONMON OUTPUT inserted.ID values (01,N'Mặc định', 20, 50000)
-INSERT INTO TUYCHONMON OUTPUT inserted.ID values (01,N'Thêm trứng', 20, 15000)
-INSERT INTO TUYCHONMON OUTPUT inserted.ID values (01,N'Thêm rau',20, 7000)
-INSERT INTO TUYCHONMON OUTPUT inserted.ID values (02,N'Mặc định', 20,50000)
-INSERT INTO TUYCHONMON OUTPUT inserted.ID values (02,N'Thêm trứng',20,15000)
-INSERT INTO TUYCHONMON OUTPUT inserted.ID values (02,N'Thêm rau',20,7000)
-INSERT INTO TUYCHONMON OUTPUT inserted.ID values (03,N'Mặc định', 20,50000)
-INSERT INTO TUYCHONMON OUTPUT inserted.ID values (03,N'Thêm trứng',20,15000)
-INSERT INTO TUYCHONMON OUTPUT inserted.ID values (03,N'Thêm rau',20,7000)
-INSERT INTO TUYCHONMON OUTPUT inserted.ID values (04,N'Mặc định', 20,50000)
-INSERT INTO TUYCHONMON OUTPUT inserted.ID values (04,N'Thêm trứng',20,15000)
-INSERT INTO TUYCHONMON OUTPUT inserted.ID values (04,N'Thêm rau',20,7000)
-INSERT INTO TUYCHONMON OUTPUT inserted.ID values (05,N'Mặc định', 20,50000)
-INSERT INTO TUYCHONMON OUTPUT inserted.ID values (05,N'Thêm trứng',20,15000)
-INSERT INTO TUYCHONMON OUTPUT inserted.ID values (05,N'Thêm rau',20,7000)
-INSERT INTO TUYCHONMON OUTPUT inserted.ID values (06,N'Mặc định', 20,50000)
-INSERT INTO TUYCHONMON OUTPUT inserted.ID values (06,N'Thêm trứng',20,15000)
-INSERT INTO TUYCHONMON OUTPUT inserted.ID values (06,N'Thêm rau',20,7000)
-
-INSERT INTO DONHANG OUTPUT inserted.MADON values (01,01,01,'Xac nhan', 'Dang chuan bi', GETDATE(),null, 50000, 20000)
-INSERT INTO DONHANG OUTPUT inserted.MADON values (02,02,02,'Xac nhan', 'Dang chuan bi', GETDATE(),null, 50000, 25000)	
-INSERT INTO DONHANG OUTPUT inserted.MADON values (03,03,03,'Xac nhan', 'Dang chuan bi', GETDATE(),null, 50000, 25000)	
-
-INSERT INTO DANHGIA values (01,01,'Ngon',1)
-INSERT INTO DANHGIA values (02,01,'Ngon',1)
-INSERT INTO DANHGIA values (03,01,'Ngon',1)
---Tạo thêm danhgia
-
---sửa lại unique ở id món,tùy chọn
-INSERT INTO CHITIETDONHANG values (1,01,2,100000)
-INSERT INTO CHITIETDONHANG values (1,02,3,100000)
-INSERT INTO CHITIETDONHANG values (1,04,2,100000)
-INSERT INTO CHITIETDONHANG values (2,02,2,100000)
-INSERT INTO CHITIETDONHANG values (2,05,2,100000)
-
--- Used for drop the database
+ --Used for drop the database
 --use master 
 --go
---alter database HQTCSDL set single_user with rollback immediate
---drop database HQTCSDL
+--alter database HQTCSDL_DEMO set single_user with rollback immediate
+--drop database HQTCSDL_DEMO
