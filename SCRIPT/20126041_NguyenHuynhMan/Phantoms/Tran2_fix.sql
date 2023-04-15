@@ -1,4 +1,4 @@
-use HQTCSDL
+use HQTCSDL_DEMO
 go
 
 
@@ -6,6 +6,6 @@ go
 set transaction isolation level SERIALIZABLE
 begin transaction
 
-INSERT INTO [dbo].[Order] OUTPUT inserted.id values (02,01,01,'23/02/2023','03/03/2023','confirmed', 'preparing',200000,15000)
+INSERT INTO [dbo].[Order] OUTPUT inserted.id values (02,null,01,GETDATE(),GETDATE(),'pending', 'pending',200000,15000,215000,'82alal1ks21sds2w')
 
 commit

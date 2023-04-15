@@ -17,6 +17,7 @@ group by [dbo].[Partner].[id]
 
 waitfor delay '00:00:05'
 --Xem chi tiết tổng thu nhập của đối tác
+--Chỉ xem những đơn hàng đã được giao
 SELECT [dbo].[Branch].[id] ,SUM([dbo].[Order].[orderPrice])
 FROM [dbo].[Partner], [dbo].[Branch], [dbo].[Order]
 where  [dbo].[Partner].[id] = [dbo].[Branch].[partnerId] and [dbo].[Branch].[ID] = [dbo].[Order].[branchId] and [dbo].[Order].[process] = 'delivered'
