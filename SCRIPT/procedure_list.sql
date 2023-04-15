@@ -1,12 +1,9 @@
 use HQTCSDL_DEMO
 go
 
-
-
-
---									=======================================
---									=============== Concurrency ===========
---									=======================================
+-- ===========================================
+-- =============== Concurrency ===============
+-- ===========================================
 -- CREATE PROCEDURE addOrder
 -- @customerId int,
 -- @shipperId int,
@@ -18,9 +15,6 @@ go
 -- @orderPrice FLOAT(50),
 -- @shippingPrice FLOAT(50),
 -- @dishName NVARCHAR(50)
-
-
-
 
 -- AS
 -- BEGIN
@@ -36,11 +30,7 @@ go
 -- INSERT INTO [dbo].[OrderDetail] OUTPUT inserted.id
 -- values(@orderID)
 
-
-
 -- END
-
-
 
 -- +) Customer.rateDish()
  CREATE PROCEDURE customerRateDish
@@ -48,47 +38,46 @@ go
      @dishId INT,
      @isLike BIT,
      @description NVARCHAR(1000)
-
  AS
  BEGIN
      SET NOCOUNT ON;
-    
-     -- Check if the customer has already rated the dish
-     IF EXISTS (SELECT * FROM [dbo].[Rating] WHERE customerId = @customerId)
-     BEGIN
-         UPDATE [dbo].[Rating] SET [isLike] = @isLike, [description] = @description, [updatedAt] = GETDATE()
-         WHERE [customerId] = @customerId AND [dishId] = @dishId
-     END
-     ELSE
-     BEGIN
-         INSERT INTO [dbo].[Rating] (isLike, createdAt, description, updatedAt, customerId, dishId)
-         VALUES (@isLike, GETDATE(), @description, GETDATE(), @customerId, @dishId)
-     END
+	 BEGIN TRAN
+		BEGIN TRY
+		 -- Check if the customer has already rated the dish
+			 IF EXISTS (SELECT * FROM [dbo].[Rating] WHERE [customerId] = @customerId and [dishId] = @dishId)
+			 BEGIN
+				 UPDATE [dbo].[Rating] SET [isLike] = @isLike, [description] = @description, [updatedAt] = GETDATE()
+				 WHERE [customerId] = @customerId AND [dishId] = @dishId
+			 END
+			 ELSE
+			 BEGIN
+				 INSERT INTO [dbo].[Rating] ([isLike], [createdAt], [description], [customerId], [dishId])
+				 VALUES (@isLike, GETDATE(), @description, @customerId, @dishId)
+			 END
+			 COMMIT TRAN
+		END TRY
+		BEGIN CATCH
+			ROLLBACK TRAN
+		END CATCH
  END
  GO
-
--- +) Shipper.getIncome()
- CREATE PROCEDURE shipperGetIncome
-	 @shipperId INT
- AS
- BEGIN
-	 SELECT SUM(shippingPrice) 
-	 FROM [dbo].[Order] WITH (UPDLOCK, ROWLOCK)
-	 WHERE [id] = @shipperId AND MONTH(createdAt) = MONTH(GETDATE())
- END
- GO
-
- 
 
 -- +) Staff.updateContract()
- CREATE PROCEDURE StaffUpdateContract
+ CREATE PROCEDURE staffUpdateContract
      @contractId INT,
      @isConfirmed BIT
  AS
  BEGIN
-     UPDATE [dbo].[Contract]
-     SET [isConfirmed] = @isConfirmed , [confirmedAt] = GETDATE()
-     WHERE [id] = @contractId
+	BEGIN TRAN
+		BEGIN TRY
+			UPDATE [dbo].[Contract]
+			SET [isConfirmed] = @isConfirmed , [confirmedAt] = GETDATE()
+			WHERE [id] = @contractId
+			COMMIT TRAN
+		END TRY
+		BEGIN CATCH
+			ROLLBACK TRAN
+		END CATCH
  END
  GO
 
@@ -98,72 +87,91 @@ go
 	 @name NVARCHAR(50),
 	 @description NVARCHAR(50),
 	 @status NVARCHAR(50)
-
  AS
  BEGIN
-
-	 UPDATE [dbo].[Dish] WITH (UPDLOCK, ROWLOCK)
-	 SET [name] = @name, [description] = @description, [status] = @status
-	 WHERE [id] = @dishId
+	BEGIN TRAN
+		BEGIN TRY
+			UPDATE [dbo].[Dish] WITH (UPDLOCK)
+			SET [name] = @name, [description] = @description, [status] = @status
+			WHERE [id] = @dishId
+			COMMIT TRAN
+		END TRY
+		BEGIN CATCH
+			ROLLBACK TRAN
+		END CATCH
  END
+ GO
  
-
 -- +) Partner.getIncome()
+-- Viet lai logic cho nay
  CREATE PROCEDURE partnerGetIncome
 	@partnerId INT
-
  AS
  BEGIN
-	 SELECT SUM(orderPrice) AS INCOME
-	 FROM [dbo].[Order] WITH (UPDLOCK, ROWLOCK)
-	 WHERE [partnerId] = @partnerId AND month(createdAt) = MONTH(GETDATE())
+	BEGIN TRAN
+		BEGIN TRY
+			SELECT SUM(orderPrice) AS INCOME
+			FROM [dbo].[Order] WITH (UPDLOCK, ROWLOCK)
+			WHERE [branchId] = @partnerId AND month(createdAt) = MONTH(GETDATE())
+			COMMIT TRAN
+		END TRY
+		BEGIN CATCH
+			ROLLBACK TRAN
+		END CATCH
  END
  GO
-
-
 
 -- +) Partner.deleteDishDetail()
-
  CREATE PROCEDURE partnerDeleteDishDetail
- 	@dishID INT
+ 	@dishDetailId INT
  AS
  BEGIN
- 	DELETE [dbo].DishDetail
- 	WHERE [id] = @dishID
+	BEGIN TRAN
+		BEGIN TRY
+ 			DELETE [dbo].DishDetail
+ 			WHERE [id] = @dishDetailId
+			COMMIT TRAN
+		END TRY
+		BEGIN CATCH
+			ROLLBACK TRAN
+		END CATCH
  END
  GO
 
-
  -- +) Partner.getNumberOfOrders()
+ -- Chinh logic cho nay
  CREATE PROCEDURE partnerGetNumberOfOrders
 	@partnerId INT
  AS
  BEGIN
 	 SELECT count(*) 
-	 FROM [dbo].[Order] WITH (UPDLOCK, ROWLOCK)
-	 WHERE partnerId = @partnerId AND month(createdAt) = MONTH(GETDATE())
+	 FROM [dbo].[Order] WITH (ROWLOCK)
+	 WHERE [branchId] = @partnerId AND month(createdAt) = MONTH(GETDATE())
  END
  GO
 
- 
 --+) Partner.updateOrder()
-
 CREATE PROCEDURE partnerUpdateOrder
 	@orderID INT,
 	@status NVARCHAR(50)
 AS
 BEGIN
-	UPDATE [dbo].[Order] WITH (UPDLOCK, ROWLOCK)
-	SET [status] = @status
-	WHERE [id] = @orderID
+	BEGIN TRAN
+		BEGIN TRY
+			UPDATE [dbo].[Order] WITH (UPDLOCK)
+			SET [status] = @status
+			WHERE [id] = @orderID
+			COMMIT TRAN
+		END TRY
+		BEGIN CATCH
+			ROLLBACK TRAN
+		END CATCH
 END
 GO
-EXEC partnerUpdateOrder
-GO
 
---									=======================================
---									=============== Shipper ===============
---									=======================================
+-- ========================================
+-- =============== Shipper ================
+--=========================================
 -- register()
 
 -- getOrders()    ==> PHẢI CÓ TRƯỜNG ĐỊA CHỈ CỦA ORDER
@@ -186,101 +194,121 @@ BEGIN
 END
 GO
 
-EXEC shipperGetOrders 1
-GO
-
-
 -- confirmOrder()
 CREATE PROCEDURE shipperConfirmOrder
 	@orderId INT,
 	@shipperId INT
-
 AS
 BEGIN
-	IF EXISTS (SELECT * FROM [dbo].[Order] WHERE id = @orderId AND shipperId IS NULL AND status = 'confirmed')
- 		BEGIN
- 			UPDATE[dbo].[Order]  WITH (UPDLOCK, ROWLOCK)
- 			SET process = 'preparing', shipperId = @shipperId
- 			WHERE id = @orderId
- 		END
-	ELSE
-	BEGIN
- 		RAISERROR (N'Order has been confirmed by another shipper',16,1)
- 		ROLLBACK
-	END 
+	BEGIN TRAN
+		BEGIN TRY
+			IF EXISTS (SELECT * FROM [dbo].[Order] WHERE id = @orderId AND shipperId IS NULL AND status = 'confirmed')
+ 				BEGIN
+ 					UPDATE[dbo].[Order] WITH (UPDLOCK)
+ 					SET process = 'taken', shipperId = @shipperId
+ 					WHERE id = @orderId
+ 				END
+			ELSE
+			BEGIN
+ 				RAISERROR (N'Something went wrong',16,1)
+ 				ROLLBACK
+			END 
+			COMMIT TRAN
+		END TRY
+		BEGIN CATCH
+			ROLLBACK TRAN
+		END CATCH
 END
-EXEC shipperConfirmOrder 1, 1
 GO
-
-
 
 -- getOrderHistory()
 CREATE PROCEDURE shipperGetOrderHistory
     @shipperId INT
 AS
 BEGIN
-    SELECT *
-    FROM [dbo].[Order] AS o
-    INNER JOIN [dbo].[OrderDetail] AS od ON o.id = od.orderId
-    WHERE o.shipperId = @shipperId AND MONTH(o.createdAt) = MONTH(GETDATE())
+	BEGIN TRAN
+		BEGIN TRY
+			SELECT *
+			FROM [dbo].[Order] AS o
+			JOIN [dbo].[OrderDetail] AS od ON o.id = od.orderId
+			WHERE o.shipperId = @shipperId
+			COMMIT TRAN
+		END TRY
+		BEGIN CATCH
+			ROLLBACK TRAN
+		END CATCH
 END
-GO
-EXEC shipperGetOrderHistory 2
 GO
 
 -- getIncome()
-CREATE PROCEDURE shipperGetIncome
-	@shipperId INT
-AS
-BEGIN
-	SELECT SUM(shippingPrice) 
-	FROM [dbo].[Order] WITH (UPDLOCK, ROWLOCK)
-	WHERE shipperId = @shipperId AND MONTH(createdAt) = MONTH(GETDATE())
+ CREATE PROCEDURE shipperGetIncome
+	 @shipperId INT
+ AS
+ BEGIN
+	BEGIN TRAN
+		BEGIN TRY
+			SELECT SUM(shippingPrice) 
+			FROM [dbo].[Order] WITH (ROWLOCK)
+			WHERE [shipperId] = @shipperId AND MONTH(deliveredAt) = MONTH(GETDATE())
+			COMMIT TRAN
+		END TRY
+		BEGIN CATCH
+			ROLLBACK TRAN
+		END CATCH
 END
-GO
-	EXEC shipperGetIncome 1
-GO
-
+ GO
 
 -- updateOrder()
 CREATE PROCEDURE shipperUpdateOrder
 	@orderId INT,
 	@shipperId INT
-
 AS
 BEGIN
-	IF EXISTS (SELECT * FROM [dbo].[Order] WHERE id = @orderId AND shipperId = @shipperId AND status = 'confirmed' AND process = 'preparing')
- 		BEGIN
- 			UPDATE[dbo].[Order]  WITH (UPDLOCK, ROWLOCK)
- 			SET process = 'shipping'
- 			WHERE id = @orderId
- 		END
-	ELSE
-	BEGIN
- 		RAISERROR (N'Something went wrong!',16,1)
- 		ROLLBACK
-	END 
+	BEGIN TRAN
+		BEGIN TRY
+			IF EXISTS (SELECT * FROM [dbo].[Order] WHERE id = @orderId AND shipperId = @shipperId AND status = 'confirmed' AND process = 'taken')
+ 				BEGIN
+ 					UPDATE[dbo].[Order] WITH (UPDLOCK, ROWLOCK)
+ 					SET process = 'delivering'
+ 					WHERE id = @orderId
+ 				END
+			ELSE
+			BEGIN
+ 				RAISERROR (N'Something went wrong!',16,1)
+ 				ROLLBACK
+			END
+			COMMIT TRAN
+		END TRY
+		BEGIN CATCH
+			ROLLBACK TRAN
+		END CATCH
 END
 GO
 
 -- confirmShipped()
-CREATE PROCEDURE shipperconfirmShipped
+CREATE PROCEDURE shipperConfirmShipped
 	@orderId INT,
 	@shipperId INT
-
 AS
 BEGIN
-	IF EXISTS (SELECT * FROM [dbo].[Order] WHERE id = @orderId AND AND shipperId = @shipperId AND status = 'confirmed' AND process = 'shipping')
- 		BEGIN
- 			UPDATE[dbo].[Order]  WITH (UPDLOCK, ROWLOCK)
- 			SET process = 'shipped'
- 			WHERE id = @orderId
- 		END
-	ELSE
-	BEGIN
- 		RAISERROR (N'Something went wrong!',16,1)
- 		ROLLBACK
-	END 
+	BEGIN TRAN
+		BEGIN TRY
+			IF EXISTS (SELECT * FROM [dbo].[Order] WHERE id = @orderId AND shipperId = @shipperId AND status = 'confirmed' AND process = 'delivering')
+ 				BEGIN
+ 					UPDATE[dbo].[Order]  WITH (UPDLOCK)
+ 					SET process = 'delivered'
+ 					WHERE id = @orderId
+ 				END
+			ELSE
+			BEGIN
+ 				RAISERROR (N'Something went wrong!',16,1)
+ 				ROLLBACK
+			END
+			COMMIT TRAN
+		END TRY
+		BEGIN CATCH
+			ROLLBACK TRAN
+		END CATCH
 END
 GO
 
@@ -293,45 +321,74 @@ CREATE PROCEDURE shipperUpdateProfile
 	@licensePlate NVARCHAR(100)
 AS
 BEGIN
-	UPDATE[dbo].[Shipper]  WITH (UPDLOCK, ROWLOCK)
-	SET [districtId] = @districtId, [name] = @name, 
- 		[address]= @address, [licensePlate] = @licensePlate,
- 		
-	WHERE id = @shipperId
+	BEGIN TRAN
+		BEGIN TRY
+			UPDATE[dbo].[Shipper]  WITH (UPDLOCK)
+			SET [districtId] = @districtId, [name] = @name, 
+ 				[address]= @address, [licensePlate] = @licensePlate
+			WHERE id = @shipperId
+			COMMIT TRAN
+		END TRY
+		BEGIN CATCH
+			ROLLBACK TRAN
+		END CATCH
 END
 GO
 
---									=======================================
---									=============== Customer ===============
---									=======================================
+-- =========================================
+-- =============== Customer ================
+-- =========================================
 
 -- updateProfile()
 CREATE PROCEDURE customerUpdateProfile
 	@customerId INT,
-	
 	@name NVARCHAR(100),
 	@address NVARCHAR(100)
-	
 AS
 BEGIN
-	UPDATE[dbo].[Customer]  WITH (UPDLOCK, ROWLOCK)
-	SET [name] = @name, [address]= @address
-	WHERE [id] = @customerId
+	BEGIN TRAN
+		BEGIN TRY
+			UPDATE[dbo].[Customer] WITH (UPDLOCK)
+			SET [name] = @name, [address] = @address
+			WHERE [id] = @customerId
+			COMMIT TRAN
+		END TRY
+		BEGIN CATCH
+			ROLLBACK TRAN
+		END CATCH
 END
 GO
 
--- viewOrderDetail()
+--viewOrders
+CREATE PROCEDURE customerViewOrders
+	@customerId INT
+AS
+BEGIN
+	BEGIN TRAN
+		BEGIN TRY
+			SELECT * FROM [dbo].[Order] where [customerId] = @customerId
+			COMMIT TRAN
+		END TRY
+		BEGIN CATCH
+			ROLLBACK TRAN
+		END CATCH
+END
+GO
+
+-- viewOrderDetails()
 CREATE PROCEDURE customerViewOrderDetail
 	@orderId INT
 AS
 BEGIN
-	SELECT *
-    FROM [dbo].[Order] AS o
-    INNER JOIN [dbo].[OrderDetail] AS od ON o.id = od.orderId
-    WHERE o.id = @orderId
+	BEGIN TRAN
+		BEGIN TRY
+			SELECT * FROM [dbo].[OrderDetail] where orderId = @orderId
+			COMMIT TRAN
+		END TRY
+		BEGIN CATCH
+			ROLLBACK TRAN
+		END CATCH
 END
-GO
-EXEC customerViewOrderDetail 1
 GO
 
 -- cancelOrder()
@@ -339,64 +396,88 @@ CREATE PROCEDURE customerCancelOrder
 	@orderId INT
 AS
 BEGIN
-	IF EXISTS (SELECT * FROM [dbo].[Order] WHERE id = @orderId AND status = 'pending')
- 		BEGIN
-       
-        DELETE FROM [dbo].[Order] WHERE [id] = @orderId
-    END
-    ELSE
-    BEGIN
-        PRINT N' --> This order cannot be DELETED, as it has already been CONFIRMED';  
-    END
+	BEGIN TRAN
+		BEGIN TRY
+			IF EXISTS (SELECT * FROM [dbo].[Order] WHERE id = @orderId AND status = 'pending')
+ 				BEGIN
+					DELETE FROM [dbo].[Order] WHERE [id] = @orderId
+				END
+		
+			ELSE
+			BEGIN
+ 				RAISERROR (N'Something went wrong!',16,1)
+ 				ROLLBACK
+			END
+			COMMIT TRAN
+		END TRY
+		BEGIN CATCH
+			ROLLBACK TRAN
+		END CATCH
 END
 GO
-EXEC customerCancelOrder 1
-GO
 
---									=======================================
---									=============== Partner ===============
---									=======================================
+-- =======================================
+-- =============== Partner ===============
+-- =======================================
 
--- getProfile
-CREATE PROCEDURE partnergetProfile
+-- viewProfile
+CREATE PROCEDURE partnerViewProfile
 	@partnerId INT
 AS
 BEGIN
-	SELECT * FROM [dbo].[Partner]
-	WHERE [id] = @partnerId
+	BEGIN TRAN
+		BEGIN TRY
+			SELECT * FROM [dbo].[Partner] p
+			JOIN [dbo].[Branch] b on p.id = b.partnerId
+			WHERE p.[id] = @partnerId
+			COMMIT TRAN
+		END TRY
+		BEGIN CATCH
+			ROLLBACK TRAN
+		END CATCH
 END
 GO
 
 -- updateProfile
 CREATE PROCEDURE partnerUpdateProfile
 	@partnerId INT,
-	
 	@representative NVARCHAR(100),
 	@orderQuantity INT,
 	@brandName NVARCHAR(100),
 	@status NVARCHAR(100),
-	@culinaryStyle NVARCHAR(100)
-		
+	@culinaryStyle NVARCHAR(100)	
 AS
 BEGIN
-	UPDATE[dbo].[Partner]  WITH (UPDLOCK, ROWLOCK)
-	SET [representative] = @representative,
-		[orderQuantity] = @orderQuantity, [brandName] = @brandName,
-		[status] = @status, [culinaryStyle] = @culinaryStyle
-	WHERE [id] = @partnerId
+	BEGIN TRAN
+		BEGIN TRY
+			UPDATE[dbo].[Partner]  WITH (UPDLOCK)
+			SET [representative] = @representative,
+				[orderQuantity] = @orderQuantity, [brandName] = @brandName,
+				[status] = @status, [culinaryStyle] = @culinaryStyle
+			WHERE [id] = @partnerId
+			COMMIT TRAN
+		END TRY
+		BEGIN CATCH
+			ROLLBACK TRAN
+		END CATCH
 END
 GO
 
 -- getDishes
 CREATE PROCEDURE partnerGetDishes
-	@dishId INT
+	@partnerId INT
 AS
 BEGIN
-	SELECT * FROM [dbo].[Dish] 
-	WHERE [id] = @dishId AND [status] = 'in stock'
+	BEGIN TRAN
+		BEGIN TRY
+			SELECT * FROM [dbo].[Dish] 
+			WHERE [partnerId] = @partnerId
+			COMMIT TRAN
+		END TRY
+		BEGIN CATCH
+			ROLLBACK TRAN
+		END CATCH
 END
-GO
-EXEC partnerGetDishes 1
 GO
 
 -- deleteDish
@@ -404,15 +485,23 @@ CREATE PROCEDURE partnerDeleteDish
 	@dishId INT
 AS
 BEGIN
-	IF EXISTS (SELECT * FROM [dbo].[Dish] WHERE id = @dishId AND [status] = 'out of stock')
- 		BEGIN
-        DELETE FROM [dbo].[Dish] WITH (UPDLOCK, ROWLOCK) WHERE [id] = @dishId
-        DELETE FROM [dbo].[DishDetail] WITH (UPDLOCK, ROWLOCK) WHERE [dishId] = @dishId
-    END
-    ELSE
-    BEGIN
-        PRINT N' --> This dish cannot be DELETED';  
-    END
+	BEGIN TRAN
+		BEGIN TRY
+			IF EXISTS (SELECT * FROM [dbo].[Dish] WHERE id = @dishId)
+ 				BEGIN
+					DELETE FROM [dbo].[Dish] WITH (UPDLOCK, ROWLOCK) WHERE [id] = @dishId
+					DELETE FROM [dbo].[DishDetail] WITH (UPDLOCK, ROWLOCK) WHERE [dishId] = @dishId
+				END
+			ELSE
+			BEGIN
+ 				RAISERROR (N'Something went wrong!',16,1)
+ 				ROLLBACK
+			END
+			COMMIT TRAN
+		END TRY
+		BEGIN CATCH
+			ROLLBACK TRAN
+		END CATCH
 END
 GO
 
@@ -421,29 +510,41 @@ CREATE PROCEDURE partnerGetDishDetail
 	@dishId INT
 AS
 BEGIN
-	SELECT *
-    FROM [dbo].[Dish] AS o
-    INNER JOIN [dbo].[DishDetail] AS od ON o.id = od.dishId
-    WHERE o.id = @dishId
+	BEGIN TRAN
+		BEGIN TRY
+			SELECT * FROM [dbo].[DishDetail] where dishId = @dishId
+			COMMIT TRAN
+		END TRY
+		BEGIN CATCH
+			ROLLBACK TRAN
+		END CATCH
 END
 GO
-EXEC partnerGetDishDetail 1
-GO
+
 -- deleteOrder
 CREATE PROCEDURE partnerDeleteOrder
-	@orderId INT,
-    @partnerId INT
+	@orderId INT
 AS
 BEGIN
-	UPDATE[dbo].[Order]  WITH (UPDLOCK, ROWLOCK)
-	SET [status] = 'cancelled'
-	WHERE id = @orderId AND [partnerId] = @partnerId
+	BEGIN TRAN
+		BEGIN TRY
+			IF EXISTS (SELECT * FROM [dbo].[Order] WHERE [shipperId] is not null)
+			BEGIN
+				RAISERROR (N'Already confirmed by shipper',16,1)
+ 				ROLLBACK
+			END
+			ELSE
+			BEGIN
+				DELETE FROM [dbo].[Order] WHERE [id] = @orderId
+			END
+			COMMIT TRAN
+		END TRY
+		BEGIN CATCH
+			ROLLBACK TRAN
+		END CATCH
 END
 GO
 
-
-
-GO
 -- updateDishDetail
 CREATE PROCEDURE partnerUpdateDishDetail
 	@dishDetailId INT,
@@ -452,15 +553,21 @@ CREATE PROCEDURE partnerUpdateDishDetail
 	@quantity INT
 AS
 BEGIN
-	UPDATE[dbo].[DishDetail]  WITH (UPDLOCK, ROWLOCK)
-	SET [price] = @price, [name] = @name, [quantity] = @quantity
-	WHERE id = @dishDetailId
+	BEGIN TRAN
+		BEGIN TRY
+			UPDATE[dbo].[DishDetail]  WITH (UPDLOCK, ROWLOCK)
+			SET [price] = @price, [name] = @name, [quantity] = @quantity
+			WHERE [id] = @dishDetailId
+			COMMIT TRAN
+		END TRY
+		BEGIN CATCH
+			ROLLBACK TRAN
+		END CATCH
 END
 GO
 
-
-
 -- getOrders()
+-- sua lai logic
 CREATE PROCEDURE partnerGetOrders
 	@partnerId INT
 AS
