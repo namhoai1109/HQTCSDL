@@ -9,15 +9,23 @@ từ đối tác, khách hàng quyết định hủy đơn hàng và gửi yêu 
 cho đối tác, cùng lúc đó đối tác bấm xác nhận đơn → Gây ra sự cố xử lý dữ liệu*/
 
 BEGIN TRANSACTION
-	-- Xem thông tin các đơn hàng chưa xác nhận
-	SELECT * FROM [dbo].[Order]
-	WHERE [status] = 'pending'
-	WAITFOR DELAY '00:00:05'
-
-	-- Update trạng thái của đơn hàng "Chưa xác nhận" --> "Xác nhận"
-	UPDATE [dbo].[Order]
-	SET [status] = 'confirmed' 
-	WHERE [id] = 1 AND [status] = 'pending'
-
-		
-COMMIT
+    -- Kiểm tra trạng thái của đơn hàng
+	BEGIN TRY
+		IF EXISTS (
+			SELECT * FROM [dbo].[Order] 
+			WHERE [id] = 6 AND [status] = 'pending'
+		)
+		BEGIN
+			WAITFOR DELAY '00:00:05'
+			-- Nếu đơn hàng chưa xác nhận, xóa nó
+			DELETE FROM [dbo].[Order] 
+			WHERE [id] = 6 AND [status] = 'pending'
+		END
+    END TRY
+    BEGIN CATCH
+        -- Nếu đơn hàng đã xác nhận, thông báo lỗi
+        PRINT N' --> This order cannot be DELETED, 
+		as it has already been CONFIRMED';  
+		ROLLBACK
+    END CATCH
+COMMIT 

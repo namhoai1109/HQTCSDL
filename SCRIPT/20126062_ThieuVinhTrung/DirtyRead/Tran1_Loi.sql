@@ -8,10 +8,20 @@ X, nhưng trong quá trình tài xế A chọn bị lỗi hệ thống và bị 
 không xem được đơn X
 */
 
+SELECT * FROM [dbo].[Order]
 
 BEGIN TRANSACTION
-	UPDATE [dbo].[Order]
-	SET [shipperId] = 01 , [status] = 'confirmed'
-	WHERE [id] = 1
-	WAITFOR DELAY '00:00:05'
+	IF EXISTS (SELECT * FROM [dbo].[Order] 
+	WHERE [status] = 'confirmed' AND [id] = 1)
+		BEGIN
+			UPDATE [dbo].[Order]
+			SET [shipperId] = 01, [process] = 'confirmed'
+			WHERE [id] = 1 AND [status] = 'confirmed';
+			WAITFOR DELAY '00:00:05';
+		END
+	ELSE
+		BEGIN
+			RAISERROR('Order status is not confirmed', 16, 1);
+			ROLLBACK
+		END
 ROLLBACK

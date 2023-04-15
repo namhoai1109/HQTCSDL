@@ -10,6 +10,8 @@ BEGIN TRANSACTION
 	IF @@ROWCOUNT = 0
 		BEGIN
 			-- Nếu đơn hàng đã xác nhận, thông báo lỗi
-			PRINT N' --> This order cannot be UPDATED, as it has already been CONFIRMED';  
+			PRINT N' --> This order cannot be UPDATED, 
+			as it has already been CONFIRMED';  
+			ROLLBACK
 		END
 COMMIT
