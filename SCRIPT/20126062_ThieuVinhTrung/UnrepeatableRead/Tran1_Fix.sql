@@ -1,4 +1,4 @@
-﻿USE HQTCSDL2
+﻿USE HQTCSDL_DEMO
 GO
 
 /*
@@ -13,13 +13,13 @@ CÂU 6
 BEGIN TRANSACTION
 	SELECT *
 	FROM [dbo].[Order] WITH (UPDLOCK, ROWLOCK)
-	WHERE [dbo].[Order].[status] = 'pending'
+	WHERE [status] = 'pending'
 
 	WAITFOR DELAY '00:00:05'
 
 	UPDATE [dbo].[Order]
-	SET	[dbo].[Order].[status] = 'confirmed'
-	WHERE [dbo].[Order].[id] = 01
+	SET	[status] = 'confirmed'
+	WHERE [id] = 01
 
 COMMIT
 

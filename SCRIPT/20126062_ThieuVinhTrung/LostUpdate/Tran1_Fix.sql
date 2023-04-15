@@ -15,7 +15,6 @@ CÂU 14:
 		+ Dùng SERIALIZABLE cho cả 2 transaction
 		+ Dùng thêm WITH(UPDLOCK) để đảm bảo rằng chỉ có 1 transaction được cập nhật đơn hàng đó
 */
-select * from [dbo].[Order]
 
 SET TRANSACTION ISOLATION LEVEL SERIALIZABLE
 BEGIN TRANSACTION
@@ -28,6 +27,6 @@ BEGIN TRANSACTION
 	-- Update trạng thái của đơn hàng 
 	UPDATE [dbo].[Order] WITH (UPDLOCK, ROWLOCK)
 	SET [status] = 'confirmed' 
-	WHERE id = 10 AND [status] = 'pending'
+	WHERE [id] = 1 AND [status] = 'pending'
 
 COMMIT	

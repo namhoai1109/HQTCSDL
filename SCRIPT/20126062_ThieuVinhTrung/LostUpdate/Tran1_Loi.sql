@@ -7,19 +7,17 @@ Lost update: Khi khách hàng đặt món và gửi yêu cầu đặt hàng cho 
 tiếp nhận yêu cầu và thực hiện xác nhận đơn hàng. Trong khi đang chờ xác nhận 
 từ đối tác, khách hàng quyết định hủy đơn hàng và gửi yêu cầu hủy đơn hàng 
 cho đối tác, cùng lúc đó đối tác bấm xác nhận đơn → Gây ra sự cố xử lý dữ liệu*/
-SELECT * FROM DONHANG
 
 BEGIN TRANSACTION
 	-- Xem thông tin các đơn hàng chưa xác nhận
-	SELECT * 
-	FROM [dbo].[Order]
+	SELECT * FROM [dbo].[Order]
 	WHERE [status] = 'pending'
 	WAITFOR DELAY '00:00:05'
 
 	-- Update trạng thái của đơn hàng "Chưa xác nhận" --> "Xác nhận"
 	UPDATE [dbo].[Order]
 	SET [status] = 'confirmed' 
-	WHERE [id] = 10 AND [status] = 'pending'
+	WHERE [id] = 1 AND [status] = 'pending'
 
 		
 COMMIT
