@@ -184,6 +184,7 @@ BEGIN
 			SELECT *
 			FROM [dbo].[Order] orders
 			INNER JOIN [dbo].[OrderDetail] ordetail ON orders.[id] = ordetail.[orderId]
+			JOIN [dbo].[Branch] b ON orders.[branchId] = b.[id] 
 			WHERE orders.[shipperId] = @shipperId
 			COMMIT TRAN
 		END TRY
@@ -568,12 +569,14 @@ GO
 -- getOrders()
 -- sua lai logic
 CREATE PROCEDURE partnerGetOrders
-	@branchId INT
+	@partnerId INT
 AS
 BEGIN
 	BEGIN TRAN
 		BEGIN TRY
 			SELECT * FROM [dbo].[Order] o JOIN [dbo].OrderDetail od ON  o.[id] = od.[orderId]
+										JOIN [dbo].Branch b ON o.branchId = b.id
+			WHERE b.[partnerId] = @partnerId
 			
 			COMMIT TRAN
 		END TRY
@@ -582,5 +585,6 @@ BEGIN
 		END CATCH
 END
 GO
+
 
 
