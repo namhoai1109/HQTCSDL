@@ -1,5 +1,5 @@
 ﻿--SCRIPT CHO BÁO CÁO
-use SQL_PROJECT
+use HQTCSDL_DEMO
 
 --Tạo role
 CREATE ROLE NHANVIEN
@@ -50,9 +50,6 @@ FROM TAIXE
 Where TAIXE.ID = @TAIXE_ID
 go
 
-
-
-
 --Phân quyền tài xế
 
 GRANT UPDATE ON QUAN (id) TO TAIXE;					-- Thay đổi khu vực hoạt động
@@ -88,5 +85,3 @@ GRANT ALL PRIVILEGES ON HOPDONG TO NHANVIEN			--Gán privileges trên từng vie
 GRANT ALL PRIVILEGES ON HOPDONG_view TO DOITAC		--Gán privileges trên từng view
 GRANT ALL PRIVILEGES ON DONHANG_view TO TAIXE		--Gán privileges trên từng view
 GRANT ALL PRIVILEGES ON INFO_TX TO TAIXE			--Gán privileges trên từng view
-
-
