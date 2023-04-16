@@ -3,9 +3,10 @@ go
 
 set dateformat dmy
 -- C�u 1: Dirty read
-set transaction isolation level read uncommitted
-begin transaction
-select * from [dbo].[Dish] where [status] = 'available' 
-waitfor delay '00:00:05'
-commit
 
+
+begin transaction  
+Update [dbo].[Dish]
+set [status] = 'unavailable'
+where [name] Like N'Yakisoba'
+rollback transaction
