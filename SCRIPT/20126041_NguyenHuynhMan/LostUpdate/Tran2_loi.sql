@@ -11,3 +11,8 @@ begin transaction
     END
 COMMIT
 
+-- update [dbo].[Order]
+-- set [dbo].[Order].[shipperId] = 2
+-- where [dbo].[Order].[id] = 2
+
+commit

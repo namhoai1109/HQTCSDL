@@ -2,14 +2,10 @@ use HQTCSDL_DEMO
 go
 
 
+set transaction isolation level read committed
 set dateformat dmy
 
 -- C�u 1: Dirty read
-
-set transaction isolation level read committed
-begin transaction  
-Update [dbo].[Dish]
-set [status] = 'unavailable'
-where [name] Like N'Yakisoba'
-rollback transaction
-
+begin transaction
+select * from [dbo].[Dish] where [status] = 'available' 
+commit

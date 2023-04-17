@@ -7,8 +7,8 @@ BEGIN TRANSACTION;
 BEGIN TRY
     -- Attempt to update the row with the new value
     IF EXISTS (
-        SELECT * FROM [dbo].[Order] WHERE [dbo].[Order].[id] = 2
-							AND [dbo].[Order].[shipperId] IS NULL
+        SELECT * FROM [dbo].[Order] 
+		WHERE [dbo].[Order].[id] = 2 AND [dbo].[Order].[shipperId] is null
     )
     BEGIN
         UPDATE [dbo].[Order] 

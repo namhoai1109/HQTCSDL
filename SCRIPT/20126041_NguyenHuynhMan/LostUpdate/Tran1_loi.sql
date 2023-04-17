@@ -12,13 +12,12 @@ BEGIN transaction
     IF EXISTS (
         SELECT * FROM 
 		[dbo].[Order] 
-		WHERE [dbo].[Order].[id] = 2 
-		AND [dbo].[Order].[shipperId] is null
+		WHERE [dbo].[Order].[id] = 2 AND [dbo].[Order].[shipperId] = null
     )
     BEGIN
         UPDATE [dbo].[Order] 
         SET [dbo].[Order].[shipperId] = 1
         WHERE [dbo].[Order].[id] = 2;
-		WAITFOR DELAY '00:00:05'
-	END
+    END
+
 COMMIT

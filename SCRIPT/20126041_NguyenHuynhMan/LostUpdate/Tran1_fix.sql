@@ -11,10 +11,10 @@ SET TRANSACTION ISOLATION LEVEL SERIALIZABLE
 begin transaction
     IF EXISTS (
         SELECT * FROM [dbo].[Order] WHERE [dbo].[Order].[id] = 2 
-											AND shipperId is null
+										AND [shipperId] IS NULL
     )
     BEGIN
-        update [dbo].[Order] WITH (UPDLOCK, ROWLOCK)
+        update [dbo].[Order]
         set [dbo].[Order].[shipperId] = 1
         where [dbo].[Order].[id] = 2
         waitfor delay '00:00:05'
@@ -22,8 +22,11 @@ begin transaction
 	ELSE
 	 BEGIN
         -- Nếu đơn hàng đã xác nhận, thông báo lỗi
-        PRINT N' --> This order cannot be DELETED, as it has already been CONFIRMED'; 
+        PRINT N' --> This order cannot be DELETED, as it has already been CONFIRMED'
 		ROLLBACK
     END
-COMMIT
+commit
 
+update [dbo].[Order] WITH (UPDLOCK, ROWLOCK)
+        set [dbo].[Order].[shipperId] = null
+        where [dbo].[Order].[id] = 2
