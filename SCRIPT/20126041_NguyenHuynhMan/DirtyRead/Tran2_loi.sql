@@ -6,6 +6,5 @@ set dateformat dmy
 set transaction isolation level read uncommitted
 begin transaction
 select * from [dbo].[Dish] where [status] = 'available' 
-waitfor delay '00:00:05'
 commit
 

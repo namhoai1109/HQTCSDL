@@ -13,12 +13,12 @@ BEGIN transaction
     IF EXISTS (
         SELECT * FROM 
 		[dbo].[Order] 
-		WHERE [dbo].[Order].[id] = 26 AND [dbo].[Order].[shipperId] = null
+		WHERE [dbo].[Order].[id] = 2 AND [dbo].[Order].[shipperId] = null
     )
     BEGIN
         UPDATE [dbo].[Order] 
-        SET [dbo].[Order].[shipperId] = '01'
-        WHERE [dbo].[Order].[id] = '26';
+        SET [dbo].[Order].[shipperId] = 1
+        WHERE [dbo].[Order].[id] = 2;
     END
 
 COMMIT

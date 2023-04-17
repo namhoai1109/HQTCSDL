@@ -6,7 +6,7 @@ go
 begin transaction
 
 update [dbo].[Order]
-set [dbo].[Order].[shipperId] =02
-where [dbo].[Order].[id] = 26
+set [dbo].[Order].[shipperId] = 2
+where [dbo].[Order].[id] = 2
 
 commit

@@ -13,14 +13,24 @@ begin transaction
 --Xem tổng thu nhập của đối tác
 SELECT SUM([dbo].[Order].[orderPrice]) as INCOME_FEB
 FROM [dbo].[Partner], [dbo].[Branch], [dbo].[Order]
-where [dbo].[Partner].[ID] = [dbo].[Branch].[partnerId] and [dbo].[Branch].[ID] = [dbo].[Order].[branchId] AND month([dbo].[Order].[createdAt]) = 2
+where [dbo].[Partner].[ID] = [dbo].[Branch].[partnerId] 
+AND [dbo].[Branch].[ID] = [dbo].[Order].[branchId] 
+AND month([dbo].[Order].[createdAt]) = 2
+AND [dbo].[Order].[process] = 'delivered'
 group by [dbo].[Partner].[ID]
 
 waitfor delay '00:00:10'
 --Xem chi tiết tổng thu nhập của đối tác
-SELECT [dbo].[Branch].[ID] ,  [dbo].[Order].[createdAt] as DON_THANG2,  [dbo].[Order].[orderPrice]
+SELECT [dbo].[Branch].[ID] ,  
+[dbo].[Order].[createdAt] as DON_THANG2,  [dbo].[Order].[orderPrice]
 FROM [dbo].[Partner], [dbo].[Branch], [dbo].[Order]
-where [dbo].[Partner].[ID] = [dbo].[Branch].[partnerId] and [dbo].[Branch].[ID] = [dbo].[Order].[branchId] AND month([dbo].[Order].[createdAt]) = 2
-group by [dbo].[Partner].[ID], [dbo].[Branch].[ID], [dbo].[Order].[createdAt],  [dbo].[Order].[orderPrice]
+where [dbo].[Partner].[ID] = [dbo].[Branch].[partnerId] 
+and [dbo].[Branch].[ID] = [dbo].[Order].[branchId] 
+AND month([dbo].[Order].[createdAt]) = 2 
+AND [dbo].[Order].[process] = 'delivered'
+group by [dbo].[Partner].[ID], 
+[dbo].[Branch].[ID], 
+[dbo].[Order].[createdAt],  
+[dbo].[Order].[orderPrice]
 
 commit transaction
