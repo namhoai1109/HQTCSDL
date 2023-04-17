@@ -158,9 +158,6 @@ go
 		END CATCH
  END
  GO
- EXEC partnerGetNumberOfOrders 1
-GO
-
 
 --+) Partner.updateOrder()
 CREATE PROCEDURE partnerUpdateOrder
@@ -184,9 +181,8 @@ GO
 -- ========================================
 -- =============== Shipper ================
 --=========================================
--- register()
 
--- getOrders()    ==> PHẢI CÓ TRƯỜNG ĐỊA CHỈ CỦA ORDER
+-- getOrders()
 CREATE PROCEDURE shipperGetOrders
 	  @shipperId INT
 AS
@@ -596,6 +592,3 @@ BEGIN
 		END CATCH
 END
 GO
-
-
-
