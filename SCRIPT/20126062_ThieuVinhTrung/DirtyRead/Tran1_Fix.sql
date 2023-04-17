@@ -15,7 +15,7 @@ BEGIN TRANSACTION
 	IF EXISTS (SELECT * FROM [dbo].[Order]
 	WHERE [status] = 'confirmed' AND [id] = 1)
 		BEGIN
-			UPDATE [dbo].[Order] WITH (UPDLOCK, ROWLOCK)
+			UPDATE [dbo].[Order] WITH (UPDLOCK)
 			SET [shipperId] = 01, [process] = 'confirmed'
 			WHERE [id] = 1 AND [status] = 'confirmed';
 	
