@@ -11,4 +11,9 @@ begin transaction
 		set [bankAccount] = '2222222222222222'
 		where [representative] = N'Nguyễn Huỳnh Mẫn'
 	end
+
+	if @@ERROR <> null
+	begin
+		rollback
+	end
 commit

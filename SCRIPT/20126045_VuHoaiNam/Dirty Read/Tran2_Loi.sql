@@ -4,7 +4,14 @@ go
 --khach hang xem so luong mon
 set transaction isolation level read uncommitted
 begin transaction
-	select [quantity]
+	declare @dishId int
+	set @dishId = 2
+
+	select [name], [description], [status]
+	from [dbo].[Dish] 
+	where [id] = @dishId
+
+	select [name], [price], [quantity]
 	from [dbo].[DishDetail] 
-	where [dishId] = 2
+	where [dishId] = @dishId
 commit
