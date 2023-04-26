@@ -10,22 +10,23 @@ cho đối tác, cùng lúc đó đối tác bấm xác nhận đơn → Gây ra
 
 BEGIN TRANSACTION
     -- Kiểm tra trạng thái của đơn hàng
-	BEGIN TRY
-		IF EXISTS (
-			SELECT * FROM [dbo].[Order] 
-			WHERE [id] = 6 AND [status] = 'pending'
-		)
-		BEGIN
-			WAITFOR DELAY '00:00:05'
-			-- Nếu đơn hàng chưa xác nhận, xóa nó
-			DELETE FROM [dbo].[Order] 
-			WHERE [id] = 6 AND [status] = 'pending'
+	IF NOT EXISTS (SELECT * FROM [dbo].[Order] WHERE [id] = 6 AND [status] = 'pending')
+		BEGIN 
+			PRINT N' --> This order cannot be DELETED, as it has already been CONFIRMED';  
+			ROLLBACK
+			RETURN
 		END
-    END TRY
-    BEGIN CATCH
-        -- Nếu đơn hàng đã xác nhận, thông báo lỗi
-        PRINT N' --> This order cannot be DELETED, 
-		as it has already been CONFIRMED';  
-		ROLLBACK
-    END CATCH
+
+	WAITFOR DELAY '00:00:05'
+
+	-- Nếu đơn hàng chưa xác nhận, xóa nó
+	DELETE FROM [dbo].[Order] 
+	WHERE [id] = 6 AND [status] = 'pending'
+		
+    IF @@ERROR <> NULL
+		BEGIN
+			ROLLBACK
+			RETURN
+		END
+
 COMMIT 
