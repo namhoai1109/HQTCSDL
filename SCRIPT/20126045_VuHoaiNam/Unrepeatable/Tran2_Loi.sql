@@ -13,5 +13,3 @@ begin transaction
 	set [price] = 35000
 	where [id] = @dishDetailId and [dishId] = @dishId
 commit
-
-select * from [dbo].[DishDetail]
