@@ -10,6 +10,6 @@ begin transaction
 	set @dishDetailId = 2
 
 	update [dbo].[DishDetail]
-	set [price] = 35000
+	set [price] = 40000
 	where [id] = @dishDetailId and [dishId] = @dishId
 commit
