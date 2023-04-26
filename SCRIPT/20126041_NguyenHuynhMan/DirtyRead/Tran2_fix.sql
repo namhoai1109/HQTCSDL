@@ -9,5 +9,3 @@ begin transaction
 set transaction isolation level read committed
 select * from [dbo].[Dish] where [status] = 'available' 
 commit
-
-

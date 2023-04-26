@@ -7,14 +7,13 @@ Một tài xế chọn nhận đơn hàng, nhưng cùng lúc đó một tài x�
 Khi xem lại thông tin đơn hàng, chỉ một trong hai cập nhật tình trạng mới nhất được lưu trữ trong cơ sở dữ liệu, 
 gây ra sự cố trong quá trình xử lý đơn hàng.
 */
-<<<<<<< Updated upstream
 
-BEGIN transaction
-
-=======
 BEGIN transaction
 SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED
->>>>>>> Stashed changes
+
+SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED
+BEGIN transaction
+
     IF EXISTS (
         SELECT * FROM 
 		[dbo].[Order] 

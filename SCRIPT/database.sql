@@ -413,7 +413,7 @@ values (2, 3, N'Ngon', 1)
 INSERT INTO [dbo].[Rating] ([customerId], [dishId], [description], [isLike])
 values (3, 5, N'Cũng tạm', 0)
 
- --Used for drop the database
+ --Use for drop the database
 --use master 
 --go
 --alter database HQTCSDL_DEMO set single_user with rollback immediate

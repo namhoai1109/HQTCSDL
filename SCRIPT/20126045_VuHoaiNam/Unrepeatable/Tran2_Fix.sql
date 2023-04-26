@@ -4,9 +4,12 @@ go
 --doi tac sua gia tien
 set transaction isolation level repeatable read 
 begin transaction 
-	update [dbo].[DishDetail]
-	set [price] = 70000
-	where [id] = 3 and [dishId] = 1
-commit
+	declare @dishId int
+	set @dishId = 1
+	declare @dishDetailId int
+	set @dishDetailId = 2
 
-select * from [dbo].[DishDetail]
+	update [dbo].[DishDetail]
+	set [price] = 35000
+	where [id] = @dishDetailId and [dishId] = @dishId
+commit

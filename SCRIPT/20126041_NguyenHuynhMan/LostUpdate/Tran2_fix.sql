@@ -6,7 +6,6 @@ BEGIN TRANSACTION
 SET TRANSACTION ISOLATION LEVEL SERIALIZABLE
 <<<<<<< Updated upstream
 BEGIN TRANSACTION;
-
 BEGIN TRY
     -- Attempt to update the row with the new value
     IF EXISTS (
@@ -24,7 +23,7 @@ BEGIN TRY
         RAISERROR('No rows updated', 16, 1);
     END
     -- Commit the transaction if successful
-    COMMIT TRANSACTION;
+COMMIT TRANSACTION;
 END TRY
 BEGIN CATCH
     -- Roll back the transaction if an error occurs
@@ -61,4 +60,5 @@ END CATCH
 		END
 	END CATCH
 >>>>>>> Stashed changes
+
 

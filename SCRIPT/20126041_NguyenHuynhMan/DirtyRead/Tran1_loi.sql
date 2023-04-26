@@ -6,14 +6,6 @@ go
 -- Làm cho khách B đọc sai dữ liệu.
 -- Không cần fix vì isolation level default của database là read committed 
 
-<<<<<<< Updated upstream
-begin transaction  
-Update [dbo].[Dish]
-set [status] = 'unavailable'
-where [name] Like N'Yakisoba'
-waitfor delay '00:00:05'
-rollback transaction
-=======
 begin transaction
 set transaction isolation level read uncommitted
 IF EXISTS (
@@ -42,5 +34,3 @@ IF EXISTS (
 	end
 commit
 
---SELECT * FROM [dbo].[Order]
->>>>>>> Stashed changes

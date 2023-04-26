@@ -1,4 +1,4 @@
-﻿USE HQTCSDL2
+﻿USE HQTCSDL_DEMO
 GO
 
 /*
@@ -11,17 +11,28 @@ CÂU 6
 
 
 BEGIN TRANSACTION
-	SELECT *
-	FROM [dbo].[Order] WITH (UPDLOCK, ROWLOCK)
-	WHERE [dbo].[Order].[status] = 'pending'
+	IF NOT EXISTS (SELECT * FROM [dbo].[Order] WITH(UPDLOCK)
+			   WHERE [status] = 'pending')
+		BEGIN 
+			RAISERROR(N'No pending orders', 16, 1)
+			ROLLBACK
+			RETURN
+		END
 
-	WAITFOR DELAY '00:00:05'
+			WAITFOR DELAY '00:00:05'
 
-	UPDATE [dbo].[Order]
-	SET	[dbo].[Order].[status] = 'confirmed'
-	WHERE [dbo].[Order].[id] = 01
-
+			UPDATE [dbo].[Order] 
+			SET	[status] = 'confirmed'
+			WHERE [id] = 01
+	IF @@ERROR <> NULL
+		BEGIN
+			ROLLBACK
+			RETURN
+		END
 COMMIT
+
+
+
 
 
 

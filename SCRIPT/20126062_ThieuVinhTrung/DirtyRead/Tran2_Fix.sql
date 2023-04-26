@@ -1,13 +1,12 @@
 ﻿use HQTCSDL_DEMO
 go
 
---Sử dụng UPDLOCK và ROWLOCK trong Transaction 2 
--- cũng đảm bảo rằng chỉ có một tài xế được phép truy cập vào đơn hàng X cùng một lúc.
+-- Ta dùng Read Commited để giải quyết tình huống 
 
-SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED
+SET TRANSACTION ISOLATION LEVEL READ COMMITTED
 BEGIN TRANSACTION
-	SELECT * FROM [dbo].[Order] WITH (UPDLOCK, ROWLOCK)
-	WHERE [dbo].[Order].[status] = 'confirmed' AND [dbo].[Order].[shipperId] LIKE NULL
+	SELECT * FROM [dbo].[Order]
+	WHERE [status] = 'confirmed' AND [shipperId] IS NULL
 COMMIT
 
 

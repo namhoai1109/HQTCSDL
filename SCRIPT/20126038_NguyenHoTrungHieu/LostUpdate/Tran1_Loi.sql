@@ -8,7 +8,7 @@ BEGIN TRANSACTION placeOrder
 	set @quantity = 1
 
 	--check so luong tuy chon
-	if ((select [quantity] from [dbo].[DishDetail] where [id] = 1) < @quantity)
+	if ((select [quantity] from [dbo].[DishDetail] where [dishId] = 1 and [name] = 'S') < @quantity)
 	begin
 		raiserror(N'Số lượng không đủ', 16, 1)
 		rollback
@@ -18,7 +18,7 @@ BEGIN TRANSACTION placeOrder
 	waitfor delay '00:00:05'
 	update [dbo].[DishDetail]
 	set [quantity] = [quantity] - @quantity
-	where [id] = 1
+	where [dishId] = 1 and [name] = 'S'
 
 	--tao don hang
 	--insert chi tiet
@@ -29,4 +29,4 @@ select * from [dbo].[DishDetail]
 --Run this after transaction
 --update [dbo].[DishDetail]
 --set [quantity] = 1
---where [id] = 1
+-- where [dishId] = 1 and [name] = 'S'
