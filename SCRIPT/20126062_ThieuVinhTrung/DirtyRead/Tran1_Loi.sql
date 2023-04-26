@@ -11,17 +11,25 @@ không xem được đơn X
 SELECT * FROM [dbo].[Order]
 
 BEGIN TRANSACTION
-	IF EXISTS (SELECT * FROM [dbo].[Order] 
-	WHERE [status] = 'confirmed' AND [id] = 1)
+	IF EXISTS (SELECT * FROM [dbo].[Order] WHERE [status] = 'confirmed')
 		BEGIN
-			UPDATE [dbo].[Order]
-			SET [shipperId] = 01, [process] = 'confirmed'
-			WHERE [id] = 1 AND [status] = 'confirmed';
-			WAITFOR DELAY '00:00:05';
-		END
-	ELSE
-		BEGIN
-			RAISERROR('Order status is not confirmed', 16, 1);
+			RAISERROR(N'No orders to look for',16,1)
 			ROLLBACK
+			RETURN    
 		END
-ROLLBACK
+
+	WAITFOR DELAY '00:00:05'
+	
+	UPDATE [dbo].[Order]
+	SET [shipperId] = 01, [process] = 'confirmed'
+	WHERE [id] = 1 AND [status] = 'confirmed';
+	WAITFOR DELAY '00:00:05';
+
+	IF @@ERROR <> NULL
+		BEGIN
+			ROLLBACK
+			RETURN
+		END
+
+COMMIT
+

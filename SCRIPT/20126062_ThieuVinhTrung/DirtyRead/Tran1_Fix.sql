@@ -7,15 +7,19 @@ CÂU 2
 	X, nhưng trong quá trình tài xế A chọn bị lỗi hệ thống và bị rollback → Tài xế B 
 	không xem được đơn X
 */
--- Ta có thể sử dụng cơ chế locking để đảm bảo rằng đơn hàng X chỉ được tài xế A đang xử lý truy cập vào
+-- Ta dùng Read Commited để giải quyết tình huống 
+/*Tạo Shared Lock trên đơn vị dữ liệu được đọc, Shared Lock được giải phóng ngay
+sau khi đọc xong dữ liệu Tạo Exclusive Lock trên đơn vị dữ liệu
+được ghi, Exclusive Lock được giữ cho đến hết giao tác*/
 
 SELECT * FROM [dbo].[Order]
 
+SET TRANSACTION ISOLATION LEVEL READ COMMITTED
 BEGIN TRANSACTION
 	IF EXISTS (SELECT * FROM [dbo].[Order]
 	WHERE [status] = 'confirmed' AND [id] = 1)
 		BEGIN
-			UPDATE [dbo].[Order] WITH (UPDLOCK)
+			UPDATE [dbo].[Order]
 			SET [shipperId] = 01, [process] = 'confirmed'
 			WHERE [id] = 1 AND [status] = 'confirmed';
 	

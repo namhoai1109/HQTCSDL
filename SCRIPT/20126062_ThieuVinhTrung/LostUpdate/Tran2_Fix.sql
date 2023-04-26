@@ -3,7 +3,7 @@ go
 
 BEGIN TRANSACTION
 	-- Xem thông tin các đơn hàng chưa xác nhận
-	IF EXISTS(SELECT * FROM [dbo].[Order] WITH(XLOCK)
+	IF EXISTS(SELECT * FROM [dbo].[Order] WITH(UPDLOCK)
 			  WHERE [id] = 9 AND [status] = 'pending' )
 		BEGIN
 			UPDATE [dbo].[Order]

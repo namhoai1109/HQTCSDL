@@ -11,20 +11,27 @@ CÂU 6
 
 
 BEGIN TRANSACTION
-	IF EXISTS (SELECT * FROM [dbo].[Order] WITH (UPDLOCK, ROWLOCK) 
+	IF NOT EXISTS (SELECT * FROM [dbo].[Order] WITH(UPDLOCK)
 			   WHERE [status] = 'pending')
 		BEGIN 
+			RAISERROR(N'No pending orders', 16, 1)
+			ROLLBACK
+			RETURN
+		END
+
+			WAITFOR DELAY '00:00:05'
+
 			UPDATE [dbo].[Order] 
 			SET	[status] = 'confirmed'
 			WHERE [id] = 01
-			WAITFOR DELAY '00:00:05'
-		END
-	ELSE
+	IF @@ERROR <> NULL
 		BEGIN
-			RAISERROR('Order status is confirmed', 16, 1);
 			ROLLBACK
+			RETURN
 		END
 COMMIT
+
+
 
 
 
