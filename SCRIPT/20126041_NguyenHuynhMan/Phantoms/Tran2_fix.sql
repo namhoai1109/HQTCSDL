@@ -3,8 +3,8 @@ go
 
 
 --C�u 9 : Phantom
-set transaction isolation level SERIALIZABLE
 begin transaction
+set transaction isolation level SERIALIZABLE
 
 INSERT INTO [dbo].[Order] OUTPUT inserted.id 
 values (02,null,01,GETDATE(),GETDATE(),
